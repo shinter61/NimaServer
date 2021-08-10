@@ -1,0 +1,24 @@
+{
+  "name": "nimaserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shinter61/NimaServer.git"
+  },
+  "author": "Matsumoto Shintaro <shinter61@gmail.com> (https://github.com/shinter61)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shinter61/NimaServer/issues"
+  },
+  "homepage": "https://github.com/shinter61/NimaServer#readme",
+  "dependencies": {
+    "socket.io": "*",
+    "express": "*"
+  }
+}
