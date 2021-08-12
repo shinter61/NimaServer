@@ -51,6 +51,8 @@ class Game {
 
     return { player1Tiles, player2Tiles }
   }
+
+  draw() { return this.stock.shift() }
 }
 var game = new Game();
 
@@ -92,6 +94,13 @@ io.sockets.on('connection', function(socket) {
     let { player1Tiles, player2Tiles } = game.reload()
     io.sockets.emit('DistributeInitTiles', { id: game.player1.name, tiles: JSON.stringify(player1Tiles) })
     io.sockets.emit('DistributeInitTiles', { id: game.player2.name, tiles: JSON.stringify(player2Tiles) })
+
+    let tile = game.draw()
+    io.sockets.emit('Draw', {
+      id: game.player1.name,
+      tiles: JSON.stringify([tile]),
+      stockCount: String(game.stock.length)
+    })
   })
 
   socket.on('Discard', function(playerID, discards) {
@@ -103,8 +112,13 @@ io.sockets.on('connection', function(socket) {
     io.sockets.emit('InformDiscards', { id: playerID, discards: discards })
   })
 
-  socket.on('InformStock', function(stock) {
-    io.sockets.emit('InformStock', { stock })
+  socket.on('Draw', function(playerID) {
+    let tile = game.draw()
+    io.sockets.emit('Draw', {
+      id: playerID,
+      tiles: JSON.stringify([tile]), 
+      stockCount: String(game.stock.length)
+    })
   })
 })
 
