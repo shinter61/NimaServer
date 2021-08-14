@@ -1,6 +1,11 @@
-const Player = require('./Player.js')
+import { Player } from "./Player"
+import { Tile } from "../types/Tile"
 
-class Game {
+export class Game {
+  player1: Player
+  player2: Player
+  stock: Tile[]
+
   constructor() {
     this.player1 = new Player()
     this.player2 = new Player()
@@ -46,4 +51,3 @@ class Game {
   draw() { return this.stock.shift() }
 }
 
-module.exports = Game

@@ -1,23 +1,26 @@
-var express = require("express");
-var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io')(server);
+import { createServer } from "http"
+import { Server, Socket } from "socket.io"
+import { Game } from "./Game"
+import { Player } from "./Player"
+import { Tile } from "../types/Tile"
+import express from "express"
 
-const Game = require('./Game.js')
-const Player = require('./Player.js')
+let app: express.Express = express();
+let server = createServer(app);
+let io = new Server(server);
 
-connections = [];
-var game = new Game();
+let connections: Socket[] = [];
+let game = new Game();
 
 server.listen(process.env.PORT || 3000);
 console.log('Server is running...');
 
-io.sockets.on('connection', function(socket) {
+io.sockets.on('connection', function(socket: Socket) {
   connections.push(socket)
   console.log('Connect: %s sockets are connected', connections.length);
 
   // Disconnect
-  socket.on('disconnect', function(data) {
+  socket.on('disconnect', function(_reason: string) {
     let playerID = socket.handshake.auth.name
     if (game.player1.name == playerID) {
       game.player1 = new Player()
@@ -32,7 +35,7 @@ io.sockets.on('connection', function(socket) {
     console.log("player2 ", game.player2.name)
   });
 
-  socket.on('AddPlayer', function(data) {
+  socket.on('AddPlayer', function(data: string) {
     if (game.player1.name == "") {
       game.player1.name = data
     } else if (game.player2.name == "") {
@@ -43,12 +46,12 @@ io.sockets.on('connection', function(socket) {
     io.sockets.emit('InformPlayersNames', { player1: game.player1.name, player2: game.player2.name })
   })
 
-  socket.on('StartGame', function(data) {
+  socket.on('StartGame', function(_) {
     game.reload()
     game.player1.organizeTile()
     game.player2.organizeTile()
     let tile = game.draw()
-    game.player1.tiles.push(tile)
+    if (tile !== undefined) { game.player1.tiles.push(tile) }
 
     let { player1, player2 } = game
     io.sockets.emit('DistributeInitTiles', { id: player1.name, tiles: JSON.stringify(player1.tiles) })
@@ -56,7 +59,7 @@ io.sockets.on('connection', function(socket) {
   })
 
   socket.on('Discard', function(playerID, tiles) {
-    tile = JSON.parse(tiles)[0]
+    let tile = JSON.parse(tiles)[0] as Tile
     if (game.player1.name == playerID) {
       game.player1.discards.push(tile)
       game.player1.tiles.splice(game.player1.tiles.findIndex(
@@ -84,6 +87,7 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('Draw', function(playerID) {
     let tile = game.draw()
+    if (tile === undefined) { return }
     if (game.player1.name == playerID) {
       game.player1.tiles.push(tile)
       game.player1.judgeHands()
