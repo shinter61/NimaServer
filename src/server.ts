@@ -5,12 +5,12 @@ import { Player } from "./Player"
 import { Tile } from "../types/Tile"
 import express from "express"
 
-let app: express.Express = express();
-let server = createServer(app);
-let io = new Server(server);
+const app: express.Express = express();
+const server = createServer(app);
+const io = new Server(server);
 
-let connections: Socket[] = [];
-let game = new Game();
+const connections: Socket[] = [];
+const game = new Game();
 
 server.listen(process.env.PORT || 3000);
 console.log('Server is running...');
@@ -20,8 +20,8 @@ io.sockets.on('connection', function(socket: Socket) {
   console.log('Connect: %s sockets are connected', connections.length);
 
   // Disconnect
-  socket.on('disconnect', function(_reason: string) {
-    let playerID = socket.handshake.auth.name
+  socket.on('disconnect', function() {
+    const playerID: string = socket.handshake.auth.name as string
     if (game.player1.name == playerID) {
       game.player1 = new Player()
     } else if (game.player2.name == playerID) {
@@ -46,20 +46,20 @@ io.sockets.on('connection', function(socket: Socket) {
     io.sockets.emit('InformPlayersNames', { player1: game.player1.name, player2: game.player2.name })
   })
 
-  socket.on('StartGame', function(_) {
+  socket.on('StartGame', function() {
     game.reload()
     game.player1.organizeTile()
     game.player2.organizeTile()
-    let tile = game.draw()
+    const tile = game.draw()
     if (tile !== undefined) { game.player1.tiles.push(tile) }
 
-    let { player1, player2 } = game
+    const { player1, player2 } = game
     io.sockets.emit('DistributeInitTiles', { id: player1.name, tiles: JSON.stringify(player1.tiles) })
     io.sockets.emit('DistributeInitTiles', { id: player2.name, tiles: JSON.stringify(player2.tiles) })
   })
 
-  socket.on('Discard', function(playerID, tiles) {
-    let tile = JSON.parse(tiles)[0] as Tile
+  socket.on('Discard', function(playerID: string, tiles: string) {
+    const tile = (JSON.parse(tiles) as Tile[])[0]
     if (game.player1.name == playerID) {
       game.player1.discards.push(tile)
       game.player1.tiles.splice(game.player1.tiles.findIndex(
@@ -85,8 +85,8 @@ io.sockets.on('connection', function(socket: Socket) {
     }
   })
 
-  socket.on('Draw', function(playerID) {
-    let tile = game.draw()
+  socket.on('Draw', function(playerID: string) {
+    const tile = game.draw()
     if (tile === undefined) { return }
     if (game.player1.name == playerID) {
       game.player1.tiles.push(tile)

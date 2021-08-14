@@ -15,9 +15,9 @@ export class Game {
   reload() {
     this.stock = []
 
-    let characters = ["east", "south", "west", "north", "white", "green", "red"]
-    let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    let kinds = ["pin", "sou", "man"]
+    const characters = ["east", "south", "west", "north", "white", "green", "red"]
+    const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    const kinds = ["pin", "sou", "man"]
     for (let i = 0; i < characters.length; i++) {
       for (let j = 0; j < 4; j++) {
         this.stock.push({ kind: "", number: 0, character: characters[i] })
@@ -34,14 +34,14 @@ export class Game {
 
     // shuffle
     for (let i = this.stock.length - 1; i > 0; i--) {
-      let r = Math.floor(Math.random() * (i+1))
-      let tmp = this.stock[i]
+      const r = Math.floor(Math.random() * (i+1))
+      const tmp = this.stock[i]
       this.stock[i] = this.stock[r]
       this.stock[r] = tmp
     }
 
-    let player1Tiles = this.stock.splice(0, 13)
-    let player2Tiles = this.stock.splice(0, 13)
+    const player1Tiles = this.stock.splice(0, 13)
+    const player2Tiles = this.stock.splice(0, 13)
     console.log('stock count ', this.stock.length)
 
     this.player1.tiles = player1Tiles

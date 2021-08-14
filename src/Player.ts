@@ -12,16 +12,16 @@ export class Player {
   }
 
   organizeTile() {
-    let pinzuTiles: Tile[] = []
-    let souzuTiles: Tile[] = []
-    let manzuTiles: Tile[] = []
-    let eastTiles: Tile[] = []
-    let southTiles: Tile[] = []
-    let westTiles: Tile[] = []
-    let northTiles: Tile[] = []
-    let whiteTiles: Tile[] = []
-    let greenTiles: Tile[] = []
-    let redTiles: Tile[] = []
+    const pinzuTiles: Tile[] = []
+    const souzuTiles: Tile[] = []
+    const manzuTiles: Tile[] = []
+    const eastTiles: Tile[] = []
+    const southTiles: Tile[] = []
+    const westTiles: Tile[] = []
+    const northTiles: Tile[] = []
+    const whiteTiles: Tile[] = []
+    const greenTiles: Tile[] = []
+    const redTiles: Tile[] = []
 
     for (let i = 0; i < this.tiles.length; i++) {
       if (this.tiles[i].kind == "pin") { pinzuTiles.push(this.tiles[i]) }
@@ -57,7 +57,7 @@ export class Player {
   }
 
   judgeHands() {
-    let myTiles = this.tiles.slice()
+    const myTiles = this.tiles.slice()
   //   let ankoTiles = [],  pinzuAnkoTiles = []
   //   let mentzTiles = [], jantou = null
   //   let dupCount = 0, prevTile = { kind: "", number: 0, character: "" }
