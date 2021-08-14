@@ -57,7 +57,6 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('Discard', function(playerID, tiles) {
     tile = JSON.parse(tiles)[0]
-    console.log(tile)
     if (game.player1.name == playerID) {
       game.player1.discards.push(tile)
       game.player1.tiles.splice(game.player1.tiles.findIndex(
@@ -87,6 +86,7 @@ io.sockets.on('connection', function(socket) {
     let tile = game.draw()
     if (game.player1.name == playerID) {
       game.player1.tiles.push(tile)
+      game.player1.judgeHands()
       io.sockets.emit('Draw', {
         id: playerID,
         tiles: JSON.stringify(game.player1.tiles), 
@@ -95,6 +95,7 @@ io.sockets.on('connection', function(socket) {
     }
     else if (game.player2.name == playerID) {
       game.player2.tiles.push(tile)
+      game.player2.judgeHands()
       io.sockets.emit('Draw', {
         id: playerID,
         tiles: JSON.stringify(game.player2.tiles), 
