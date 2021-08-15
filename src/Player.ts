@@ -1,4 +1,4 @@
-import { Tile } from "../types/Tile"
+import { Tile } from "./Tile"
 
 export class Player {
   name: string
@@ -56,68 +56,86 @@ export class Player {
       whiteTiles, greenTiles, redTiles)
   }
 
+  extractShuntz(firstIdx: number, secondIdx?: number) {
+    let mentz: Tile[] = []
+    if (firstIdx >= this.tiles.length || firstIdx <= -1) { return mentz }
+    if (!this.tiles[firstIdx].isPinzu()) { return mentz }
+
+    if (secondIdx === undefined) {
+      const currentTile: Tile = this.tiles[firstIdx].copy()
+      currentTile.number += 1
+      for (let i = firstIdx + 1; i < this.tiles.length; i++) {
+        if (this.tiles[i].isEqual(currentTile)) {
+          mentz = this.extractShuntz(firstIdx, i)
+          break
+        }
+      }
+    } else {
+      const currentTile: Tile = this.tiles[secondIdx].copy()
+      currentTile.number += 1
+      for (let thirdIdx = secondIdx + 1; thirdIdx < this.tiles.length; thirdIdx++) {
+        if (this.tiles[thirdIdx].isEqual(currentTile)) {
+          mentz.push(this.tiles.splice(firstIdx, 1)[0])
+          mentz.push(this.tiles.splice(secondIdx - 1, 1)[0])
+          mentz.push(this.tiles.splice(thirdIdx - 2, 1)[0])
+          break
+        }
+      }
+    }
+    
+    return mentz
+  }
+
   judgeHands() {
-    const myTiles = this.tiles.slice()
-  //   let ankoTiles = [],  pinzuAnkoTiles = []
-  //   let mentzTiles = [], jantou = null
-  //   let dupCount = 0, prevTile = { kind: "", number: 0, character: "" }
-  //   for (let i = 0; i < myTiles.length; i++) {
-  //     if (prevTile.kind === myTiles[i].kind &&
-  //       prevTile.number === myTiles[i].number &&
-  //       prevTile.character === myTiles[i].character) {
-  //       dupCount++;
-  //       if (dupCount == 3) { ankoTiles.push(this.tiles[i]) }
-  //     } else {
-  //       dupCount = 1
-  //       prevTile = myTiles[i]
-  //     }
-  //   }
-  //
-  //   // 筒子の暗刻を取り出す、それ以外の牌の暗刻は面子としてしか使えないため
-  //   for (let i = 0; i < ankoTiles.length; i++) {
-  //     if (ankoTiles[i].kind === "pin") {
-  //       pinzuAnkoTiles.push(ankoTiles[i])
-  //     } else {
-  //       let index = myTiles.findIndex(tile => tile.kind === ankoTiles[i].kind && tile.number === ankoTiles[i].number
-  //         && tile.character === ankoTiles[i].character)
-  //       let mentz = myTiles.splice(index, 3)
-  //       mentzTiles.push(mentz)
-  //     }
-  //   }
-  //
-  //   pinzuAnkoTiles = ankoTiles.filter(tile => tile.kind === "pin")
-  //
-  //   // 刻子を雀頭か刻子にするか全パターン検証
-  //   if (pinzuAnkoTiles.length === 0) {
-  //     let tmpMyTiles = myTiles.slice()
-  //     for (let i = 0; i < tmpMyTiles.length; i++) {
-  //       let curNum = tmpMyTiles[i].number
-  //       if (tmpMyTiles[i].kind === "pin" && tmpMyTiles[i+1].kind === "pin" && tmpMyTiles[i+2] === "pin"
-  //         && tmpMyTiles[i+1].number == curNum+1 && tmpMyTiles[i+2].number === curNum+2
-  //       ) {
-  //
-  //       }
-  //     }
-  //   }
-  //   let jantouPattern = false
-  //   for (let i = 0; i < pinzuAnkoTiles.length; i++) {
-  //     let tmpMyTiles = myTiles.slice()
-  //     let tmpMentzTiles = mentzTiles.slice()
-  //     if (jantouPattern) {
-  //       jantouPattern = false
-  //     } else {
-  //       jantouPattern = true
-  //
-  //       let index = tmpMyTiles.findIndex(tile =>
-  //         tile.kind === pinzuAnkoTiles[i].kind && tile.number === pinzuAnkoTiles[i].number
-  //         && tile.character === pinzuAnkoTiles[i].character)
-  //       let mentz = tmpMyTiles.splice(index, 3)
-  //       tmpMentzTiles.push(mentz)
-  //     }
-  //   }
-  //
-  //   console.log('myTiles ', myTiles)
-  //   console.log('ankoTiles ', ankoTiles)
-  //   console.log('pinzuAnkoTiles ', pinzuAnkoTiles)
+    const myTilesCopy: Tile[] = this.tiles.slice()
+    const ankoTiles: Tile[] = []
+    let pinzuAnkoTiles: Tile[] = []
+    const mentzTiles: Tile[][] = [], jantou = null
+    let dupCount = 0
+    let prevTile: Tile = new Tile("", 0, "")
+    let isWin = false
+
+    this.organizeTile()
+
+    for (let i = 0; i < this.tiles.length; i++) {
+      if (prevTile.isEqual(this.tiles[i])) {
+        dupCount++;
+        if (dupCount == 3) { ankoTiles.push(this.tiles[i]) }
+      } else {
+        dupCount = 1
+        prevTile = this.tiles[i]
+      }
+    }
+
+    // 筒子の暗刻を取り出す、それ以外の牌の暗刻は面子としてしか使えないため
+    for (let i = 0; i < ankoTiles.length; i++) {
+      if (ankoTiles[i].kind === "pin") {
+        pinzuAnkoTiles.push(ankoTiles[i])
+      } else {
+        const index = this.tiles.findIndex(tile => tile.isEqual(ankoTiles[i]))
+        const mentz: Tile[] = this.tiles.splice(index, 3)
+        mentzTiles.push(mentz)
+      }
+    }
+
+    pinzuAnkoTiles = ankoTiles.filter(tile => tile.kind === "pin")
+
+    // 面子→雀頭
+    for (let i = 0; i < this.tiles.length; i++) {
+      const shuntz: Tile[] = this.extractShuntz(i)
+      if (shuntz.length !== 0) {
+        mentzTiles.push(shuntz)
+        i -= 3
+      }
+    }
+    console.log('remained tiles ', this.tiles)
+    if (this.tiles.length === 2 && this.tiles[0].isEqual(this.tiles[1])) { isWin = true }
+    
+    console.log('mentz tiles ', mentzTiles)
+
+    // 元の牌姿に戻す
+    this.tiles = myTilesCopy
+
+    return isWin
   }
 }

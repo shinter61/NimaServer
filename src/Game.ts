@@ -1,5 +1,5 @@
 import { Player } from "./Player"
-import { Tile } from "../types/Tile"
+import { Tile } from "./Tile"
 
 export class Game {
   player1: Player
@@ -20,14 +20,16 @@ export class Game {
     const kinds = ["pin", "sou", "man"]
     for (let i = 0; i < characters.length; i++) {
       for (let j = 0; j < 4; j++) {
-        this.stock.push({ kind: "", number: 0, character: characters[i] })
+        const tile = new Tile("", 0, characters[i])
+        this.stock.push(tile)
       }
     }
     for (let i = 0; i < numbers.length; i++) {
       for (let j = 0; j < kinds.length; j++) {
         if (numbers[i] >= 2 && numbers[i] <= 8 && kinds[j] != "pin") { continue }
         for (let k = 0; k < 4; k++) {
-          this.stock.push({ kind: kinds[j], number: numbers[i], character: "" })
+          const tile = new Tile(kinds[j], numbers[i], "")
+          this.stock.push(tile)
         }
       }
     }

@@ -2,7 +2,7 @@ import { createServer } from "http"
 import { Server, Socket } from "socket.io"
 import { Game } from "./Game"
 import { Player } from "./Player"
-import { Tile } from "../types/Tile"
+import { Tile } from "./Tile"
 import express from "express"
 
 const app: express.Express = express();
@@ -90,20 +90,22 @@ io.sockets.on('connection', function(socket: Socket) {
     if (tile === undefined) { return }
     if (game.player1.name == playerID) {
       game.player1.tiles.push(tile)
-      game.player1.judgeHands()
+      const isWin = game.player1.judgeHands()
       io.sockets.emit('Draw', {
         id: playerID,
         tiles: JSON.stringify(game.player1.tiles), 
-        stockCount: String(game.stock.length)
+        stockCount: String(game.stock.length),
+        isWin: isWin.toString()
       })
     }
     else if (game.player2.name == playerID) {
       game.player2.tiles.push(tile)
-      game.player2.judgeHands()
+      const isWin = game.player2.judgeHands()
       io.sockets.emit('Draw', {
         id: playerID,
         tiles: JSON.stringify(game.player2.tiles), 
-        stockCount: String(game.stock.length)
+        stockCount: String(game.stock.length),
+        isWin: isWin.toString()
       })
     }
   })
