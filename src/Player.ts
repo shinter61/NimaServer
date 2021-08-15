@@ -89,10 +89,10 @@ export class Player {
   judgeHands(): boolean {
     const myTilesCopy: Tile[] = this.tiles.slice()
     const ankoTiles: Tile[] = []
-    let pinzuAnkoTiles: Tile[] = []
-    const mentzTiles: Tile[][] = [], jantou = null
+    const pinzuAnkoTiles: Tile[] = []
+    let mentzTiles: Tile[][] = []
     let dupCount = 0
-    let prevTile: Tile = new Tile("", 0, "")
+    let prevTile: Tile = new Tile("", 0, ""), jantou: Tile[] = []
     let isWin = false
 
     this.organizeTile()
@@ -130,20 +130,65 @@ export class Player {
       }
     }
 
-    pinzuAnkoTiles = ankoTiles.filter(tile => tile.kind === "pin")
+    // 各刻子に対し、「刻子として抜き出す（3）」、「雀頭＋１牌とする(2,1)」、「何もしない(1,1,1)」の３パターンがある
+    //「刻子として抜き出す（3）」→ 0、「雀頭＋１牌とする(2,1)」→ 1、「何もしない(1,1,1)」→ 2
+    // 複数の刻子に対し「雀頭＋１牌とする(2,1)」の扱いをすることはない
+    // bit全探索 3進数ver.
+    const patterns: number[][] = []
+    for (let bit = 0; bit < 3 ** pinzuAnkoTiles.length; bit++) {
+      let tmp = bit
+      const row = []
+      for (let i = 0; i < pinzuAnkoTiles.length; i++) {
+        row[i] = tmp % 3;
+        tmp = Math.floor(tmp/3)
+      }
+      if (row.filter(el => el === 1).length >= 2) { continue }
+      patterns.push(row)
+    }
 
-    // 面子→雀頭
-    for (let i = 0; i < this.tiles.length; i++) {
-      const shuntz: Tile[] = this.extractShuntz(i)
-      if (shuntz.length !== 0) {
-        mentzTiles.push(shuntz)
-        i -= 3
+    // 探索前に各値を、リセット用にコピー
+    const myTilesCopy2 = this.tiles.slice()
+    const mentzTilesCopy = mentzTiles.slice()
+
+    // 全パターン探索
+    for (let i = 0; i < patterns.length; i++) {
+      for (let j = 0; j < patterns[i].length; j++) {
+        if (patterns[i][j] === 0) {
+          // 「刻子として抜き出す（3）」
+          const index = this.tiles.findIndex(tile => tile.isEqual(pinzuAnkoTiles[j]))
+          const mentz: Tile[] = this.tiles.splice(index, 3)
+          mentzTiles.push(mentz)
+        } else if (patterns[i][j] === 1) {
+          // 「雀頭＋１牌とする(2,1)」
+          const index = this.tiles.findIndex(tile => tile.isEqual(pinzuAnkoTiles[j]))
+          jantou = this.tiles.splice(index, 2)
+        } else if (patterns[i][j] === 2) {
+          // 「何もしない(1,1,1)」
+          continue
+        }
+      }
+
+      // 順子抜き出し
+      for (let i = 0; i < this.tiles.length; i++) {
+        const shuntz: Tile[] = this.extractShuntz(i)
+        if (shuntz.length !== 0) {
+          mentzTiles.push(shuntz)
+          i -= 3
+        }
+      }
+
+      // 雀頭がない場合、雀頭を登録
+      if (this.tiles.length === 2 && this.tiles[0].isEqual(this.tiles[1])) { jantou = this.tiles.splice(0, 2) }
+
+      if (mentzTiles.length === 4 && jantou.length !== 0) {
+        isWin = true
+        break
+      } else {
+        this.tiles = myTilesCopy2.slice()
+        mentzTiles = mentzTilesCopy.slice()
+        jantou = []
       }
     }
-    console.log('remained tiles ', this.tiles)
-    if (this.tiles.length === 2 && this.tiles[0].isEqual(this.tiles[1])) { isWin = true }
-    
-    console.log('mentz tiles ', mentzTiles)
 
     // 元の牌姿に戻す
     this.tiles = myTilesCopy
