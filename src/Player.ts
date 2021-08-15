@@ -11,7 +11,7 @@ export class Player {
     this.tiles = []
   }
 
-  organizeTile() {
+  organizeTile(): void {
     const pinzuTiles: Tile[] = []
     const souzuTiles: Tile[] = []
     const manzuTiles: Tile[] = []
@@ -56,7 +56,7 @@ export class Player {
       whiteTiles, greenTiles, redTiles)
   }
 
-  extractShuntz(firstIdx: number, secondIdx?: number) {
+  extractShuntz(firstIdx: number, secondIdx?: number): Tile[] {
     let mentz: Tile[] = []
     if (firstIdx >= this.tiles.length || firstIdx <= -1) { return mentz }
     if (!this.tiles[firstIdx].isPinzu()) { return mentz }
@@ -86,7 +86,7 @@ export class Player {
     return mentz
   }
 
-  judgeHands() {
+  judgeHands(): boolean {
     const myTilesCopy: Tile[] = this.tiles.slice()
     const ankoTiles: Tile[] = []
     let pinzuAnkoTiles: Tile[] = []
@@ -151,7 +151,7 @@ export class Player {
     return isWin
   }
 
-  judgeChiitoi() {
+  judgeChiitoi(): boolean {
     let toitzNum = 0
     for (let i = 0; i < this.tiles.length - 1; i++) {
       if (i % 2 === 0 && this.tiles[i].isEqual(this.tiles[i+1])) { toitzNum++ }
@@ -159,7 +159,7 @@ export class Player {
     return toitzNum === 7
   }
 
-  judgeKokushi() {
+  judgeKokushi(): boolean {
     let toitzNum = 0
     const alreadyFounded: Tile[] = []
     for (let i = 0; i < this.tiles.length; i++) {

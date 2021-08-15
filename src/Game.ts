@@ -12,7 +12,7 @@ export class Game {
     this.stock = []
   }
 
-  reload() {
+  reload(): void {
     this.stock = []
 
     const characters = ["east", "south", "west", "north", "white", "green", "red"]
@@ -50,6 +50,6 @@ export class Game {
     this.player2.tiles = player2Tiles
   }
 
-  draw() { return this.stock.shift() }
+  draw(): Tile | undefined { return this.stock.shift() }
 }
 
