@@ -1,4 +1,5 @@
-import { Tile, Winning } from "./Tile"
+import { Tile } from "./Tile"
+import { Winning } from "./Winning"
 
 export class Player {
   name: string
@@ -183,7 +184,7 @@ export class Player {
       if (this.tiles.length === 2 && this.tiles[0].isEqual(this.tiles[1])) { jantou = this.tiles.splice(0, 2) }
 
       if (mentzTiles.length === 4 && jantou.length !== 0) {
-        winnings.push({ mentz: mentzTiles, jantou: jantou, chiitoi: [], kokushi: [] })
+        winnings.push(new Winning(mentzTiles, jantou, [], []))
       }
       this.tiles = myTilesCopy2.slice()
       mentzTiles = mentzTilesCopy.slice()
@@ -205,7 +206,7 @@ export class Player {
         chiitoi.push([this.tiles[i], this.tiles[i+1]])
       }
     }
-    if (toitzNum === 7) { return { mentz: [], jantou: [], chiitoi, kokushi: [] } }
+    if (toitzNum === 7) { return new Winning([], [], chiitoi, []) }
   }
 
   judgeKokushi(): Winning | undefined {
@@ -219,7 +220,7 @@ export class Player {
     }
 
     if (alreadyFounded.length === 13 && toitzNum === 1) {
-      return { mentz: [], jantou: [], chiitoi: [], kokushi: this.tiles }
+      return new Winning([], [], [], this.tiles)
     }
   }
 }

@@ -25,10 +25,3 @@ export class Tile {
     return new Tile(this.kind, this.number, this.character)
   }
 }
-
-export type Winning =  {
-  mentz: Tile[][]
-  jantou: Tile[]
-  chiitoi: Tile[][]
-  kokushi: Tile[]
-}

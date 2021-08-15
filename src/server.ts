@@ -1,9 +1,10 @@
 import { createServer } from "http"
 import { Server, Socket } from "socket.io"
+import express from "express"
 import { Game } from "./Game"
 import { Player } from "./Player"
-import { Tile, Winning } from "./Tile"
-import express from "express"
+import { Tile } from "./Tile"
+import { Winning } from "./Winning"
 
 const app: express.Express = express();
 const server = createServer(app);
