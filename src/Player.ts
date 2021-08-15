@@ -97,6 +97,12 @@ export class Player {
 
     this.organizeTile()
 
+    // 七対子判定
+    if (this.judgeChiitoi()) {
+      this.tiles = myTilesCopy
+      return true
+    }
+
     for (let i = 0; i < this.tiles.length; i++) {
       if (prevTile.isEqual(this.tiles[i])) {
         dupCount++;
@@ -137,5 +143,13 @@ export class Player {
     this.tiles = myTilesCopy
 
     return isWin
+  }
+
+  judgeChiitoi() {
+    let toitzNum = 0
+    for (let i = 0; i < this.tiles.length - 1; i++) {
+      if (i % 2 === 0 && this.tiles[i].isEqual(this.tiles[i+1])) { toitzNum++ }
+    }
+    return toitzNum === 7
   }
 }
