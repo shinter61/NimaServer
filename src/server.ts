@@ -2,7 +2,7 @@ import { createServer } from "http"
 import { Server, Socket } from "socket.io"
 import { Game } from "./Game"
 import { Player } from "./Player"
-import { Tile } from "./Tile"
+import { Tile, Winning } from "./Tile"
 import express from "express"
 
 const app: express.Express = express();
@@ -90,22 +90,41 @@ io.sockets.on('connection', function(socket: Socket) {
     if (tile === undefined) { return }
     if (game.player1.name == playerID) {
       game.player1.tiles.push(tile)
-      const isWin = game.player1.judgeHands()
+      const winnings: Winning[]  = game.player1.judgeHands()
       io.sockets.emit('Draw', {
         id: playerID,
         tiles: JSON.stringify(game.player1.tiles), 
         stockCount: String(game.stock.length),
-        isWin: isWin.toString()
+        isWin: (winnings.length !== 0).toString()
       })
     }
     else if (game.player2.name == playerID) {
       game.player2.tiles.push(tile)
-      const isWin = game.player2.judgeHands()
+      const winnings: Winning[] = game.player2.judgeHands()
       io.sockets.emit('Draw', {
         id: playerID,
         tiles: JSON.stringify(game.player2.tiles), 
         stockCount: String(game.stock.length),
-        isWin: isWin.toString()
+        isWin: (winnings.length !== 0).toString()
+      })
+    }
+  })
+
+  socket.on('Win', function(playerID: string) {
+    const hands = ["平和", "立直", "混一色", "ドラ"]
+    if (game.player1.name === playerID) {
+      io.sockets.emit('Win', {
+        id: playerID,
+        hands: JSON.stringify(hands), 
+        score: String(18000),
+        scoreName: "跳満"
+      })
+    } else if (game.player2.name === playerID) {
+      io.sockets.emit('Win', {
+        id: playerID,
+        hands: JSON.stringify(hands), 
+        score: String(18000),
+        scoreName: "跳満"
       })
     }
   })

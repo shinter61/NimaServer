@@ -1,4 +1,4 @@
-import { Tile } from "./Tile"
+import { Tile, Winning } from "./Tile"
 
 export class Player {
   name: string
@@ -86,27 +86,29 @@ export class Player {
     return mentz
   }
 
-  judgeHands(): boolean {
+  judgeHands(): Winning[] {
     const myTilesCopy: Tile[] = this.tiles.slice()
     const ankoTiles: Tile[] = []
     const pinzuAnkoTiles: Tile[] = []
     let mentzTiles: Tile[][] = []
     let dupCount = 0
     let prevTile: Tile = new Tile("", 0, ""), jantou: Tile[] = []
-    let isWin = false
+    const winnings: Winning[] = []
 
     this.organizeTile()
 
     // 七対子判定
-    if (this.judgeChiitoi()) {
+    const chiitoi = this.judgeChiitoi()
+    if (chiitoi !== undefined) {
       this.tiles = myTilesCopy
-      return true
+      winnings.push(chiitoi)
     }
 
     // 国士判定
-    if (this.judgeKokushi()) {
+    const kokushi = this.judgeKokushi()
+    if (kokushi !== undefined) {
       this.tiles = myTilesCopy
-      return true
+      return [kokushi]
     }
 
     for (let i = 0; i < this.tiles.length; i++) {
@@ -181,30 +183,32 @@ export class Player {
       if (this.tiles.length === 2 && this.tiles[0].isEqual(this.tiles[1])) { jantou = this.tiles.splice(0, 2) }
 
       if (mentzTiles.length === 4 && jantou.length !== 0) {
-        isWin = true
-        break
-      } else {
-        this.tiles = myTilesCopy2.slice()
-        mentzTiles = mentzTilesCopy.slice()
-        jantou = []
+        winnings.push({ mentz: mentzTiles, jantou: jantou, chiitoi: [], kokushi: [] })
       }
+      this.tiles = myTilesCopy2.slice()
+      mentzTiles = mentzTilesCopy.slice()
+      jantou = []
     }
 
     // 元の牌姿に戻す
     this.tiles = myTilesCopy
 
-    return isWin
+    return winnings
   }
 
-  judgeChiitoi(): boolean {
+  judgeChiitoi(): Winning | undefined {
     let toitzNum = 0
+    const chiitoi: Tile[][] = []
     for (let i = 0; i < this.tiles.length - 1; i++) {
-      if (i % 2 === 0 && this.tiles[i].isEqual(this.tiles[i+1])) { toitzNum++ }
+      if (i % 2 === 0 && this.tiles[i].isEqual(this.tiles[i+1])) {
+        toitzNum++
+        chiitoi.push([this.tiles[i], this.tiles[i+1]])
+      }
     }
-    return toitzNum === 7
+    if (toitzNum === 7) { return { mentz: [], jantou: [], chiitoi, kokushi: [] } }
   }
 
-  judgeKokushi(): boolean {
+  judgeKokushi(): Winning | undefined {
     let toitzNum = 0
     const alreadyFounded: Tile[] = []
     for (let i = 0; i < this.tiles.length; i++) {
@@ -214,6 +218,8 @@ export class Player {
       }
     }
 
-    return alreadyFounded.length === 13 && toitzNum === 1
+    if (alreadyFounded.length === 13 && toitzNum === 1) {
+      return { mentz: [], jantou: [], chiitoi: [], kokushi: this.tiles }
+    }
   }
 }
