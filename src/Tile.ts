@@ -17,6 +17,10 @@ export class Tile {
     return this.kind === "pin"
   }
 
+  isYaochu() {
+    return this.character !== "" || this.number === 1 || this.number === 9
+  }
+
   copy() {
     return new Tile(this.kind, this.number, this.character)
   }

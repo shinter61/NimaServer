@@ -103,6 +103,12 @@ export class Player {
       return true
     }
 
+    // 国士判定
+    if (this.judgeKokushi()) {
+      this.tiles = myTilesCopy
+      return true
+    }
+
     for (let i = 0; i < this.tiles.length; i++) {
       if (prevTile.isEqual(this.tiles[i])) {
         dupCount++;
@@ -151,5 +157,18 @@ export class Player {
       if (i % 2 === 0 && this.tiles[i].isEqual(this.tiles[i+1])) { toitzNum++ }
     }
     return toitzNum === 7
+  }
+
+  judgeKokushi() {
+    let toitzNum = 0
+    const alreadyFounded: Tile[] = []
+    for (let i = 0; i < this.tiles.length; i++) {
+      if (i != this.tiles.length - 1 && this.tiles[i].isEqual(this.tiles[i+1])) { toitzNum++ }
+      if (this.tiles[i].isYaochu() && alreadyFounded.find(tile => tile.isEqual(this.tiles[i])) === undefined) {
+        alreadyFounded.push(this.tiles[i])
+      }
+    }
+
+    return alreadyFounded.length === 13 && toitzNum === 1
   }
 }
