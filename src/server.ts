@@ -91,8 +91,17 @@ io.sockets.on('connection', function(socket: Socket) {
   })
 
   socket.on('Win', function(playerID: string) {
-    const hands = ["平和", "立直", "混一色", "ドラ"]
+    let hands: string[] = []
+    let maxHan = 0
     const player = game.player1.name === playerID ? game.player1 : game.player2
+    const winnings: Winning[]  = player.judgeHands()
+    for (let i = 0; i < winnings.length; i++) {
+      const tmpHan = winnings[i].judgeHands()
+      if (tmpHan > maxHan) {
+        hands = winnings[i].hands.map(hand => hand.name)
+        maxHan = tmpHan
+      }
+    }
     io.sockets.emit('Win', {
       id: playerID,
       hands: JSON.stringify(hands), 
