@@ -91,7 +91,8 @@ export class Player {
     const myTilesCopy: Tile[] = this.tiles.slice()
     const ankoTiles: Tile[] = []
     const pinzuAnkoTiles: Tile[] = []
-    let mentzTiles: Tile[][] = []
+    let kotzTiles: Tile[][] = []
+    let shuntzTiles: Tile[][] = []
     let dupCount = 0
     let prevTile: Tile = new Tile("", 0, ""), jantou: Tile[] = []
     const winnings: Winning[] = []
@@ -129,7 +130,7 @@ export class Player {
       } else {
         const index = this.tiles.findIndex(tile => tile.isEqual(ankoTiles[i]))
         const mentz: Tile[] = this.tiles.splice(index, 3)
-        mentzTiles.push(mentz)
+        kotzTiles.push(mentz)
       }
     }
 
@@ -151,7 +152,7 @@ export class Player {
 
     // 探索前に各値を、リセット用にコピー
     const myTilesCopy2 = this.tiles.slice()
-    const mentzTilesCopy = mentzTiles.slice()
+    const kotzTilesCopy = kotzTiles.slice()
 
     // 全パターン探索
     for (let i = 0; i < patterns.length; i++) {
@@ -160,7 +161,7 @@ export class Player {
           // 「刻子として抜き出す（3）」
           const index = this.tiles.findIndex(tile => tile.isEqual(pinzuAnkoTiles[j]))
           const mentz: Tile[] = this.tiles.splice(index, 3)
-          mentzTiles.push(mentz)
+          kotzTiles.push(mentz)
         } else if (patterns[i][j] === 1) {
           // 「雀頭＋１牌とする(2,1)」
           const index = this.tiles.findIndex(tile => tile.isEqual(pinzuAnkoTiles[j]))
@@ -175,7 +176,7 @@ export class Player {
       for (let i = 0; i < this.tiles.length; i++) {
         const shuntz: Tile[] = this.extractShuntz(i)
         if (shuntz.length !== 0) {
-          mentzTiles.push(shuntz)
+          shuntzTiles.push(shuntz)
           i -= 3
         }
       }
@@ -183,11 +184,12 @@ export class Player {
       // 雀頭がない場合、雀頭を登録
       if (this.tiles.length === 2 && this.tiles[0].isEqual(this.tiles[1])) { jantou = this.tiles.splice(0, 2) }
 
-      if (mentzTiles.length === 4 && jantou.length !== 0) {
-        winnings.push(new Winning(mentzTiles, jantou, [], []))
+      if ((shuntzTiles.length + kotzTiles.length) === 4 && jantou.length !== 0) {
+        winnings.push(new Winning(kotzTiles, shuntzTiles, jantou, [], []))
       }
       this.tiles = myTilesCopy2.slice()
-      mentzTiles = mentzTilesCopy.slice()
+      kotzTiles = kotzTilesCopy.slice()
+      shuntzTiles = []
       jantou = []
     }
 
@@ -206,7 +208,7 @@ export class Player {
         chiitoi.push([this.tiles[i], this.tiles[i+1]])
       }
     }
-    if (toitzNum === 7) { return new Winning([], [], chiitoi, []) }
+    if (toitzNum === 7) { return new Winning([], [], [], chiitoi, []) }
   }
 
   judgeKokushi(): Winning | undefined {
@@ -220,7 +222,7 @@ export class Player {
     }
 
     if (alreadyFounded.length === 13 && toitzNum === 1) {
-      return new Winning([], [], [], this.tiles)
+      return new Winning([], [], [], [], this.tiles)
     }
   }
 }
