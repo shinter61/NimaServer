@@ -21,6 +21,14 @@ export class Tile {
     return this.character !== "" || this.number === 1 || this.number === 9
   }
 
+  is19(): boolean {
+    return this.number === 1 || this.number === 9
+  }
+
+  name(): string {
+    return String(this.number) + this.kind + this.character
+  }
+
   copy(): Tile {
     return new Tile(this.kind, this.number, this.character)
   }
