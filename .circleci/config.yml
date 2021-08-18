@@ -1,0 +1,14 @@
+version: 2.1
+
+jobs:
+  test:
+    docker:
+      - image: circleci/node:14
+    steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: npm i
+      - run:
+          name: jest
+          command: npm run test
