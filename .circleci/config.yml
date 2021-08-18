@@ -12,3 +12,9 @@ jobs:
       - run:
           name: jest
           command: npm run test
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - test
