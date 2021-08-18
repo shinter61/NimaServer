@@ -255,7 +255,7 @@ export class Winning {
     let ipekoCount = 0
 
     for (let i = 0; i < shuntzCopy.length; i++) {
-      for (let j = 0; j < shuntzCopy.length; j++) {
+      for (let j = i; j < shuntzCopy.length; j++) {
         if (i === j) { continue }
         if (shuntzCopy[i][0].isEqual(shuntzCopy[j][0])) {
           ipekoCount++
@@ -313,7 +313,7 @@ export class Winning {
   judgeShosushi(): void {
     if (this.kotz.length < 3) { return }
     const winds: string[] = ["east", "south", "west", "north"]
-    for (let i = 0; i < winds.length; i++) {
+    for (let i = 0; i < this.kotz.length; i++) {
       if (winds.includes(this.kotz[i][0].character)) {
         const index = winds.findIndex(wind => wind === this.kotz[i][0].character)
         if (index !== -1) { winds.splice(index, 1) }
@@ -325,7 +325,7 @@ export class Winning {
   judgeDaisushi(): void {
     if (this.kotz.length < 4) { return }
     const winds: string[] = ["east", "south", "west", "north"]
-    for (let i = 0; i < winds.length; i++) {
+    for (let i = 0; i < this.kotz.length; i++) {
       if (winds.includes(this.kotz[i][0].character)) {
         const index = winds.findIndex(wind => wind === this.kotz[i][0].character)
         if (index !== -1) { winds.splice(index, 1) }
