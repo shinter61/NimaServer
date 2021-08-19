@@ -36,6 +36,10 @@ export class Winning {
     }
   }
 
+  isMenzen(): boolean {
+    return this.minkos.length === 0
+  }
+
   judgeHands(): number {
     // 1飜役
     this.judgeRiichi()
@@ -100,6 +104,7 @@ export class Winning {
 
   // 要改善：門前の条件 & 雀頭が風牌でないこと
   judgePinfu(): void {
+    if (!this.isMenzen()) { return }
     let isRyanmen = false
     for (let i = 0; i < this.shuntz.length; i++) {
       if (this.shuntz[i][0].isEqual(this.draw) || this.shuntz[i][2].isEqual(this.draw)) { isRyanmen = true }
@@ -114,8 +119,8 @@ export class Winning {
     if (flattenTiles.every(tile => !tile.isYaochu())) { this.hands.push({ name: "断么九", han: 1 }) }
   }
 
-  // 要改善：門前の条件
   judgeIpeko(): void {
+    if (!this.isMenzen()) { return }
     if (this.shuntz.length <= 1) { return }
     const combiArr = [...Array(this.shuntz.length).keys()].map(el => el + 1)
     combiArr.pop()
@@ -137,6 +142,11 @@ export class Winning {
       if (this.kotz[i][0].character === "white") { this.hands.push({ name: "役牌: 白", han: 1 })  }
       if (this.kotz[i][0].character === "green") { this.hands.push({ name: "役牌: 發", han: 1 })  }
       if (this.kotz[i][0].character === "red") { this.hands.push({ name: "役牌: 中", han: 1 })  }
+    }
+    for (let i = 0; i < this.minkos.length; i++) {
+      if (this.minkos[i][0].character === "white") { this.hands.push({ name: "役牌: 白", han: 1 })  }
+      if (this.minkos[i][0].character === "green") { this.hands.push({ name: "役牌: 發", han: 1 })  }
+      if (this.minkos[i][0].character === "red") { this.hands.push({ name: "役牌: 中", han: 1 })  }
     }
   }
 
@@ -168,7 +178,6 @@ export class Winning {
     // if (false) { this.hands.push({ name: "ダブル立直", han: 2 }) }
   }
 
-  // 要改善：食い下がり１飜の実装
   judgeChanta(): void {
     if (this.chiitoi.length !== 0 || this.kokushi.length !== 0) { return }
 
@@ -179,9 +188,12 @@ export class Winning {
     for (let i = 0; i < this.kotz.length; i++) {
       if (!this.kotz[i][0].isYaochu()) { isChanta = false }
     }
+    for (let i = 0; i < this.minkos.length; i++) {
+      if (!this.minkos[i][0].isYaochu()) { isChanta = false }
+    }
     if (!this.jantou[0].isYaochu()) { isChanta = false }
 
-    if (isChanta) { this.hands.push({ name: "混全帯么九", han: 2 }) }
+    if (isChanta) { this.hands.push({ name: "混全帯么九", han: this.isMenzen() ? 2 : 1 }) }
   }
 
   judgeHonroto(): void {
@@ -190,10 +202,10 @@ export class Winning {
     for (let i = 0; i < flattenTiles.length; i++) {
       if (!flattenTiles[i].isYaochu()) { isHonroto = false }
     }
+    if (!this.jantou[0].isYaochu()) { isHonroto = false }
     if (isHonroto) { this.hands.push({ name: "混老頭", han: 2 }) }
   }
 
-  // 要改善：食い下がり１飜の実装
   judgeIttsu(): void {
     const testArr = [false, false, false]
     for (let i = 0; i < this.shuntz.length; i++) {
@@ -201,11 +213,11 @@ export class Winning {
       if (this.shuntz[i][0].isEqual(new Tile("pin", 4, ""))) { testArr[1] = true }
       if (this.shuntz[i][0].isEqual(new Tile("pin", 7, ""))) { testArr[2] = true }
     }
-    if (testArr.every(el => el)) { this.hands.push({ name: "一気通貫", han: 2 }) }
+    if (testArr.every(el => el)) { this.hands.push({ name: "一気通貫", han: this.isMenzen() ? 2 : 1 }) }
   }
 
   judgeToiToi(): void {
-    if (this.kotz.length === 4) { this.hands.push({ name: "対々和", han: 2 }) }
+    if (this.kotz.length + this.minkos.length === 4) { this.hands.push({ name: "対々和", han: 2 }) }
   }
 
   judgeSansyoku(): void {
@@ -218,6 +230,14 @@ export class Winning {
       if (this.kotz[i][0].isEqual(new Tile("pin", 9, ""))) { nineArr[0] = true }
       if (this.kotz[i][0].isEqual(new Tile("sou", 9, ""))) { nineArr[1] = true }
       if (this.kotz[i][0].isEqual(new Tile("man", 9, ""))) { nineArr[2] = true }
+    }
+    for (let i = 0; i < this.minkos.length; i++) {
+      if (this.minkos[i][0].isEqual(new Tile("pin", 1, ""))) { oneArr[0] = true }
+      if (this.minkos[i][0].isEqual(new Tile("sou", 1, ""))) { oneArr[1] = true }
+      if (this.minkos[i][0].isEqual(new Tile("man", 1, ""))) { oneArr[2] = true }
+      if (this.minkos[i][0].isEqual(new Tile("pin", 9, ""))) { nineArr[0] = true }
+      if (this.minkos[i][0].isEqual(new Tile("sou", 9, ""))) { nineArr[1] = true }
+      if (this.minkos[i][0].isEqual(new Tile("man", 9, ""))) { nineArr[2] = true }
     }
 
     if (oneArr.every(el => el) || nineArr.every(el => el)) { this.hands.push({ name: "三色同刻", han: 2 }) }
@@ -240,6 +260,9 @@ export class Winning {
     for (let i = 0; i < this.kotz.length; i++) {
       if (["white", "green", "red"].includes(this.kotz[i][0].character)) { kotzNum++ }
     }
+    for (let i = 0; i < this.minkos.length; i++) {
+      if (["white", "green", "red"].includes(this.minkos[i][0].character)) { kotzNum++ }
+    }
     if (kotzNum === 2) { this.hands.push({ name: "小三元", han: 2 }) }
   }
 
@@ -249,11 +272,12 @@ export class Winning {
     const uniqKindArr = Array.from(new Set(kindArr))
 
     if (uniqKindArr.length === 2 && uniqKindArr.includes("")) {
-      this.hands.push({ name: "混一色", han: 3 })
+      this.hands.push({ name: "混一色", han: this.isMenzen() ? 3 : 2 })
     }
   }
 
   judgeRyanpeko(): void {
+    if (!this.isMenzen()) { return }
     if (this.shuntz.length !== 4) { return }
     const shuntzCopy: Tile[][] = this.shuntz.slice()
     let ipekoCount = 0
@@ -283,9 +307,12 @@ export class Winning {
     for (let i = 0; i < this.kotz.length; i++) {
       if (!this.kotz[i][0].is19()) { isJunchan = false }
     }
+    for (let i = 0; i < this.minkos.length; i++) {
+      if (!this.minkos[i][0].is19()) { isJunchan = false }
+    }
     if (!this.jantou[0].is19()) { isJunchan = false }
 
-    if (isJunchan) { this.hands.push({ name: "純全帯么九", han: 3 }) }
+    if (isJunchan) { this.hands.push({ name: "純全帯么九", han: this.isMenzen() ? 3 : 2 }) }
   }
 
   judgeChinitsu(): void {
@@ -294,7 +321,7 @@ export class Winning {
     const uniqKindArr = Array.from(new Set(kindArr))
 
     if (uniqKindArr.length === 1 && uniqKindArr[0] === "pin") {
-      this.hands.push({ name: "清一色", han: 6 })
+      this.hands.push({ name: "清一色", han: this.isMenzen() ? 6 : 5 })
     }
   }
 
@@ -311,11 +338,14 @@ export class Winning {
     for (let i = 0; i < this.kotz.length; i++) {
       if (["white", "green", "red"].includes(this.kotz[i][0].character)) { kotzNum++ }
     }
+    for (let i = 0; i < this.minkos.length; i++) {
+      if (["white", "green", "red"].includes(this.minkos[i][0].character)) { kotzNum++ }
+    }
     if (kotzNum === 3) { this.hands.push({ name: "大三元", han: 100 }) }
   }
 
   judgeShosushi(): void {
-    if (this.kotz.length < 3) { return }
+    if (this.kotz.length + this.minkos.length < 3) { return }
     const winds: string[] = ["east", "south", "west", "north"]
     for (let i = 0; i < this.kotz.length; i++) {
       if (winds.includes(this.kotz[i][0].character)) {
@@ -323,15 +353,27 @@ export class Winning {
         if (index !== -1) { winds.splice(index, 1) }
       }
     }
+    for (let i = 0; i < this.minkos.length; i++) {
+      if (winds.includes(this.minkos[i][0].character)) {
+        const index = winds.findIndex(wind => wind === this.minkos[i][0].character)
+        if (index !== -1) { winds.splice(index, 1) }
+      }
+    }
     if (winds.length === 1 && winds[0] === this.jantou[0].character) { this.hands.push({ name: "小四喜", han: 100 }) }
   }
 
   judgeDaisushi(): void {
-    if (this.kotz.length < 4) { return }
+    if (this.kotz.length + this.minkos.length < 4) { return }
     const winds: string[] = ["east", "south", "west", "north"]
     for (let i = 0; i < this.kotz.length; i++) {
       if (winds.includes(this.kotz[i][0].character)) {
         const index = winds.findIndex(wind => wind === this.kotz[i][0].character)
+        if (index !== -1) { winds.splice(index, 1) }
+      }
+    }
+    for (let i = 0; i < this.minkos.length; i++) {
+      if (winds.includes(this.minkos[i][0].character)) {
+        const index = winds.findIndex(wind => wind === this.minkos[i][0].character)
         if (index !== -1) { winds.splice(index, 1) }
       }
     }
@@ -343,11 +385,15 @@ export class Winning {
   }
 
   judgeChinroto(): void {
-    if (this.kotz.length !== 4) { return }
+    if (this.kotz.length + this.minkos.length !== 4) { return }
     let isChinroto = true 
     for (let i = 0; i < this.kotz.length; i++) {
       if (!this.kotz[i][0].is19()) { isChinroto = false }
     }
+    for (let i = 0; i < this.minkos.length; i++) {
+      if (!this.minkos[i][0].is19()) { isChinroto = false }
+    }
+    if (!this.jantou[0].is19()) { isChinroto = false }
     if (isChinroto) { this.hands.push({ name: "清老頭", han: 100 }) }
   }
 
@@ -376,6 +422,7 @@ export class Winning {
   }
 
   judgeChuren(): void {
+    if (!this.isMenzen()) { return }
     const flattenTiles = this.flatten()
     const churenTiles = [
       new Tile("pin", 1, ""),
