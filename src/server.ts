@@ -102,6 +102,29 @@ io.sockets.on('connection', function(socket: Socket) {
     game.player1.name === playerID ? game.player1 = player : game.player2 = player
   })
 
+  socket.on('Pon', function(playerID: string) {
+    const player = game.player1.name === playerID ? game.player1 : game.player2
+    const opponent = game.player1.name !== playerID ? game.player1 : game.player2
+
+    const target: Tile = opponent.discards[opponent.discards.length - 1]
+    // 手牌から対子削除
+    for (let i = 0; i < 2; i++) {
+      const index = player.tiles.findIndex(tile => tile.isEqual(target))
+      player.tiles.splice(index, 1)
+    }
+    opponent.discards.pop() // 相手の捨て牌からポンされた牌を削除
+    player.minkos.push([target, target, target]) // 明刻追加
+    io.sockets.emit('Pon', {
+      id: playerID,
+      tiles: JSON.stringify(player.tiles),
+      minkos: JSON.stringify(player.minkos.map(minko => minko[0])),
+      discards: JSON.stringify(opponent.discards)
+    })
+
+    game.player1.name === playerID ? game.player1 = player : game.player2 = player
+    game.player1.name !== playerID ? game.player1 = opponent : game.player2 = opponent 
+  })
+
   socket.on('Win', function(playerID: string, type: string) {
     let hands: string[] = []
     let maxHan = 0

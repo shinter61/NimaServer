@@ -7,6 +7,7 @@ type Hand = {
 
 export class Winning {
   kotz: Tile[][]
+  minkos: Tile[][]
   shuntz: Tile[][]
   jantou: Tile[]
   chiitoi: Tile[][]
@@ -14,8 +15,9 @@ export class Winning {
   draw: Tile
   hands: Hand[]
 
-  constructor(kotz: Tile[][], shuntz: Tile[][], jantou: Tile[], chiitoi: Tile[][], kokushi: Tile[], draw: Tile) {
+  constructor(kotz: Tile[][], minkos: Tile[][], shuntz: Tile[][], jantou: Tile[], chiitoi: Tile[][], kokushi: Tile[], draw: Tile) {
     this.kotz = kotz
+    this.minkos = minkos
     this.shuntz = shuntz
     this.jantou = jantou
     this.chiitoi = chiitoi
@@ -30,7 +32,7 @@ export class Winning {
     } else if (this.kokushi.length !== 0) {
       return this.kokushi
     } else {
-      return [this.jantou, this.shuntz, this.kotz].flat(3)
+      return [this.jantou, this.shuntz, this.kotz, this.minkos].flat(3)
     }
   }
 

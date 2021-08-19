@@ -5,11 +5,13 @@ export class Player {
   name: string
   discards: Tile[]
   tiles: Tile[]
+  minkos: Tile[][]
 
   constructor() {
     this.name = ""
     this.discards = []
     this.tiles = []
+    this.minkos = []
   }
 
   organizeTile(): void {
@@ -186,8 +188,8 @@ export class Player {
       // 雀頭がない場合、雀頭を登録
       if (this.tiles.length === 2 && this.tiles[0].isEqual(this.tiles[1])) { jantou = this.tiles.splice(0, 2) }
 
-      if ((shuntzTiles.length + kotzTiles.length) === 4 && jantou.length !== 0) {
-        winnings.push(new Winning(kotzTiles, shuntzTiles, jantou, [], [], winTile))
+      if ((shuntzTiles.length + kotzTiles.length + this.minkos.length) === 4 && jantou.length !== 0) {
+        winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, jantou, [], [], winTile))
       }
       this.tiles = myTilesCopy2.slice()
       kotzTiles = kotzTilesCopy.slice()
@@ -210,7 +212,7 @@ export class Player {
         chiitoi.push([this.tiles[i], this.tiles[i+1]])
       }
     }
-    if (toitzNum === 7) { return new Winning([], [], [], chiitoi, [], drawTile) }
+    if (toitzNum === 7) { return new Winning([], [], [], [], chiitoi, [], drawTile) }
   }
 
   judgeKokushi(drawTile: Tile): Winning | undefined {
@@ -224,7 +226,7 @@ export class Player {
     }
 
     if (alreadyFounded.length === 13 && toitzNum === 1) {
-      return new Winning([], [], [], [], this.tiles, drawTile)
+      return new Winning([], [], [], [], [], this.tiles, drawTile)
     }
   }
 }
