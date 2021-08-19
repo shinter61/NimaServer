@@ -3,7 +3,7 @@ import { Server, Socket } from "socket.io"
 import express from "express"
 import { Game } from "./Game"
 import { Player } from "./Player"
-import { Tile } from "./Tile"
+import { Tile, allTiles } from "./Tile"
 import { Winning } from "./Winning"
 
 const app: express.Express = express();
@@ -67,10 +67,23 @@ io.sockets.on('connection', function(socket: Socket) {
       el => el.kind == tile.kind && el.number == tile.number && el.character == tile.character
     ), 1)
     player.organizeTile()
+
+    // 聴牌時の待ち牌を知らせる
+    const waitTiles: Tile[] = []
+    for (let i = 0; i < allTiles.length; i++) {
+      const tilesCopy: Tile[] = []
+      for (let i = 0; i < player.tiles.length; i++) { tilesCopy.push(player.tiles[i].copy()) }
+      player.tiles.push(allTiles[i])
+      const winnings: Winning[]  = player.judgeHands()
+      if (winnings.length !== 0) { waitTiles.push(allTiles[i]) }
+      player.tiles = tilesCopy
+    }
+
     io.sockets.emit('InformDiscards', {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
-      discards: JSON.stringify(player.discards)
+      discards: JSON.stringify(player.discards),
+      waits: JSON.stringify(waitTiles)
     })
     game.player1.name === playerID ? game.player1 = player : game.player2 = player
   })
