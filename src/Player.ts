@@ -87,7 +87,7 @@ export class Player {
     return mentz
   }
 
-  judgeHands(): Winning[] {
+  judgeHands(winTile: Tile, type: string): Winning[] {
     const myTilesCopy: Tile[] = this.tiles.slice()
     const ankoTiles: Tile[] = []
     const pinzuAnkoTiles: Tile[] = []
@@ -96,19 +96,20 @@ export class Player {
     let dupCount = 0
     let prevTile: Tile = new Tile("", 0, ""), jantou: Tile[] = []
     const winnings: Winning[] = []
-    const drawTile: Tile = this.tiles[this.tiles.length - 1]
+
+    if (type === "ron") { this.tiles.push(winTile) }
 
     this.organizeTile()
 
     // 七対子判定
-    const chiitoi = this.judgeChiitoi(drawTile)
+    const chiitoi = this.judgeChiitoi(winTile)
     if (chiitoi !== undefined) {
       this.tiles = myTilesCopy
       winnings.push(chiitoi)
     }
 
     // 国士判定
-    const kokushi = this.judgeKokushi(drawTile)
+    const kokushi = this.judgeKokushi(winTile)
     if (kokushi !== undefined) {
       this.tiles = myTilesCopy
       return [kokushi]
@@ -186,7 +187,7 @@ export class Player {
       if (this.tiles.length === 2 && this.tiles[0].isEqual(this.tiles[1])) { jantou = this.tiles.splice(0, 2) }
 
       if ((shuntzTiles.length + kotzTiles.length) === 4 && jantou.length !== 0) {
-        winnings.push(new Winning(kotzTiles, shuntzTiles, jantou, [], [], drawTile))
+        winnings.push(new Winning(kotzTiles, shuntzTiles, jantou, [], [], winTile))
       }
       this.tiles = myTilesCopy2.slice()
       kotzTiles = kotzTilesCopy.slice()
@@ -216,7 +217,7 @@ export class Player {
     let toitzNum = 0
     const alreadyFounded: Tile[] = []
     for (let i = 0; i < this.tiles.length; i++) {
-      if (i != this.tiles.length - 1 && this.tiles[i].isEqual(this.tiles[i+1])) { toitzNum++ }
+      if (i !== this.tiles.length - 1 && this.tiles[i].isEqual(this.tiles[i+1])) { toitzNum++ }
       if (this.tiles[i].isYaochu() && alreadyFounded.find(tile => tile.isEqual(this.tiles[i])) === undefined) {
         alreadyFounded.push(this.tiles[i])
       }

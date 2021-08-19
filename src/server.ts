@@ -60,12 +60,11 @@ io.sockets.on('connection', function(socket: Socket) {
   })
 
   socket.on('Discard', function(playerID: string, tiles: string) {
-    const tile = (JSON.parse(tiles) as Tile[])[0]
+    const tileObj = (JSON.parse(tiles) as Tile[])[0]
+    const discardTile = new Tile(tileObj.kind, tileObj.number, tileObj.character)
     const player = game.player1.name === playerID ? game.player1 : game.player2
-    player.discards.push(tile)
-    player.tiles.splice(player.tiles.findIndex(
-      el => el.kind == tile.kind && el.number == tile.number && el.character == tile.character
-    ), 1)
+    player.discards.push(discardTile)
+    player.tiles.splice(player.tiles.findIndex(el => el.isEqual(discardTile)), 1)
     player.organizeTile()
 
     // 聴牌時の待ち牌を知らせる
@@ -74,7 +73,7 @@ io.sockets.on('connection', function(socket: Socket) {
       const tilesCopy: Tile[] = []
       for (let i = 0; i < player.tiles.length; i++) { tilesCopy.push(player.tiles[i].copy()) }
       player.tiles.push(allTiles[i])
-      const winnings: Winning[]  = player.judgeHands()
+      const winnings: Winning[]  = player.judgeHands(allTiles[i], "draw")
       if (winnings.length !== 0) { waitTiles.push(allTiles[i]) }
       player.tiles = tilesCopy
     }
@@ -93,7 +92,7 @@ io.sockets.on('connection', function(socket: Socket) {
     if (tile === undefined) { return }
     const player = game.player1.name === playerID ? game.player1 : game.player2
     player.tiles.push(tile)
-    const winnings: Winning[]  = player.judgeHands()
+    const winnings: Winning[]  = player.judgeHands(tile, "draw")
     io.sockets.emit('Draw', {
       id: playerID,
       tiles: JSON.stringify(player.tiles), 
@@ -103,11 +102,13 @@ io.sockets.on('connection', function(socket: Socket) {
     game.player1.name === playerID ? game.player1 = player : game.player2 = player
   })
 
-  socket.on('Win', function(playerID: string) {
+  socket.on('Win', function(playerID: string, type: string) {
     let hands: string[] = []
     let maxHan = 0
-    const player = game.player1.name === playerID ? game.player1 : game.player2
-    const winnings: Winning[]  = player.judgeHands()
+    const winner = game.player1.name === playerID ? game.player1 : game.player2
+    const loser = game.player1.name !== playerID ? game.player1 : game.player2
+    const winTile = type === "draw" ? winner.tiles[winner.tiles.length - 1] : loser.discards[loser.discards.length - 1]
+    const winnings: Winning[]  = winner.judgeHands(winTile, type)
     for (let i = 0; i < winnings.length; i++) {
       const tmpHan = winnings[i].judgeHands()
       if (tmpHan > maxHan) {
@@ -121,7 +122,7 @@ io.sockets.on('connection', function(socket: Socket) {
       score: String(18000),
       scoreName: "跳満"
     })
-    game.player1.name === playerID ? game.player1 = player : game.player2 = player
+    game.player1.name === playerID ? game.player1 = winner : game.player2 = winner 
   })
 })
 

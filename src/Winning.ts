@@ -168,6 +168,8 @@ export class Winning {
 
   // 要改善：食い下がり１飜の実装
   judgeChanta(): void {
+    if (this.chiitoi.length !== 0 || this.kokushi.length !== 0) { return }
+
     let isChanta = true
     for (let i = 0; i < this.shuntz.length; i++) {
       if (![1, 7].includes(this.shuntz[i][0].number)) { isChanta = false }
