@@ -14,8 +14,10 @@ export class Winning {
   kokushi: Tile[]
   draw: Tile
   hands: Hand[]
+  type: string
 
-  constructor(kotz: Tile[][], minkos: Tile[][], shuntz: Tile[][], jantou: Tile[], chiitoi: Tile[][], kokushi: Tile[], draw: Tile) {
+  constructor(kotz: Tile[][], minkos: Tile[][], shuntz: Tile[][], jantou: Tile[],
+              chiitoi: Tile[][], kokushi: Tile[], draw: Tile, type: string) {
     this.kotz = kotz
     this.minkos = minkos
     this.shuntz = shuntz
@@ -23,6 +25,7 @@ export class Winning {
     this.chiitoi = chiitoi
     this.kokushi = kokushi
     this.draw = draw
+    this.type = type
     this.hands = []
   }
 
@@ -99,7 +102,7 @@ export class Winning {
   }
 
   judgeTsumo(): void {
-    // if (false) { this.hands.push({ name: "門前清自摸和", han: 1 }) }
+    if (this.isMenzen() && this.type === "draw") { this.hands.push({ name: "門前清自摸和", han: 1 }) }
   }
 
   // 要改善：門前の条件 & 雀頭が風牌でないこと
@@ -244,7 +247,13 @@ export class Winning {
   }
 
   judgeSananko(): void {
-    // if (false) { this.hands.push({ name: "三暗刻", han: 2 }) }
+    if (this.kotz.length + this.minkos.length < 3) { return }
+    let ankoCount = 0
+    for (let i = 0; i < this.kotz.length; i++) {
+      if (!this.kotz[i][0].isEqual(this.draw)) { ankoCount++ }
+    }
+    if (this.type === "draw" && this.kotz.length === 3) { this.hands.push({ name: "三暗刻", han: 2 }) }
+    if (this.type === "ron" && ankoCount === 3) { this.hands.push({ name: "三暗刻", han: 2 }) }
   }
 
   judgeSankantsu(): void {
@@ -381,7 +390,13 @@ export class Winning {
   }
 
   judgeSuanko(): void {
-    // if (false) { this.hands.push({ name: "四暗刻", han: 100 }) }
+    if (this.kotz.length !== 4) { return }
+    let ankoCount = 0
+    for (let i = 0; i < this.kotz.length; i++) {
+      if (!this.kotz[i][0].isEqual(this.draw)) { ankoCount++ }
+    }
+    if (ankoCount === 4) { this.hands.push({ name: "四暗刻単騎", han: 200 }) }
+    if (this.type === "draw" && this.kotz.length === 4) { this.hands.push({ name: "四暗刻", han: 100 }) }
   }
 
   judgeChinroto(): void {

@@ -104,14 +104,14 @@ export class Player {
     this.organizeTile()
 
     // 七対子判定
-    const chiitoi = this.judgeChiitoi(winTile)
+    const chiitoi = this.judgeChiitoi(winTile, type)
     if (chiitoi !== undefined) {
       this.tiles = myTilesCopy
       winnings.push(chiitoi)
     }
 
     // 国士判定
-    const kokushi = this.judgeKokushi(winTile)
+    const kokushi = this.judgeKokushi(winTile, type)
     if (kokushi !== undefined) {
       this.tiles = myTilesCopy
       return [kokushi]
@@ -189,7 +189,7 @@ export class Player {
       if (this.tiles.length === 2 && this.tiles[0].isEqual(this.tiles[1])) { jantou = this.tiles.splice(0, 2) }
 
       if ((shuntzTiles.length + kotzTiles.length + this.minkos.length) === 4 && jantou.length !== 0) {
-        winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, jantou, [], [], winTile))
+        winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, jantou, [], [], winTile, type))
       }
       this.tiles = myTilesCopy2.slice()
       kotzTiles = kotzTilesCopy.slice()
@@ -203,7 +203,7 @@ export class Player {
     return winnings
   }
 
-  judgeChiitoi(drawTile: Tile): Winning | undefined {
+  judgeChiitoi(drawTile: Tile, type: string): Winning | undefined {
     let toitzNum = 0
     const chiitoi: Tile[][] = []
     for (let i = 0; i < this.tiles.length - 1; i++) {
@@ -212,10 +212,10 @@ export class Player {
         chiitoi.push([this.tiles[i], this.tiles[i+1]])
       }
     }
-    if (toitzNum === 7) { return new Winning([], [], [], [], chiitoi, [], drawTile) }
+    if (toitzNum === 7) { return new Winning([], [], [], [], chiitoi, [], drawTile, type) }
   }
 
-  judgeKokushi(drawTile: Tile): Winning | undefined {
+  judgeKokushi(drawTile: Tile, type: string): Winning | undefined {
     let toitzNum = 0
     const alreadyFounded: Tile[] = []
     for (let i = 0; i < this.tiles.length; i++) {
@@ -226,7 +226,7 @@ export class Player {
     }
 
     if (alreadyFounded.length === 13 && toitzNum === 1) {
-      return new Winning([], [], [], [], [], this.tiles, drawTile)
+      return new Winning([], [], [], [], [], this.tiles, drawTile, type)
     }
   }
 }
