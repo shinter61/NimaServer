@@ -15,9 +15,10 @@ export class Winning {
   draw: Tile
   hands: Hand[]
   type: string
+  riichiTurn: number
 
   constructor(kotz: Tile[][], minkos: Tile[][], shuntz: Tile[][], jantou: Tile[],
-              chiitoi: Tile[][], kokushi: Tile[], draw: Tile, type: string) {
+              chiitoi: Tile[][], kokushi: Tile[], draw: Tile, type: string, riichiTurn: number) {
     this.kotz = kotz
     this.minkos = minkos
     this.shuntz = shuntz
@@ -26,6 +27,7 @@ export class Winning {
     this.kokushi = kokushi
     this.draw = draw
     this.type = type
+    this.riichiTurn = riichiTurn
     this.hands = []
   }
 
@@ -94,7 +96,7 @@ export class Winning {
   }
 
   judgeRiichi(): void {
-    // if (false) { this.hands.push({ name: "立直", han: 1 }) }
+    if (this.riichiTurn !== -1) { this.hands.push({ name: "立直", han: 1 }) }
   }
 
   judgeIppatsu(): void {

@@ -53,19 +53,25 @@ io.sockets.on('connection', function(socket: Socket) {
     game.player2.organizeTile()
     const tile = game.draw()
     if (tile !== undefined) { game.player1.tiles.push(tile) }
+    game.player1.turn += 1
 
     const { player1, player2 } = game
     io.sockets.emit('DistributeInitTiles', { id: player1.name, tiles: JSON.stringify(player1.tiles) })
     io.sockets.emit('DistributeInitTiles', { id: player2.name, tiles: JSON.stringify(player2.tiles) })
   })
 
-  socket.on('Discard', function(playerID: string, tiles: string) {
+  socket.on('Discard', function(playerID: string, tiles: string, isRiichi: boolean) {
     const tileObj = (JSON.parse(tiles) as Tile[])[0]
     const discardTile = new Tile(tileObj.kind, tileObj.number, tileObj.character)
     const player = game.player1.name === playerID ? game.player1 : game.player2
     player.discards.push(discardTile)
     player.tiles.splice(player.tiles.findIndex(el => el.isEqual(discardTile)), 1)
     player.organizeTile()
+
+    // 立直関連
+    if (player.riichiTurn === -1 && isRiichi) {
+      player.riichiTurn = player.turn
+    }
 
     // 聴牌時の待ち牌を知らせる
     const waitTiles: Tile[] = []
@@ -82,7 +88,8 @@ io.sockets.on('connection', function(socket: Socket) {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
       discards: JSON.stringify(player.discards),
-      waits: JSON.stringify(waitTiles)
+      waits: JSON.stringify(waitTiles),
+      riichiTurn: String(player.riichiTurn)
     })
     game.player1.name === playerID ? game.player1 = player : game.player2 = player
   })
@@ -92,11 +99,37 @@ io.sockets.on('connection', function(socket: Socket) {
     if (tile === undefined) { return }
     const player = game.player1.name === playerID ? game.player1 : game.player2
     player.tiles.push(tile)
-    const winnings: Winning[]  = player.judgeHands(tile, "draw")
+
+    player.turn += 1 // 巡目を増やす
+
+    const winnings: Winning[]  = player.judgeHands(tile, "draw") // ツモってるか調べる
+
+    // 待ち牌候補を調べる
+    const waitsCandidate = []
+    for (let i = 0; i < player.tiles.length; i++) {
+      const tilesCopy: Tile[] = []
+      for (let j = 0; j < player.tiles.length; j++) { tilesCopy.push(player.tiles[j].copy()) }
+      player.tiles.splice(i, 1)
+
+      const waitTiles: Tile[] = []
+      for (let j = 0; j < allTiles.length; j++) {
+        const tilesCopy2: Tile[] = []
+        for (let k = 0; k < player.tiles.length; k++) { tilesCopy2.push(player.tiles[k].copy()) }
+        player.tiles.push(allTiles[j])
+        const winnings: Winning[]  = player.judgeHands(allTiles[j], "draw")
+        if (winnings.length !== 0) { waitTiles.push(allTiles[j]) }
+        player.tiles = tilesCopy2
+      }
+
+      player.tiles = tilesCopy
+      waitsCandidate.push({ tile: player.tiles[i], waitTiles: waitTiles })
+    }
+
     io.sockets.emit('Draw', {
       id: playerID,
       tiles: JSON.stringify(player.tiles), 
       stockCount: String(game.stock.length),
+      waitsCandidate: JSON.stringify(waitsCandidate),
       isWin: (winnings.length !== 0).toString()
     })
     game.player1.name === playerID ? game.player1 = player : game.player2 = player

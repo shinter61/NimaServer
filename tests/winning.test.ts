@@ -1,6 +1,19 @@
 import { Tile } from "../src/Tile"
 import { Winning } from "../src/Winning"
 
+describe("立直のテスト", () => {
+  test("立直が判定できる", () => {
+    const testWin = new Winning([], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", 9)
+    testWin.judgeRiichi()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["立直"])
+  })
+})
+
 describe("門前清自摸和のテスト", () => {
   test("門前清自摸和が判定できる", () => {
     const testWin = new Winning([], [], [
@@ -8,7 +21,7 @@ describe("門前清自摸和のテスト", () => {
       [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
       [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw")
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", -1)
     testWin.judgeTsumo()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["門前清自摸和"])
   })
@@ -21,7 +34,7 @@ describe("平和のテスト", () => {
       [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
       [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw")
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", -1)
     testWin.judgePinfu()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["平和"])
   })
@@ -33,7 +46,7 @@ describe("平和のテスト", () => {
       [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
       [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw")
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", -1)
     testWin.judgePinfu()
     expect(testWin.hands.map(hand => hand.name)).toEqual([])
   })
@@ -46,7 +59,7 @@ describe("断么九のテスト", () => {
     ], [
       [new Tile("pin", 3, ""), new Tile("pin", 4, ""), new Tile("pin", 5, "")],
       [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
-    ], [new Tile("pin", 2, ""), new Tile("pin", 2, "")], [], [], new Tile("pin", 5, ""), "draw")
+    ], [new Tile("pin", 2, ""), new Tile("pin", 2, "")], [], [], new Tile("pin", 5, ""), "draw", -1)
     testWin.judgeTanyao()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["断么九"])
   })
@@ -58,7 +71,7 @@ describe("一盃口のテスト", () => {
       [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
       [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
       [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
-    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 5, ""), "draw")
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 5, ""), "draw", -1)
     testWin.judgeIpeko()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["一盃口"])
   })
@@ -73,7 +86,7 @@ describe("役牌のテスト", () => {
     ], [
       [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
       [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
-    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw")
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1)
     testWin.judgeYakuhai()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["役牌: 白","役牌: 發"])
   })
@@ -87,7 +100,7 @@ describe("混全帯么九のテスト", () => {
     ], [], [
       [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw")
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1)
     testWin.judgeChanta()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["混全帯么九"])
     expect(testWin.hands.map(hand => hand.han)).toEqual([2])
@@ -101,7 +114,7 @@ describe("混全帯么九のテスト", () => {
     ], [
       [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw")
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1)
     testWin.judgeChanta()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["混全帯么九"])
     expect(testWin.hands.map(hand => hand.han)).toEqual([1])
@@ -116,7 +129,7 @@ describe("混老頭のテスト", () => {
       [new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")],
     ], [
       [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")]
-    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw")
+    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1)
     testWin.judgeHonroto()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["混老頭"])
   })
@@ -128,7 +141,7 @@ describe("一気通貫のテスト", () => {
       [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
       [new Tile("pin", 4, ""), new Tile("pin", 5, ""), new Tile("pin", 6, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 5, ""), "draw")
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 5, ""), "draw", -1)
     testWin.judgeIttsu()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["一気通貫"])
     expect(testWin.hands.map(hand => hand.han)).toEqual([2])
@@ -139,7 +152,7 @@ describe("一気通貫のテスト", () => {
       [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
       [new Tile("pin", 4, ""), new Tile("pin", 5, ""), new Tile("pin", 6, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 5, ""), "draw")
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 5, ""), "draw", -1)
     testWin.judgeIttsu()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["一気通貫"])
     expect(testWin.hands.map(hand => hand.han)).toEqual([1])
@@ -154,7 +167,7 @@ describe("対々和のテスト", () => {
     ], [
       [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")],
       [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
-    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw")
+    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1)
     testWin.judgeToiToi()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["対々和"])
   })
@@ -168,7 +181,7 @@ describe("三暗刻のテスト", () => {
       [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")],
     ], [
       [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
-    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("", 0, "green"), "draw")
+    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("", 0, "green"), "draw", -1)
     testWin.judgeSananko()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["三暗刻"])
   })
@@ -180,7 +193,7 @@ describe("三暗刻のテスト", () => {
       [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")],
     ], [
       [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
-    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "ron")
+    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "ron", -1)
     testWin.judgeSananko()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["三暗刻"])
   })
@@ -194,7 +207,7 @@ describe("三色同刻のテスト", () => {
       [new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")],
     ], [
       [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")]
-    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw")
+    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1)
     testWin.judgeSansyoku()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["三色同刻"])
   })
@@ -210,7 +223,7 @@ describe("七対子のテスト", () => {
       [new Tile("sou", 1, ""), new Tile("sou", 1, "")],
       [new Tile("pin", 5, ""), new Tile("pin", 5, "")],
       [new Tile("pin", 6, ""), new Tile("pin", 6, "")],
-    ], [], new Tile("sou", 1, ""), "draw")
+    ], [], new Tile("sou", 1, ""), "draw", -1)
     testWin.judgeChiitoi()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["七対子"])
   })
@@ -224,7 +237,7 @@ describe("小三元のテスト", () => {
       [new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")],
     ], [
       [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")]
-    ], [], [new Tile("", 0, "red"), new Tile("", 0, "red")], [], [], new Tile("sou", 9, ""), "draw")
+    ], [], [new Tile("", 0, "red"), new Tile("", 0, "red")], [], [], new Tile("sou", 9, ""), "draw", -1)
     testWin.judgeShosangen()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["小三元"])
   })
@@ -237,7 +250,7 @@ describe("混一色のテスト", () => {
       [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
       [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("", 0, "green"), new Tile("", 0, "green")], [], [], new Tile("pin", 1, ""), "draw")
+    ], [new Tile("", 0, "green"), new Tile("", 0, "green")], [], [], new Tile("pin", 1, ""), "draw", -1)
     testWin.judgeHonitsu()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["混一色"])
     expect(testWin.hands.map(hand => hand.han)).toEqual([3])
@@ -250,7 +263,7 @@ describe("混一色のテスト", () => {
       [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
       [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("", 0, "green"), new Tile("", 0, "green")], [], [], new Tile("pin", 1, ""), "draw")
+    ], [new Tile("", 0, "green"), new Tile("", 0, "green")], [], [], new Tile("pin", 1, ""), "draw", -1)
     testWin.judgeHonitsu()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["混一色"])
     expect(testWin.hands.map(hand => hand.han)).toEqual([2])
@@ -264,7 +277,7 @@ describe("二盃口のテスト", () => {
       [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("", 0, "green"), new Tile("", 0, "green")], [], [], new Tile("pin", 1, ""), "draw")
+    ], [new Tile("", 0, "green"), new Tile("", 0, "green")], [], [], new Tile("pin", 1, ""), "draw", -1)
     testWin.judgeRyanpeko()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["二盃口"])
   })
@@ -278,7 +291,7 @@ describe("純全帯么九のテスト", () => {
     ], [], [
       [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw")
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1)
     testWin.judgeJunchan()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["純全帯么九"])
     expect(testWin.hands.map(hand => hand.han)).toEqual([3])
@@ -292,7 +305,7 @@ describe("純全帯么九のテスト", () => {
     ], [
       [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw")
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1)
     testWin.judgeJunchan()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["純全帯么九"])
     expect(testWin.hands.map(hand => hand.han)).toEqual([2])
@@ -307,7 +320,7 @@ describe("清一色のテスト", () => {
       [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
       [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("pin", 5, ""), new Tile("pin", 5, "")], [], [], new Tile("pin", 1, ""), "draw")
+    ], [new Tile("pin", 5, ""), new Tile("pin", 5, "")], [], [], new Tile("pin", 1, ""), "draw", -1)
     testWin.judgeChinitsu()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["清一色"])
     expect(testWin.hands.map(hand => hand.han)).toEqual([6])
@@ -320,7 +333,7 @@ describe("清一色のテスト", () => {
       [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
       [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("pin", 5, ""), new Tile("pin", 5, "")], [], [], new Tile("pin", 1, ""), "draw")
+    ], [new Tile("pin", 5, ""), new Tile("pin", 5, "")], [], [], new Tile("pin", 1, ""), "draw", -1)
     testWin.judgeChinitsu()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["清一色"])
     expect(testWin.hands.map(hand => hand.han)).toEqual([5])
@@ -335,7 +348,7 @@ describe("大三元のテスト", () => {
     ], [
       [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")],
       [new Tile("", 0, "red"), new Tile("", 0, "red"), new Tile("", 0, "red")],
-    ], [], [new Tile("pin", 5, ""), new Tile("pin", 5, "")], [], [], new Tile("sou", 9, ""), "draw")
+    ], [], [new Tile("pin", 5, ""), new Tile("pin", 5, "")], [], [], new Tile("sou", 9, ""), "draw", -1)
     testWin.judgeDaisangen()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["大三元"])
   })
@@ -349,7 +362,7 @@ describe("小四喜のテスト", () => {
       [new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")],
     ], [
       [new Tile("", 0, "south"), new Tile("", 0, "south"), new Tile("", 0, "south")],
-    ], [], [new Tile("", 0, "west"), new Tile("", 0, "west")], [], [], new Tile("sou", 9, ""), "draw")
+    ], [], [new Tile("", 0, "west"), new Tile("", 0, "west")], [], [], new Tile("sou", 9, ""), "draw", -1)
     testWin.judgeShosushi()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["小四喜"])
   })
@@ -363,7 +376,7 @@ describe("大四喜のテスト", () => {
     ], [
       [new Tile("", 0, "south"), new Tile("", 0, "south"), new Tile("", 0, "south")],
       [new Tile("", 0, "west"), new Tile("", 0, "west"), new Tile("", 0, "west")],
-    ], [], [new Tile("pin", 5, ""), new Tile("pin", 5, "")], [], [], new Tile("", 0, "west"), "draw")
+    ], [], [new Tile("pin", 5, ""), new Tile("pin", 5, "")], [], [], new Tile("", 0, "west"), "draw", -1)
     testWin.judgeDaisushi()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["大四喜"])
   })
@@ -376,7 +389,7 @@ describe("四暗刻のテスト", () => {
       [new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")],
       [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")],
       [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
-    ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("", 0, "green"), "draw")
+    ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("", 0, "green"), "draw", -1)
     testWin.judgeSuanko()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["四暗刻"])
   })
@@ -387,7 +400,7 @@ describe("四暗刻のテスト", () => {
       [new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")],
       [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")],
       [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
-    ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "ron")
+    ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "ron", -1)
     testWin.judgeSuanko()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["四暗刻単騎"])
   })
@@ -401,7 +414,7 @@ describe("清老頭のテスト", () => {
     ], [
       [new Tile("man", 9, ""), new Tile("man", 9, ""), new Tile("man", 9, "")],
       [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
-    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw")
+    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", -1)
     testWin.judgeChinroto()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["清老頭"])
   })
@@ -414,7 +427,7 @@ describe("国士無双のテスト", () => {
       new Tile("sou", 9, ""), new Tile("man", 1, ""), new Tile("man", 9, ""),
       new Tile("", 0, "east"), new Tile("", 0, "south"), new Tile("", 0, "west"),
       new Tile("", 0, "west"), new Tile("", 0, "white"), new Tile("", 0, "green"), new Tile("", 0, "red")
-    ], new Tile("pin", 1, ""), "draw")
+    ], new Tile("pin", 1, ""), "draw", -1)
     testWin.judgeKokushi()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["国士無双"])
   })
@@ -425,7 +438,7 @@ describe("国士無双のテスト", () => {
       new Tile("sou", 9, ""), new Tile("man", 1, ""), new Tile("man", 9, ""),
       new Tile("", 0, "east"), new Tile("", 0, "south"), new Tile("", 0, "west"),
       new Tile("", 0, "west"), new Tile("", 0, "white"), new Tile("", 0, "green"), new Tile("", 0, "red")
-    ], new Tile("", 0, "west"), "draw")
+    ], new Tile("", 0, "west"), "draw", -1)
     testWin.judgeKokushi()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["国士無双十三面"])
   })
@@ -437,7 +450,7 @@ describe("九蓮宝燈のテスト", () => {
       [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
       [new Tile("pin", 4, ""), new Tile("pin", 5, ""), new Tile("pin", 6, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("pin", 9, ""), new Tile("pin", 9, "")], [], [], new Tile("pin", 1, ""), "draw")
+    ], [new Tile("pin", 9, ""), new Tile("pin", 9, "")], [], [], new Tile("pin", 1, ""), "draw", -1)
     testWin.judgeChuren()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["九蓮宝燈"])
   })
@@ -447,7 +460,7 @@ describe("九蓮宝燈のテスト", () => {
       [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
       [new Tile("pin", 4, ""), new Tile("pin", 5, ""), new Tile("pin", 6, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-    ], [new Tile("pin", 9, ""), new Tile("pin", 9, "")], [], [], new Tile("pin", 4, ""), "draw")
+    ], [new Tile("pin", 9, ""), new Tile("pin", 9, "")], [], [], new Tile("pin", 4, ""), "draw", -1)
     testWin.judgeChuren()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["純正九蓮宝燈"])
   })
