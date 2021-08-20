@@ -205,7 +205,6 @@ export class Winning {
     for (let i = 0; i < flattenTiles.length; i++) {
       if (!flattenTiles[i].isYaochu()) { isHonroto = false }
     }
-    if (!this.jantou[0].isYaochu()) { isHonroto = false }
     if (isHonroto) { this.hands.push({ name: "混老頭", han: 2 }) }
   }
 
@@ -309,6 +308,8 @@ export class Winning {
   }
 
   judgeJunchan(): void {
+    if (this.chiitoi.length !== 0 || this.kokushi.length !== 0) { return }
+
     let isJunchan = true
     for (let i = 0; i < this.shuntz.length; i++) {
       if (![1, 7].includes(this.shuntz[i][0].number)) { isJunchan = false }
@@ -408,7 +409,6 @@ export class Winning {
     for (let i = 0; i < this.minkos.length; i++) {
       if (!this.minkos[i][0].is19()) { isChinroto = false }
     }
-    if (!this.jantou[0].is19()) { isChinroto = false }
     if (isChinroto) { this.hands.push({ name: "清老頭", han: 100 }) }
   }
 
