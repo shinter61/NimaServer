@@ -17,9 +17,10 @@ export class Winning {
   hands: Hand[]
   type: string
   riichiTurn: number
+  winTurn: number
 
-  constructor(kotz: Tile[][], minkos: Tile[][], shuntz: Tile[][], jantou: Tile[],
-              chiitoi: Tile[][], kokushi: Tile[], draw: Tile, type: string, riichiTurn: number) {
+  constructor(kotz: Tile[][], minkos: Tile[][], shuntz: Tile[][], jantou: Tile[], chiitoi: Tile[][],
+              kokushi: Tile[], draw: Tile, type: string, riichiTurn: number, winTurn: number) {
     this.kotz = kotz
     this.minkos = minkos
     this.shuntz = shuntz
@@ -29,6 +30,7 @@ export class Winning {
     this.draw = draw
     this.type = type
     this.riichiTurn = riichiTurn
+    this.winTurn = winTurn
     this.hands = []
   }
 

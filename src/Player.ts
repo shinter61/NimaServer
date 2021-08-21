@@ -193,7 +193,7 @@ export class Player {
       if (this.tiles.length === 2 && this.tiles[0].isEqual(this.tiles[1])) { jantou = this.tiles.splice(0, 2) }
 
       if ((shuntzTiles.length + kotzTiles.length + this.minkos.length) === 4 && jantou.length !== 0) {
-        winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, jantou, [], [], winTile, type, this.riichiTurn))
+        winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, jantou, [], [], winTile, type, this.riichiTurn, this.turn))
       }
       this.tiles = myTilesCopy2.slice()
       kotzTiles = kotzTilesCopy.slice()
@@ -216,7 +216,7 @@ export class Player {
         chiitoi.push([this.tiles[i], this.tiles[i+1]])
       }
     }
-    if (toitzNum === 7) { return new Winning([], [], [], [], chiitoi, [], drawTile, type, this.riichiTurn) }
+    if (toitzNum === 7) { return new Winning([], [], [], [], chiitoi, [], drawTile, type, this.riichiTurn, this.turn) }
   }
 
   judgeKokushi(drawTile: Tile, type: string): Winning | undefined {
@@ -230,7 +230,7 @@ export class Player {
     }
 
     if (alreadyFounded.length === 13 && toitzNum === 1) {
-      return new Winning([], [], [], [], [], this.tiles, drawTile, type, this.riichiTurn)
+      return new Winning([], [], [], [], [], this.tiles, drawTile, type, this.riichiTurn, this.turn)
     }
   }
 }
