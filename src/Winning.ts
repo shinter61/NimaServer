@@ -233,7 +233,11 @@ export class Winning {
   }
 
   judgeDoubleRiichi(): void {
-    // if (false) { this.hands.push({ name: "ダブル立直", han: 2 }) }
+    if (this.riichiTurn === 1) {
+      const index = this.hands.findIndex(hand => hand.name === "立直")
+      this.hands.splice(index, 1)
+      this.hands.push({ name: "ダブル立直", han: 2 })
+    }
   }
 
   judgeChanta(): void {

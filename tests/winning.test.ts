@@ -92,6 +92,31 @@ describe("役牌のテスト", () => {
   })
 })
 
+describe("ダブル立直のテスト", () => {
+  test("ダブル立直が判定できる", () => {
+    const testWin = new Winning([], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", 1)
+    testWin.judgeDoubleRiichi()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["ダブル立直"])
+  })
+
+  test("立直と複合しない", () => {
+    const testWin = new Winning([], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", 1)
+    testWin.judgeRiichi()
+    testWin.judgeDoubleRiichi()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["ダブル立直"])
+  })
+})
+
 describe("混全帯么九のテスト", () => {
   test("門前で混全帯么九が判定できる", () => {
     const testWin = new Winning([
