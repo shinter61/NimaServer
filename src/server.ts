@@ -159,7 +159,7 @@ io.sockets.on('connection', function(socket: Socket) {
   })
 
   socket.on('Win', function(playerID: string, type: string) {
-    let hands: string[] = []
+    let maxWinning: Winning = new Winning([], [], [], [], [], [], new Tile("", 0, ""), "", -1)
     let maxHan = 0
     const winner = game.player1.name === playerID ? game.player1 : game.player2
     const loser = game.player1.name !== playerID ? game.player1 : game.player2
@@ -168,15 +168,21 @@ io.sockets.on('connection', function(socket: Socket) {
     for (let i = 0; i < winnings.length; i++) {
       const tmpHan = winnings[i].judgeHands()
       if (tmpHan > maxHan) {
-        hands = winnings[i].hands.map(hand => hand.name)
+        maxWinning = winnings[i]
         maxHan = tmpHan
       }
     }
+
+    // 役満は役満以外とは複合しない
+    const yakumanHands = maxWinning.hands.filter(hand => hand.han >= 100)
+    if (yakumanHands.length !== 0) { maxWinning.hands = yakumanHands }
+    const score = maxWinning.calcScore()
+
     io.sockets.emit('Win', {
       id: playerID,
-      hands: JSON.stringify(hands), 
-      score: String(18000),
-      scoreName: "跳満"
+      hands: JSON.stringify(maxWinning.hands.map(hand => hand.name)), 
+      score: String(score?.score),
+      scoreName: score?.name
     })
     game.player1.name === playerID ? game.player1 = winner : game.player2 = winner 
   })

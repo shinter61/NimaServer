@@ -1,3 +1,4 @@
+import { Score, childDrawScores, childRonScores } from "./scores"
 import { Tile } from "./Tile"
 
 type Hand = {
@@ -43,6 +44,58 @@ export class Winning {
 
   isMenzen(): boolean {
     return this.minkos.length === 0
+  }
+
+  calcFu(): number {
+    if (this.chiitoi.length !== 0) { return 25 }
+    if (this.type === "draw" && this.hands.map(hand => hand.name).includes("平和")) { return 20 }
+      
+    const futei = 20 // 副底
+
+    let winWayFu = 0
+    if (this.isMenzen() && this.type === "ron") { winWayFu = 10 }
+    else if (this.type === "draw") { winWayFu = 2 }
+
+    let mentzFu = 0
+    for (let i = 0; i < this.minkos.length; i++) {
+      this.minkos[i][0].isYaochu() ? mentzFu += 4 : mentzFu += 2
+    }
+    for (let i = 0; i < this.kotz.length; i++) {
+      this.kotz[i][0].isYaochu() ? mentzFu += 8 : mentzFu += 4
+    }
+
+    let jantouFu = 0
+    if (["white", "green", "red"].includes(this.jantou[0].character)) { jantouFu = 2 }
+
+    let waitWayFu = 0
+    for (let i = 0; i < this.shuntz.length; i++) {
+      // 辺張待ちかどうか
+      if (this.shuntz[i][0].number === 1 && this.shuntz[i][2].isEqual(this.draw)) { waitWayFu = 2 }
+      if (this.shuntz[i][2].number === 9 && this.shuntz[i][0].isEqual(this.draw)) { waitWayFu = 2 }
+      // 嵌張待ちかどうか
+      if (this.shuntz[i][1].isEqual(this.draw)) { waitWayFu = 2 }
+      // 単騎待ちかどうか
+      if (this.jantou[0].isEqual(this.draw)) { waitWayFu = 2 }
+    }
+
+    return Math.ceil(futei + winWayFu + mentzFu + jantouFu + waitWayFu / 10) * 10
+  }
+
+  calcScore(): Score | undefined {
+    let han = "", fu = ""
+    const totanHan: number = this.hands.map(hand => hand.han).reduce((sum, el) => sum + el, 0)
+    if (totanHan <= 12) { han = `${totanHan}飜` }
+    else if (totanHan >= 13 && totanHan <= 99) { han = "*" }
+    else if (totanHan >= 100) { han = "*".repeat(totanHan/100) }
+
+    if (totanHan <= 4) { fu = `${this.calcFu()}符` }
+    else { fu = "*" }
+
+    if (this.type === "draw") {
+      return childDrawScores.find(el => el.fu === fu && el.han === han)
+    } else {
+      return childRonScores.find(el => el.fu === fu && el.han === han)
+    }
   }
 
   judgeHands(): number {
