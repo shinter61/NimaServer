@@ -14,6 +14,8 @@ export class Game {
 
   reload(): void {
     this.stock = []
+    this.player1.reset()
+    this.player2.reset()
 
     const characters = ["east", "south", "west", "north", "white", "green", "red"]
     const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]

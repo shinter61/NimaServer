@@ -8,9 +8,19 @@ export class Player {
   minkos: Tile[][]
   turn: number
   riichiTurn: number
+  score: number
 
   constructor() {
     this.name = ""
+    this.discards = []
+    this.tiles = []
+    this.minkos = []
+    this.turn = 0
+    this.riichiTurn = -1
+    this.score = 35000
+  }
+
+  reset() {
     this.discards = []
     this.tiles = []
     this.minkos = []

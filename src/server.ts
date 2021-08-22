@@ -55,9 +55,12 @@ io.sockets.on('connection', function(socket: Socket) {
     if (tile !== undefined) { game.player1.tiles.push(tile) }
     game.player1.turn += 1
 
+
     const { player1, player2 } = game
-    io.sockets.emit('DistributeInitTiles', { id: player1.name, tiles: JSON.stringify(player1.tiles) })
-    io.sockets.emit('DistributeInitTiles', { id: player2.name, tiles: JSON.stringify(player2.tiles) })
+    console.log('player1 ID', player1.name)
+    console.log('player2 ID', player2.name)
+    io.sockets.emit('DistributeInitTiles', { id: player1.name, tiles: JSON.stringify(player1.tiles), score: String(player1.score) })
+    io.sockets.emit('DistributeInitTiles', { id: player2.name, tiles: JSON.stringify(player2.tiles), score: String(player2.score) })
   })
 
   socket.on('Discard', function(playerID: string, tiles: string, isRiichi: boolean) {
@@ -159,10 +162,11 @@ io.sockets.on('connection', function(socket: Socket) {
   })
 
   socket.on('Win', function(playerID: string, type: string) {
-    let maxWinning: Winning = new Winning([], [], [], [], [], [], new Tile("", 0, ""), "", -1, -1)
-    let maxHan = 0
     const winner = game.player1.name === playerID ? game.player1 : game.player2
     const loser = game.player1.name !== playerID ? game.player1 : game.player2
+
+    let maxWinning: Winning = new Winning([], [], [], [], [], [], new Tile("", 0, ""), "", -1, -1)
+    let maxHan = 0
     const winTile = type === "draw" ? winner.tiles[winner.tiles.length - 1] : loser.discards[loser.discards.length - 1]
     const winnings: Winning[]  = winner.judgeHands(winTile, type)
     for (let i = 0; i < winnings.length; i++) {
@@ -176,7 +180,13 @@ io.sockets.on('connection', function(socket: Socket) {
     // 役満は役満以外とは複合しない
     const yakumanHands = maxWinning.hands.filter(hand => hand.han >= 100)
     if (yakumanHands.length !== 0) { maxWinning.hands = yakumanHands }
+
     const score = maxWinning.calcScore()
+    if (score !== undefined) {
+      winner.score += score.score
+      loser.score -= score.score
+    }
+    console.log("score", score)
 
     io.sockets.emit('Win', {
       id: playerID,
@@ -185,6 +195,7 @@ io.sockets.on('connection', function(socket: Socket) {
       scoreName: score?.name
     })
     game.player1.name === playerID ? game.player1 = winner : game.player2 = winner 
+    game.player1.name !== playerID ? game.player1 = loser : game.player2 = loser 
   })
 })
 
