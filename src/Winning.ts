@@ -332,7 +332,7 @@ export class Winning {
     for (let i = 0; i < this.minkos.length; i++) {
       if (["white", "green", "red"].includes(this.minkos[i][0].character)) { kotzNum++ }
     }
-    if (kotzNum === 2) { this.hands.push({ name: "小三元", han: 2 }) }
+    if (kotzNum === 2 && ["white", "green", "red"].includes(this.jantou[0].character)) { this.hands.push({ name: "小三元", han: 2 }) }
   }
 
   judgeHonitsu(): void {
