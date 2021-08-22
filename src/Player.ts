@@ -1,4 +1,4 @@
-import { Tile } from "./Tile"
+import { Tile, allTiles } from "./Tile"
 import { Winning } from "./Winning"
 
 export class Player {
@@ -20,7 +20,7 @@ export class Player {
     this.score = 35000
   }
 
-  reset() {
+  reset(): void {
     this.discards = []
     this.tiles = []
     this.minkos = []
@@ -242,5 +242,18 @@ export class Player {
     if (alreadyFounded.length === 13 && toitzNum === 1) {
       return new Winning([], [], [], [], [], this.tiles, drawTile, type, this.riichiTurn, this.turn)
     }
+  }
+
+  waitTiles(): Tile[] {
+    const waits: Tile[] = []
+    for (let i = 0; i < allTiles.length; i++) {
+      const tilesCopy: Tile[] = []
+      for (let i = 0; i < this.tiles.length; i++) { tilesCopy.push(this.tiles[i].copy()) }
+      this.tiles.push(allTiles[i])
+      const winnings: Winning[]  = this.judgeHands(allTiles[i], "draw")
+      if (winnings.length !== 0) { waits.push(allTiles[i]) }
+      this.tiles = tilesCopy
+    }
+    return waits 
   }
 }
