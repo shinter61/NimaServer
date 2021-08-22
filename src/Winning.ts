@@ -76,11 +76,11 @@ export class Winning {
       if (this.shuntz[i][2].number === 9 && this.shuntz[i][0].isEqual(this.draw)) { waitWayFu = 2 }
       // 嵌張待ちかどうか
       if (this.shuntz[i][1].isEqual(this.draw)) { waitWayFu = 2 }
-      // 単騎待ちかどうか
-      if (this.jantou[0].isEqual(this.draw)) { waitWayFu = 2 }
     }
+    // 単騎待ちかどうか
+    if (this.jantou[0].isEqual(this.draw)) { waitWayFu = 2 }
 
-    return Math.ceil(futei + winWayFu + mentzFu + jantouFu + waitWayFu / 10) * 10
+    return Math.ceil((futei + winWayFu + mentzFu + jantouFu + waitWayFu) / 10) * 10
   }
 
   calcScore(): Score | undefined {
