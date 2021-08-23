@@ -77,15 +77,7 @@ io.sockets.on('connection', function(socket: Socket) {
     }
 
     // 聴牌時の待ち牌を知らせる
-    const waitTiles: Tile[] = []
-    for (let i = 0; i < allTiles.length; i++) {
-      const tilesCopy: Tile[] = []
-      for (let i = 0; i < player.tiles.length; i++) { tilesCopy.push(player.tiles[i].copy()) }
-      player.tiles.push(allTiles[i])
-      const winnings: Winning[]  = player.judgeHands(allTiles[i], "draw")
-      if (winnings.length !== 0) { waitTiles.push(allTiles[i]) }
-      player.tiles = tilesCopy
-    }
+    const waitTiles: Tile[] = player.waitTiles()
 
     io.sockets.emit('InformDiscards', {
       id: playerID,
@@ -113,17 +105,7 @@ io.sockets.on('connection', function(socket: Socket) {
       const tilesCopy: Tile[] = []
       for (let j = 0; j < player.tiles.length; j++) { tilesCopy.push(player.tiles[j].copy()) }
       player.tiles.splice(i, 1)
-
-      const waitTiles: Tile[] = []
-      for (let j = 0; j < allTiles.length; j++) {
-        const tilesCopy2: Tile[] = []
-        for (let k = 0; k < player.tiles.length; k++) { tilesCopy2.push(player.tiles[k].copy()) }
-        player.tiles.push(allTiles[j])
-        const winnings: Winning[]  = player.judgeHands(allTiles[j], "draw")
-        if (winnings.length !== 0) { waitTiles.push(allTiles[j]) }
-        player.tiles = tilesCopy2
-      }
-
+      const waitTiles: Tile[] = player.waitTiles()
       player.tiles = tilesCopy
       waitsCandidate.push({ tile: player.tiles[i], waitTiles: waitTiles })
     }
