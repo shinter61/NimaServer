@@ -174,8 +174,6 @@ export class Player {
 
     // 全パターン探索
     for (let i = 0; i < patterns.length; i++) {
-      // if (!myTilesCopy[myTilesCopy.length - 1].isEqual(new Tile("pin", 1, ""))) { continue }
-
       for (let j = 0; j < patterns[i].length; j++) {
         if (patterns[i][j] === 0) {
           // 「刻子として抜き出す（3）」
@@ -208,7 +206,6 @@ export class Player {
             jantouCandidate.push(this.tiles[j])
           }
         }
-        // console.log(jantouCandidate)
 
         for (let j = 0; j < jantouCandidate.length; j++) {
           // 雀頭抜き出し
@@ -228,9 +225,6 @@ export class Player {
             }
           }
 
-          // console.log('shuntzTiles', shuntzTiles)
-          // console.log('ankoTiles', kotzTiles)
-          // console.log('jantou', jantou)
           if ((shuntzTiles.length + kotzTiles.length + this.minkos.length) === 4 && jantou.length === 2) {
             winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, jantou, [], [], winTile, type, this.riichiTurn, this.turn))
           }
@@ -251,9 +245,6 @@ export class Player {
           }
         }
 
-        // console.log('shuntzTiles', shuntzTiles)
-        // console.log('ankoTiles', kotzTiles)
-        // console.log('jantou', jantou)
         if ((shuntzTiles.length + kotzTiles.length + this.minkos.length) === 4 && jantou.length === 2) {
           winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, jantou, [], [], winTile, type, this.riichiTurn, this.turn))
         }
@@ -274,9 +265,11 @@ export class Player {
     let toitzNum = 0
     const chiitoi: Tile[][] = []
     for (let i = 0; i < this.tiles.length - 1; i++) {
-      if (i % 2 === 0 && this.tiles[i].isEqual(this.tiles[i+1])) {
-        toitzNum++
-        chiitoi.push([this.tiles[i], this.tiles[i+1]])
+      if (i % 2 === 0 && this.tiles[i].isEqual(this.tiles[i+1])) { // 対子
+        if (chiitoi.length === 0 || (chiitoi.length !== 0 && !chiitoi[chiitoi.length - 1][0].isEqual(this.tiles[i]))) { // 槓子でない
+          toitzNum++
+          chiitoi.push([this.tiles[i], this.tiles[i+1]])
+        }
       }
     }
     if (toitzNum === 7) { return new Winning([], [], [], [], chiitoi, [], drawTile, type, this.riichiTurn, this.turn) }
