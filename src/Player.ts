@@ -134,7 +134,7 @@ export class Player {
     for (let i = 0; i < this.tiles.length; i++) {
       if (prevTile.isEqual(this.tiles[i])) {
         dupCount++;
-        if (dupCount == 3) { ankoTiles.push(this.tiles[i]) }
+        if (dupCount === 3) { ankoTiles.push(this.tiles[i]) }
       } else {
         dupCount = 1
         prevTile = this.tiles[i]
@@ -174,6 +174,8 @@ export class Player {
 
     // 全パターン探索
     for (let i = 0; i < patterns.length; i++) {
+      // if (!myTilesCopy[myTilesCopy.length - 1].isEqual(new Tile("pin", 1, ""))) { continue }
+
       for (let j = 0; j < patterns[i].length; j++) {
         if (patterns[i][j] === 0) {
           // 「刻子として抜き出す（3）」
@@ -190,25 +192,76 @@ export class Player {
         }
       }
 
-      // 順子抜き出し
-      for (let i = 0; i < this.tiles.length; i++) {
-        const shuntz: Tile[] = this.extractShuntz(i)
-        if (shuntz.length !== 0) {
-          shuntzTiles.push(shuntz)
-          i -= 3
+      const myTilesCopy3 = this.tiles.slice()
+      const kotzTilesCopy2 = kotzTiles.slice()
+
+      if (jantou.length === 0) {
+        const jantouCandidate: Tile[] = []
+        for (let j = 0; j < (this.tiles.length-1); j++) {
+          // 暗刻としては0か2のパターンしかない
+          // 0の場合は事前に3つ抜かれてるので、同じ牌が3連続する場合は必然的に2のパターン、雀頭として扱ってはいけない
+          if (!this.tiles[j].isEqual(this.tiles[j+1])) { continue }
+          if (jantouCandidate.length !== 0 && jantouCandidate[jantouCandidate.length - 1].isEqual(this.tiles[j])) {
+            // 3連続するならjantouCandidateの末尾と現在の牌が一致するので候補から削除する
+            jantouCandidate.pop()
+          } else {
+            jantouCandidate.push(this.tiles[j])
+          }
         }
-      }
+        // console.log(jantouCandidate)
 
-      // 雀頭がない場合、雀頭を登録
-      if (this.tiles.length === 2 && this.tiles[0].isEqual(this.tiles[1])) { jantou = this.tiles.splice(0, 2) }
+        for (let j = 0; j < jantouCandidate.length; j++) {
+          // 雀頭抜き出し
+          for (let k = 0; k < this.tiles.length; k++) {
+            if (jantouCandidate[j].isEqual(this.tiles[k])) {
+              jantou = this.tiles.splice(k, 2)
+              break
+            }
+          }
 
-      if ((shuntzTiles.length + kotzTiles.length + this.minkos.length) === 4 && jantou.length !== 0) {
-        winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, jantou, [], [], winTile, type, this.riichiTurn, this.turn))
+          // 順子抜き出し
+          for (let k = 0; k < this.tiles.length; k++) {
+            const shuntz: Tile[] = this.extractShuntz(k)
+            if (shuntz.length !== 0) {
+              shuntzTiles.push(shuntz)
+              k -= 3
+            }
+          }
+
+          // console.log('shuntzTiles', shuntzTiles)
+          // console.log('ankoTiles', kotzTiles)
+          // console.log('jantou', jantou)
+          if ((shuntzTiles.length + kotzTiles.length + this.minkos.length) === 4 && jantou.length === 2) {
+            winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, jantou, [], [], winTile, type, this.riichiTurn, this.turn))
+          }
+          this.tiles = myTilesCopy3.slice()
+          kotzTiles = kotzTilesCopy2.slice()
+          shuntzTiles = []
+          jantou = []
+        }
+        this.tiles = myTilesCopy2.slice()
+        kotzTiles = kotzTilesCopy.slice()
+      } else {
+        // 順子抜き出し
+        for (let j = 0; j < this.tiles.length; j++) {
+          const shuntz: Tile[] = this.extractShuntz(j)
+          if (shuntz.length !== 0) {
+            shuntzTiles.push(shuntz)
+            j -= 3
+          }
+        }
+
+        // console.log('shuntzTiles', shuntzTiles)
+        // console.log('ankoTiles', kotzTiles)
+        // console.log('jantou', jantou)
+        if ((shuntzTiles.length + kotzTiles.length + this.minkos.length) === 4 && jantou.length === 2) {
+          winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, jantou, [], [], winTile, type, this.riichiTurn, this.turn))
+        }
+        this.tiles = myTilesCopy2.slice()
+        kotzTiles = kotzTilesCopy.slice()
+        shuntzTiles = []
+        jantou = []
       }
-      this.tiles = myTilesCopy2.slice()
-      kotzTiles = kotzTilesCopy.slice()
-      shuntzTiles = []
-      jantou = []
     }
 
     // 元の牌姿に戻す
