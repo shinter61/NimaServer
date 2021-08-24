@@ -5,11 +5,17 @@ export class Game {
   player1: Player
   player2: Player
   stock: Tile[]
+  round: number
+  roundWind: string
+  isEnd: boolean
 
   constructor() {
     this.player1 = new Player()
     this.player2 = new Player()
     this.stock = []
+    this.round = 1
+    this.roundWind = "east"
+    this.isEnd = false
   }
 
   reload(): void {
@@ -53,5 +59,30 @@ export class Game {
   }
 
   draw(): Tile | undefined { return this.stock.shift() }
+
+  proceedRound(winnerID: string): void {
+    // 終局
+    if (this.roundWind === "south" && this.round === 2) {
+      if (this.player1.name === winnerID) {
+        this.isEnd = true
+        return
+      }
+      if (this.player2.name === winnerID && this.player2.score > this.player1.score) {
+        this.isEnd = true
+        return
+      }
+    }
+
+    if (this.player1.name === winnerID) {
+      if (this.round === 2) {
+        this.roundWind = "south"
+        this.round = 1
+      }
+    } else if (this.player2.name === winnerID) {
+      if (this.round === 1) {
+        this.round = 2
+      }
+    }
+  }
 }
 

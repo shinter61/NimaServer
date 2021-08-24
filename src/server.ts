@@ -3,7 +3,7 @@ import { Server, Socket } from "socket.io"
 import express from "express"
 import { Game } from "./Game"
 import { Player } from "./Player"
-import { Tile, allTiles } from "./Tile"
+import { Tile } from "./Tile"
 import { Winning } from "./Winning"
 
 const app: express.Express = express();
@@ -55,12 +55,34 @@ io.sockets.on('connection', function(socket: Socket) {
     if (tile !== undefined) { game.player1.tiles.push(tile) }
     game.player1.turn += 1
 
-
-    const { player1, player2 } = game
-    console.log('player1 ID', player1.name)
-    console.log('player2 ID', player2.name)
-    io.sockets.emit('DistributeInitTiles', { id: player1.name, tiles: JSON.stringify(player1.tiles), score: String(player1.score) })
-    io.sockets.emit('DistributeInitTiles', { id: player2.name, tiles: JSON.stringify(player2.tiles), score: String(player2.score) })
+    if (game.isEnd) {
+      const winner: Player = game.player1.score >= game.player2.score ? game.player1 : game.player2
+      const loser: Player = game.player1.score < game.player2.score ? game.player1 : game.player2
+      io.sockets.emit('EndGame', {
+        winnerID: winner.name,
+        winnerScore: String(winner.score),
+        loserID: loser.name,
+        loserScore: String(loser.score)
+      })
+    } else {
+      const { player1, player2 } = game
+      io.sockets.emit('DistributeInitTiles', {
+        id: player1.name,
+        tiles: JSON.stringify(player1.tiles),
+        score: String(player1.score),
+        round: String(game.round),
+        roundWind: game.roundWind,
+        isParent: (game.round === 1).toString()
+      })
+      io.sockets.emit('DistributeInitTiles', {
+        id: player2.name,
+        tiles: JSON.stringify(player2.tiles),
+        score: String(player2.score),
+        round: String(game.round),
+        roundWind: game.roundWind,
+        isParent: (game.round === 2).toString()
+      })
+    }
   })
 
   socket.on('Discard', function(playerID: string, tiles: string, isRiichi: boolean) {
@@ -152,6 +174,12 @@ io.sockets.on('connection', function(socket: Socket) {
     const winTile = type === "draw" ? winner.tiles[winner.tiles.length - 1] : loser.discards[loser.discards.length - 1]
     const winnings: Winning[]  = winner.judgeHands(winTile, type)
     for (let i = 0; i < winnings.length; i++) {
+      // 前処理
+      winnings[i].roundWind = game.roundWind
+      if ((winner.name === game.player1.name && game.round === 1) || (winner.name === game.player2.name && game.round === 2)) {
+        winnings[i].isParent = true
+      }
+
       const tmpHan = winnings[i].judgeHands()
       if (tmpHan > maxHan) {
         maxWinning = winnings[i]
@@ -168,13 +196,17 @@ io.sockets.on('connection', function(socket: Socket) {
       winner.score += score.score
       loser.score -= score.score
     }
+
+    // 局の場、局数を更新
+    game.proceedRound(winner.name)
+
     console.log("score", score)
 
     io.sockets.emit('Win', {
       id: playerID,
       hands: JSON.stringify(maxWinning.hands.map(hand => hand.name)), 
       score: String(score?.score),
-      scoreName: score?.name
+      scoreName: score?.name,
     })
     game.player1.name === playerID ? game.player1 = winner : game.player2 = winner 
     game.player1.name !== playerID ? game.player1 = loser : game.player2 = loser 

@@ -18,6 +18,8 @@ export class Winning {
   type: string
   riichiTurn: number
   winTurn: number
+  roundWind: string
+  isParent: boolean
 
   constructor(kotz: Tile[][], minkos: Tile[][], shuntz: Tile[][], jantou: Tile[], chiitoi: Tile[][],
               kokushi: Tile[], draw: Tile, type: string, riichiTurn: number, winTurn: number) {
@@ -32,6 +34,8 @@ export class Winning {
     this.riichiTurn = riichiTurn
     this.winTurn = winTurn
     this.hands = []
+    this.roundWind = ""
+    this.isParent = false
   }
 
   flatten(): Tile[] {
