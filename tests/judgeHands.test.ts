@@ -92,6 +92,38 @@ describe("役牌のテスト", () => {
   })
 })
 
+describe("場風牌のテスト", () => {
+  test("鳴きあり場風牌が判定できる", () => {
+    const testWin = new Winning([
+      [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")]
+    ], [
+      [new Tile("", 0, "south"), new Tile("", 0, "south"), new Tile("", 0, "south")]
+    ], [
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1, 6)
+    testWin.roundWind = "south"
+    testWin.judgeBakaze()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["場風牌: 南"])
+  })
+})
+
+describe("自風牌のテスト", () => {
+  test("鳴きあり自風牌が判定できる", () => {
+    const testWin = new Winning([
+      [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")]
+    ], [
+      [new Tile("", 0, "south"), new Tile("", 0, "south"), new Tile("", 0, "south")]
+    ], [
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1, 6)
+    testWin.isParent = false
+    testWin.judgeJikaze()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["自風牌: 南"])
+  })
+})
+
 describe("ダブル立直のテスト", () => {
   test("ダブル立直が判定できる", () => {
     const testWin = new Winning([], [], [

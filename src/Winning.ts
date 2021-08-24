@@ -215,11 +215,29 @@ export class Winning {
   }
 
   judgeBakaze(): void {
-    // if (false) { this.hands.push({ name: "場風牌: 東", han: 1 }) }
+    for (let i = 0; i < this.kotz.length; i++) {
+      if (this.kotz[i][0].character === this.roundWind) {
+        if (this.roundWind === "east") { this.hands.push({ name: "場風牌: 東", han: 1 }) }
+        if (this.roundWind === "south") { this.hands.push({ name: "場風牌: 南", han: 1 }) }
+      }
+    }
+    for (let i = 0; i < this.minkos.length; i++) {
+      if (this.minkos[i][0].character === this.roundWind) {
+        if (this.roundWind === "east") { this.hands.push({ name: "場風牌: 東", han: 1 }) }
+        if (this.roundWind === "south") { this.hands.push({ name: "場風牌: 南", han: 1 }) }
+      }
+    }
   }
 
   judgeJikaze(): void {
-    // if (false) { this.hands.push({ name: "自風牌: 東", han: 1 }) }
+    const myWind = this.isParent ? "東" : "南"
+    const myWindEn = this.isParent ? "east" : "south"
+    for (let i = 0; i < this.kotz.length; i++) {
+      if (this.kotz[i][0].character === myWindEn) { this.hands.push({ name: `自風牌: ${myWind}`, han: 1 }) }
+    }
+    for (let i = 0; i < this.minkos.length; i++) {
+      if (this.minkos[i][0].character === myWindEn) { this.hands.push({ name: `自風牌: ${myWind}`, han: 1 }) }
+    }
   }
 
   judgeRinsyan(): void {
