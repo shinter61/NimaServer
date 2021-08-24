@@ -1,4 +1,4 @@
-import { Score, childDrawScores, childRonScores } from "./scores"
+import { Score, childDrawScores, childRonScores, parentDrawScores, parentRonScores } from "./scores"
 import { Tile } from "./Tile"
 
 type Hand = {
@@ -98,9 +98,17 @@ export class Winning {
     else { fu = "*" }
 
     if (this.type === "draw") {
-      return childDrawScores.find(el => el.fu === fu && el.han === han)
+      if (this.isParent) {
+        return parentDrawScores.find(el => el.fu === fu && el.han === han)
+      } else {
+        return childDrawScores.find(el => el.fu === fu && el.han === han)
+      }
     } else {
-      return childRonScores.find(el => el.fu === fu && el.han === han)
+      if (this.isParent) {
+        return parentRonScores.find(el => el.fu === fu && el.han === han)
+      } else {
+        return childRonScores.find(el => el.fu === fu && el.han === han)
+      }
     }
   }
 
