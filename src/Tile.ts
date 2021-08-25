@@ -32,6 +32,35 @@ export class Tile {
   copy(): Tile {
     return new Tile(this.kind, this.number, this.character)
   }
+
+  next(): Tile | undefined {
+    const nextTile = this.copy()
+    if (nextTile.kind === "pin") {
+      nextTile.number += 1
+      if (nextTile.number === 10) { nextTile.number = 1 }
+      return nextTile
+    }
+    if (nextTile.kind === "sou" || nextTile.kind === "man") {
+      nextTile.number === 1 ? nextTile.number = 9 : nextTile.number = 1
+      return nextTile
+    }
+    const windArr = ["east", "south", "west", "north"]
+    if (windArr.includes(nextTile.character)) {
+      let index = windArr.findIndex(wind => nextTile.character === wind)
+      index += 1
+      if (index === 4) { index = 0 }
+      nextTile.character = windArr[index]
+      return nextTile
+    }
+    const dragonArr = ["white", "green", "red"]
+    if (dragonArr.includes(nextTile.character)) {
+      let index = dragonArr.findIndex(wind => nextTile.character === wind)
+      index += 1
+      if (index === 3) { index = 0 }
+      nextTile.character = dragonArr[index]
+      return nextTile
+    }
+  }
 }
 
 export const allTiles: Tile[] = [

@@ -20,6 +20,7 @@ export class Winning {
   winTurn: number
   roundWind: string
   isParent: boolean
+  doras: Tile[]
 
   constructor(kotz: Tile[][], minkos: Tile[][], shuntz: Tile[][], jantou: Tile[], chiitoi: Tile[][],
               kokushi: Tile[], draw: Tile, type: string, riichiTurn: number, winTurn: number) {
@@ -36,6 +37,7 @@ export class Winning {
     this.hands = []
     this.roundWind = ""
     this.isParent = false
+    this.doras = []
   }
 
   flatten(): Tile[] {
@@ -127,6 +129,7 @@ export class Winning {
     this.judgeChankan()
     this.judgeHaitei()
     this.judgeHoutei()
+    this.judgeDora()
 
     // 2飜役
     this.judgeDoubleRiichi()
@@ -262,6 +265,19 @@ export class Winning {
 
   judgeHoutei(): void {
     // if (false) { this.hands.push({ name: "河底撈魚", han: 1 }) }
+  }
+
+  judgeDora(): void {
+    let doraCount = 0
+    for (let i = 0; i < this.doras.length; i++) {
+      const dora = this.doras[i].next()
+      if (dora === undefined) { continue }
+      const flattenTiles = this.flatten()
+      for (let j = 0; j < flattenTiles.length; j++) {
+        if (flattenTiles[j].isEqual(dora)) { doraCount += 1 }
+      }
+    }
+    if (doraCount > 0) { this.hands.push({ name: `ドラ${doraCount}`, han: doraCount }) }
   }
 
   judgeDoubleRiichi(): void {

@@ -8,6 +8,7 @@ export class Game {
   round: number
   roundWind: string
   isEnd: boolean
+  doraTiles: Tile[]
 
   constructor() {
     this.player1 = new Player()
@@ -16,10 +17,12 @@ export class Game {
     this.round = 1
     this.roundWind = "east"
     this.isEnd = false
+    this.doraTiles = []
   }
 
   reload(): void {
     this.stock = []
+    this.doraTiles = []
     this.player1.reset()
     this.player2.reset()
 
@@ -52,10 +55,11 @@ export class Game {
 
     const player1Tiles = this.stock.splice(0, 13)
     const player2Tiles = this.stock.splice(0, 13)
-    console.log('stock count ', this.stock.length)
 
     this.player1.tiles = player1Tiles
     this.player2.tiles = player2Tiles
+
+    this.doraTiles.push(this.stock[this.stock.length - 1 - 5]) // 牌山の末尾から5枚目をドラにする
   }
 
   draw(): Tile | undefined { return this.stock.shift() }

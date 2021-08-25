@@ -72,7 +72,8 @@ io.sockets.on('connection', function(socket: Socket) {
         score: String(player1.score),
         round: String(game.round),
         roundWind: game.roundWind,
-        isParent: (game.round === 1).toString()
+        isParent: (game.round === 1).toString(),
+        doraTiles: JSON.stringify(game.doraTiles)
       })
       io.sockets.emit('DistributeInitTiles', {
         id: player2.name,
@@ -80,7 +81,8 @@ io.sockets.on('connection', function(socket: Socket) {
         score: String(player2.score),
         round: String(game.round),
         roundWind: game.roundWind,
-        isParent: (game.round === 2).toString()
+        isParent: (game.round === 2).toString(),
+        doraTiles: JSON.stringify(game.doraTiles)
       })
     }
   })
@@ -176,6 +178,7 @@ io.sockets.on('connection', function(socket: Socket) {
     for (let i = 0; i < winnings.length; i++) {
       // 前処理
       winnings[i].roundWind = game.roundWind
+      winnings[i].doras = game.doraTiles
       if ((winner.name === game.player1.name && game.round === 1) || (winner.name === game.player2.name && game.round === 2)) {
         winnings[i].isParent = true
       }

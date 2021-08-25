@@ -124,6 +124,22 @@ describe("自風牌のテスト", () => {
   })
 })
 
+describe("ドラのテスト", () => {
+  test("ドラが判定できる", () => {
+    const testWin = new Winning([
+      [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")]
+    ], [
+      [new Tile("", 0, "south"), new Tile("", 0, "south"), new Tile("", 0, "south")]
+    ], [
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1, 6)
+    testWin.doras = [new Tile("pin", 6, "")]
+    testWin.judgeDora()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["ドラ1"])
+  })
+})
+
 describe("ダブル立直のテスト", () => {
   test("ダブル立直が判定できる", () => {
     const testWin = new Winning([], [], [
