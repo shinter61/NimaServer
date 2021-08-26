@@ -179,6 +179,7 @@ io.sockets.on('connection', function(socket: Socket) {
       // 前処理
       winnings[i].roundWind = game.roundWind
       winnings[i].doras = game.doraTiles
+      if (winner.riichiTurn > 0) { winnings[i].revDoras = game.revDoras() }
       if ((winner.name === game.player1.name && game.round === 1) || (winner.name === game.player2.name && game.round === 2)) {
         winnings[i].isParent = true
       }

@@ -88,5 +88,14 @@ export class Game {
       }
     }
   }
+
+  revDoras(): Tile[] {
+    const doras: Tile[] = []
+    for (let i = 0; i < this.doraTiles.length; i++) {
+      const tile = this.stock[this.stock.length - 1 - 6 - i*2]
+      doras.push(tile)
+    }
+    return doras
+  }
 }
 
