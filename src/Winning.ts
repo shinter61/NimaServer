@@ -10,6 +10,8 @@ export class Winning {
   kotz: Tile[][]
   minkos: Tile[][]
   shuntz: Tile[][]
+  ankans: Tile[][]
+  minkans: Tile[][]
   jantou: Tile[]
   chiitoi: Tile[][]
   kokushi: Tile[]
@@ -23,11 +25,13 @@ export class Winning {
   doras: Tile[]
   revDoras: Tile[]
 
-  constructor(kotz: Tile[][], minkos: Tile[][], shuntz: Tile[][], jantou: Tile[], chiitoi: Tile[][],
-              kokushi: Tile[], draw: Tile, type: string, riichiTurn: number, winTurn: number) {
+  constructor(kotz: Tile[][], minkos: Tile[][], shuntz: Tile[][], ankans: Tile[][], minkans: Tile[][],
+              jantou: Tile[], chiitoi: Tile[][], kokushi: Tile[], draw: Tile, type: string, riichiTurn: number, winTurn: number) {
     this.kotz = kotz
     this.minkos = minkos
     this.shuntz = shuntz
+    this.ankans = ankans
+    this.minkans = minkans
     this.jantou = jantou
     this.chiitoi = chiitoi
     this.kokushi = kokushi

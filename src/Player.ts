@@ -6,6 +6,8 @@ export class Player {
   discards: Tile[]
   tiles: Tile[]
   minkos: Tile[][]
+  ankans: Tile[][]
+  minkans: Tile[][]
   turn: number
   riichiTurn: number
   score: number
@@ -15,6 +17,8 @@ export class Player {
     this.discards = []
     this.tiles = []
     this.minkos = []
+    this.ankans = []
+    this.minkans = []
     this.turn = 0
     this.riichiTurn = -1
     this.score = 35000
@@ -225,8 +229,8 @@ export class Player {
             }
           }
 
-          if ((shuntzTiles.length + kotzTiles.length + this.minkos.length) === 4 && jantou.length === 2) {
-            winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, jantou, [], [], winTile, type, this.riichiTurn, this.turn))
+          if ((shuntzTiles.length + kotzTiles.length + this.minkos.length + this.ankans.length + this.minkans.length) === 4 && jantou.length === 2) {
+            winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, this.ankans, this.minkans, jantou, [], [], winTile, type, this.riichiTurn, this.turn))
           }
           this.tiles = myTilesCopy3.slice()
           kotzTiles = kotzTilesCopy2.slice()
@@ -245,8 +249,8 @@ export class Player {
           }
         }
 
-        if ((shuntzTiles.length + kotzTiles.length + this.minkos.length) === 4 && jantou.length === 2) {
-          winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, jantou, [], [], winTile, type, this.riichiTurn, this.turn))
+        if ((shuntzTiles.length + kotzTiles.length + this.minkos.length + this.ankans.length + this.minkans.length) === 4 && jantou.length === 2) {
+          winnings.push(new Winning(kotzTiles, this.minkos, shuntzTiles, this.ankans, this.minkans, jantou, [], [], winTile, type, this.riichiTurn, this.turn))
         }
         this.tiles = myTilesCopy2.slice()
         kotzTiles = kotzTilesCopy.slice()
@@ -272,7 +276,7 @@ export class Player {
         }
       }
     }
-    if (toitzNum === 7) { return new Winning([], [], [], [], chiitoi, [], drawTile, type, this.riichiTurn, this.turn) }
+    if (toitzNum === 7) { return new Winning([], [], [], [], [], [], chiitoi, [], drawTile, type, this.riichiTurn, this.turn) }
   }
 
   judgeKokushi(drawTile: Tile, type: string): Winning | undefined {
@@ -286,7 +290,7 @@ export class Player {
     }
 
     if (alreadyFounded.length === 13 && toitzNum === 1) {
-      return new Winning([], [], [], [], [], this.tiles, drawTile, type, this.riichiTurn, this.turn)
+      return new Winning([], [], [], [], [], [], [], this.tiles, drawTile, type, this.riichiTurn, this.turn)
     }
   }
 
