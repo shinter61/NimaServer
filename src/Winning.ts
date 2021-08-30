@@ -57,7 +57,7 @@ export class Winning {
   }
 
   isMenzen(): boolean {
-    return this.minkos.length === 0
+    return (this.minkos.length + this.minkans.length) === 0
   }
 
   calcFu(): number {
