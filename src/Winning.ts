@@ -390,7 +390,7 @@ export class Winning {
   }
 
   judgeSankantsu(): void {
-    // if (false) { this.hands.push({ name: "三槓子", han: 2 }) }
+    if (this.minkans.length + this.ankans.length === 3) { this.hands.push({ name: "三槓子", han: 2 }) }
   }
 
   judgeChiitoi(): void {
@@ -547,7 +547,7 @@ export class Winning {
   }
 
   judgeSukantsu(): void {
-    // if (false) { this.hands.push({ name: "四槓子", han: 100 }) }
+    if (this.minkans.length + this.ankans.length === 4) { this.hands.push({ name: "四槓子", han: 100 }) }
   }
 
   judgeTsuiso(): void {

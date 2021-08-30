@@ -288,6 +288,21 @@ describe("三暗刻のテスト", () => {
   })
 })
 
+describe("三槓子のテスト", () => {
+  test("三槓子が判定できる", () => {
+    const testWin = new Winning([], [
+      [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")],
+    ], [], [
+      [new Tile("", 0, "white"), new Tile("", 0, "white"), new Tile("", 0, "white"), new Tile("", 0, "white")],
+      [new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")],
+    ], [
+      [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1, 6)
+    testWin.judgeSankantsu()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["三槓子"])
+  })
+})
+
 describe("三色同刻のテスト", () => {
   test("鳴きありで三色同刻が判定できる", () => {
     const testWin = new Winning([
@@ -506,6 +521,20 @@ describe("清老頭のテスト", () => {
     ], [], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", -1, 6)
     testWin.judgeChinroto()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["清老頭"])
+  })
+})
+
+describe("四槓子のテスト", () => {
+  test("四槓子が判定できる", () => {
+    const testWin = new Winning([], [], [], [
+      [new Tile("", 0, "white"), new Tile("", 0, "white"), new Tile("", 0, "white"), new Tile("", 0, "white")],
+      [new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")],
+    ], [
+      [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
+      [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")],
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1, 6)
+    testWin.judgeSukantsu()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["四槓子"])
   })
 })
 
