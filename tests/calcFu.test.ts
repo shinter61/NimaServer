@@ -51,6 +51,30 @@ test("暗刻,明刻ありの符が計算できる", () => {
   expect(fu).toBe(40)
 })
 
+test("暗槓の符が計算できる", () => {
+  const testWin = new Winning([], [], [
+    [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+    [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+    [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+  ], [
+    [new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")]
+  ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 3, ""), "ron", -1, 6)
+  const fu = testWin.calcFu()
+  expect(fu).toBe(70)
+})
+
+test("明槓の符が計算できる", () => {
+  const testWin = new Winning([], [], [
+    [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+    [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+    [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+  ], [], [
+    [new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")]
+  ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 3, ""), "ron", -1, 6)
+  const fu = testWin.calcFu()
+  expect(fu).toBe(40)
+})
+
 test("雀頭が役牌の符が計算できる", () => {
   const testWin = new Winning([], [], [
     [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],

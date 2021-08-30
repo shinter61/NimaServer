@@ -77,6 +77,12 @@ export class Winning {
     for (let i = 0; i < this.kotz.length; i++) {
       this.kotz[i][0].isYaochu() ? mentzFu += 8 : mentzFu += 4
     }
+    for (let i = 0; i < this.minkans.length; i++) {
+      this.minkans[i][0].isYaochu() ? mentzFu += 16 : mentzFu += 8
+    }
+    for (let i = 0; i < this.ankans.length; i++) {
+      this.ankans[i][0].isYaochu() ? mentzFu += 32 : mentzFu += 16
+    }
 
     let jantouFu = 0
     if (["white", "green", "red"].includes(this.jantou[0].character)) { jantouFu = 2 }
