@@ -113,13 +113,15 @@ io.sockets.on('connection', function(socket: Socket) {
     game.player1.name === playerID ? game.player1 = player : game.player2 = player
   })
 
-  socket.on('Draw', function(playerID: string) {
+  socket.on('Draw', function(playerID: string, isRinshan: boolean) {
     const tile = game.draw()
     if (tile === undefined) { return }
     const player = game.player1.name === playerID ? game.player1 : game.player2
     player.tiles.push(tile)
 
     player.turn += 1 // 巡目を増やす
+
+    if (isRinshan) { game.addDora() }
 
     const winnings: Winning[]  = player.judgeHands(tile, "draw") // ツモってるか調べる
 
@@ -139,7 +141,8 @@ io.sockets.on('connection', function(socket: Socket) {
       tiles: JSON.stringify(player.tiles), 
       stockCount: String(game.stock.length),
       waitsCandidate: JSON.stringify(waitsCandidate),
-      isWin: (winnings.length !== 0).toString()
+      isWin: (winnings.length !== 0).toString(),
+      doraTiles: JSON.stringify(game.doraTiles)
     })
     game.player1.name === playerID ? game.player1 = player : game.player2 = player
   })
@@ -160,6 +163,29 @@ io.sockets.on('connection', function(socket: Socket) {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
       minkos: JSON.stringify(player.minkos.map(minko => minko[0])),
+      discards: JSON.stringify(opponent.discards)
+    })
+
+    game.player1.name === playerID ? game.player1 = player : game.player2 = player
+    game.player1.name !== playerID ? game.player1 = opponent : game.player2 = opponent 
+  })
+
+  socket.on('Daiminkan', function(playerID: string) {
+    const player = game.player1.name === playerID ? game.player1 : game.player2
+    const opponent = game.player1.name !== playerID ? game.player1 : game.player2
+
+    const target: Tile = opponent.discards[opponent.discards.length - 1]
+    // 手牌から暗刻削除
+    for (let i = 0; i < 3; i++) {
+      const index = player.tiles.findIndex(tile => tile.isEqual(target))
+      player.tiles.splice(index, 1)
+    }
+    opponent.discards.pop() // 相手の捨て牌からカンされた牌を削除
+    player.minkans.push([target, target, target, target]) // 明槓追加
+    io.sockets.emit('Daiminkan', {
+      id: playerID,
+      tiles: JSON.stringify(player.tiles),
+      minkans: JSON.stringify(player.minkans.map(minkan => minkan[0])),
       discards: JSON.stringify(opponent.discards)
     })
 

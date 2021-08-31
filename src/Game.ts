@@ -97,5 +97,15 @@ export class Game {
     }
     return doras
   }
+
+  addDora(): void {
+    if (this.doraTiles.length === 1) {
+      this.doraTiles.push(this.stock[this.stock.length - 1 - 7])
+    } else if (this.doraTiles.length === 2) {
+      this.doraTiles.push(this.stock[this.stock.length - 1 - 9])
+    } else if (this.doraTiles.length === 3) {
+      this.doraTiles.push(this.stock[this.stock.length - 1 - 11])
+    }
+  }
 }
 
