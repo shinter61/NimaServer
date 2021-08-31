@@ -171,7 +171,7 @@ io.sockets.on('connection', function(socket: Socket) {
     const winner = game.player1.name === playerID ? game.player1 : game.player2
     const loser = game.player1.name !== playerID ? game.player1 : game.player2
 
-    let maxWinning: Winning = new Winning([], [], [], [], [], [], new Tile("", 0, ""), "", -1, -1)
+    let maxWinning: Winning = new Winning([], [], [], [], [], [], [], [], new Tile("", 0, ""), "", -1, -1)
     let maxHan = 0
     const winTile = type === "draw" ? winner.tiles[winner.tiles.length - 1] : loser.discards[loser.discards.length - 1]
     const winnings: Winning[]  = winner.judgeHands(winTile, type)
