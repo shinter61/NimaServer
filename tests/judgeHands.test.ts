@@ -90,6 +90,18 @@ describe("役牌のテスト", () => {
     testWin.judgeYakuhai()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["役牌: 白","役牌: 發"])
   })
+  test("暗槓で役牌が判定できる", () => {
+    const testWin = new Winning([
+      [new Tile("", 0, "white"), new Tile("", 0, "white"), new Tile("", 0, "white")]
+    ], [], [
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+    ], [
+      [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")]
+    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1, 6)
+    testWin.judgeYakuhai()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["役牌: 白","役牌: 發"])
+  })
 })
 
 describe("場風牌のテスト", () => {
@@ -271,6 +283,19 @@ describe("三暗刻のテスト", () => {
     ], [
       [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
     ], [], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("", 0, "green"), "draw", -1, 6)
+    testWin.judgeSananko()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["三暗刻"])
+  })
+
+  test("鳴きあり、暗槓あり、自摸あがりで三暗刻が判定できる", () => {
+    const testWin = new Winning([
+      [new Tile("", 0, "white"), new Tile("", 0, "white"), new Tile("", 0, "white")],
+      [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")],
+    ], [
+      [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
+    ], [], [
+      [new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")],
+    ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("", 0, "green"), "draw", -1, 6)
     testWin.judgeSananko()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["三暗刻"])
   })

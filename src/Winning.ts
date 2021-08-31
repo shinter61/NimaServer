@@ -52,8 +52,17 @@ export class Winning {
     } else if (this.kokushi.length !== 0) {
       return this.kokushi
     } else {
-      return [this.jantou, this.shuntz, this.kotz, this.minkos].flat(3)
+      return [this.jantou, this.shuntz, this.kotz, this.minkos, this.ankans, this.minkans].flat(3)
     }
+  }
+
+  kotzFlatten(): Tile[] {
+    const array = []
+    for (let i = 0; i < this.kotz.length; i++) { array.push(this.kotz[i][0]) }
+    for (let i = 0; i < this.minkos.length; i++) { array.push(this.minkos[i][0]) }
+    for (let i = 0; i < this.ankans.length; i++) { array.push(this.ankans[i][0]) }
+    for (let i = 0; i < this.minkans.length; i++) { array.push(this.minkans[i][0]) }
+    return array
   }
 
   isMenzen(): boolean {
@@ -226,27 +235,18 @@ export class Winning {
   }
 
   judgeYakuhai(): void {
-    for (let i = 0; i < this.kotz.length; i++) {
-      if (this.kotz[i][0].character === "white") { this.hands.push({ name: "役牌: 白", han: 1 })  }
-      if (this.kotz[i][0].character === "green") { this.hands.push({ name: "役牌: 發", han: 1 })  }
-      if (this.kotz[i][0].character === "red") { this.hands.push({ name: "役牌: 中", han: 1 })  }
-    }
-    for (let i = 0; i < this.minkos.length; i++) {
-      if (this.minkos[i][0].character === "white") { this.hands.push({ name: "役牌: 白", han: 1 })  }
-      if (this.minkos[i][0].character === "green") { this.hands.push({ name: "役牌: 發", han: 1 })  }
-      if (this.minkos[i][0].character === "red") { this.hands.push({ name: "役牌: 中", han: 1 })  }
+    const kotzTiles = this.kotzFlatten()
+    for (let i = 0; i < kotzTiles.length; i++) {
+      if (kotzTiles[i].character === "white") { this.hands.push({ name: "役牌: 白", han: 1 })  }
+      if (kotzTiles[i].character === "green") { this.hands.push({ name: "役牌: 發", han: 1 })  }
+      if (kotzTiles[i].character === "red") { this.hands.push({ name: "役牌: 中", han: 1 })  }
     }
   }
 
   judgeBakaze(): void {
-    for (let i = 0; i < this.kotz.length; i++) {
-      if (this.kotz[i][0].character === this.roundWind) {
-        if (this.roundWind === "east") { this.hands.push({ name: "場風牌: 東", han: 1 }) }
-        if (this.roundWind === "south") { this.hands.push({ name: "場風牌: 南", han: 1 }) }
-      }
-    }
-    for (let i = 0; i < this.minkos.length; i++) {
-      if (this.minkos[i][0].character === this.roundWind) {
+    const kotzTiles = this.kotzFlatten()
+    for (let i = 0; i < kotzTiles.length; i++) {
+      if (kotzTiles[i].character === this.roundWind) {
         if (this.roundWind === "east") { this.hands.push({ name: "場風牌: 東", han: 1 }) }
         if (this.roundWind === "south") { this.hands.push({ name: "場風牌: 南", han: 1 }) }
       }
@@ -256,11 +256,9 @@ export class Winning {
   judgeJikaze(): void {
     const myWind = this.isParent ? "東" : "南"
     const myWindEn = this.isParent ? "east" : "south"
-    for (let i = 0; i < this.kotz.length; i++) {
-      if (this.kotz[i][0].character === myWindEn) { this.hands.push({ name: `自風牌: ${myWind}`, han: 1 }) }
-    }
-    for (let i = 0; i < this.minkos.length; i++) {
-      if (this.minkos[i][0].character === myWindEn) { this.hands.push({ name: `自風牌: ${myWind}`, han: 1 }) }
+    const kotzTiles = this.kotzFlatten()
+    for (let i = 0; i < kotzTiles.length; i++) {
+      if (kotzTiles[i].character === myWindEn) { this.hands.push({ name: `自風牌: ${myWind}`, han: 1 }) }
     }
   }
 
@@ -322,11 +320,9 @@ export class Winning {
     for (let i = 0; i < this.shuntz.length; i++) {
       if (![1, 7].includes(this.shuntz[i][0].number)) { isChanta = false }
     }
-    for (let i = 0; i < this.kotz.length; i++) {
-      if (!this.kotz[i][0].isYaochu()) { isChanta = false }
-    }
-    for (let i = 0; i < this.minkos.length; i++) {
-      if (!this.minkos[i][0].isYaochu()) { isChanta = false }
+    const kotzTiles = this.kotzFlatten()
+    for (let i = 0; i < kotzTiles.length; i++) {
+      if (!kotzTiles[i].isYaochu()) { isChanta = false }
     }
     if (!this.jantou[0].isYaochu()) { isChanta = false }
 
@@ -353,39 +349,35 @@ export class Winning {
   }
 
   judgeToiToi(): void {
-    if (this.kotz.length + this.minkos.length === 4) { this.hands.push({ name: "対々和", han: 2 }) }
+    if (this.kotz.length + this.minkos.length + this.ankans.length + this.minkans.length === 4) { this.hands.push({ name: "対々和", han: 2 }) }
   }
 
   judgeSansyoku(): void {
     const oneArr = [false, false, false]
     const nineArr = [false, false, false]
-    for (let i = 0; i < this.kotz.length; i++) {
-      if (this.kotz[i][0].isEqual(new Tile("pin", 1, ""))) { oneArr[0] = true }
-      if (this.kotz[i][0].isEqual(new Tile("sou", 1, ""))) { oneArr[1] = true }
-      if (this.kotz[i][0].isEqual(new Tile("man", 1, ""))) { oneArr[2] = true }
-      if (this.kotz[i][0].isEqual(new Tile("pin", 9, ""))) { nineArr[0] = true }
-      if (this.kotz[i][0].isEqual(new Tile("sou", 9, ""))) { nineArr[1] = true }
-      if (this.kotz[i][0].isEqual(new Tile("man", 9, ""))) { nineArr[2] = true }
-    }
-    for (let i = 0; i < this.minkos.length; i++) {
-      if (this.minkos[i][0].isEqual(new Tile("pin", 1, ""))) { oneArr[0] = true }
-      if (this.minkos[i][0].isEqual(new Tile("sou", 1, ""))) { oneArr[1] = true }
-      if (this.minkos[i][0].isEqual(new Tile("man", 1, ""))) { oneArr[2] = true }
-      if (this.minkos[i][0].isEqual(new Tile("pin", 9, ""))) { nineArr[0] = true }
-      if (this.minkos[i][0].isEqual(new Tile("sou", 9, ""))) { nineArr[1] = true }
-      if (this.minkos[i][0].isEqual(new Tile("man", 9, ""))) { nineArr[2] = true }
+    const kotzTiles = this.kotzFlatten()
+    for (let i = 0; i < kotzTiles.length; i++) {
+      if (kotzTiles[i].isEqual(new Tile("pin", 1, ""))) { oneArr[0] = true }
+      if (kotzTiles[i].isEqual(new Tile("sou", 1, ""))) { oneArr[1] = true }
+      if (kotzTiles[i].isEqual(new Tile("man", 1, ""))) { oneArr[2] = true }
+      if (kotzTiles[i].isEqual(new Tile("pin", 9, ""))) { nineArr[0] = true }
+      if (kotzTiles[i].isEqual(new Tile("sou", 9, ""))) { nineArr[1] = true }
+      if (kotzTiles[i].isEqual(new Tile("man", 9, ""))) { nineArr[2] = true }
     }
 
     if (oneArr.every(el => el) || nineArr.every(el => el)) { this.hands.push({ name: "三色同刻", han: 2 }) }
   }
 
   judgeSananko(): void {
-    if (this.kotz.length + this.minkos.length < 3) { return }
+    if (this.kotz.length + this.ankans.length + this.minkos.length < 3) { return }
     let ankoCount = 0
     for (let i = 0; i < this.kotz.length; i++) {
       if (!this.kotz[i][0].isEqual(this.draw)) { ankoCount++ }
     }
-    if (this.type === "draw" && this.kotz.length === 3) { this.hands.push({ name: "三暗刻", han: 2 }) }
+    for (let i = 0; i < this.ankans.length; i++) {
+      if (!this.ankans[i][0].isEqual(this.draw)) { ankoCount++ }
+    }
+    if (this.type === "draw" && (this.kotz.length + this.ankans.length) === 3) { this.hands.push({ name: "三暗刻", han: 2 }) }
     if (this.type === "ron" && ankoCount === 3) { this.hands.push({ name: "三暗刻", han: 2 }) }
   }
 
@@ -399,11 +391,9 @@ export class Winning {
 
   judgeShosangen(): void {
     let kotzNum = 0
-    for (let i = 0; i < this.kotz.length; i++) {
-      if (["white", "green", "red"].includes(this.kotz[i][0].character)) { kotzNum++ }
-    }
-    for (let i = 0; i < this.minkos.length; i++) {
-      if (["white", "green", "red"].includes(this.minkos[i][0].character)) { kotzNum++ }
+    const kotzTiles = this.kotzFlatten()
+    for (let i = 0; i < kotzTiles.length; i++) {
+      if (["white", "green", "red"].includes(kotzTiles[i].character)) { kotzNum++ }
     }
     if (kotzNum === 2 && ["white", "green", "red"].includes(this.jantou[0].character)) { this.hands.push({ name: "小三元", han: 2 }) }
   }
@@ -448,11 +438,9 @@ export class Winning {
     for (let i = 0; i < this.shuntz.length; i++) {
       if (![1, 7].includes(this.shuntz[i][0].number)) { isJunchan = false }
     }
-    for (let i = 0; i < this.kotz.length; i++) {
-      if (!this.kotz[i][0].is19()) { isJunchan = false }
-    }
-    for (let i = 0; i < this.minkos.length; i++) {
-      if (!this.minkos[i][0].is19()) { isJunchan = false }
+    const kotzTiles = this.kotzFlatten()
+    for (let i = 0; i < kotzTiles.length; i++) {
+      if (!kotzTiles[i].is19()) { isJunchan = false }
     }
     if (!this.jantou[0].is19()) { isJunchan = false }
 
@@ -479,11 +467,9 @@ export class Winning {
 
   judgeDaisangen(): void {
     let kotzNum = 0
-    for (let i = 0; i < this.kotz.length; i++) {
-      if (["white", "green", "red"].includes(this.kotz[i][0].character)) { kotzNum++ }
-    }
-    for (let i = 0; i < this.minkos.length; i++) {
-      if (["white", "green", "red"].includes(this.minkos[i][0].character)) { kotzNum++ }
+    const kotzTiles = this.kotzFlatten()
+    for (let i = 0; i < kotzTiles.length; i++) {
+      if (["white", "green", "red"].includes(kotzTiles[i].character)) { kotzNum++ }
     }
     if (kotzNum === 3) { this.hands.push({ name: "大三元", han: 100 }) }
   }
@@ -491,15 +477,10 @@ export class Winning {
   judgeShosushi(): void {
     if (this.kotz.length + this.minkos.length < 3) { return }
     const winds: string[] = ["east", "south", "west", "north"]
-    for (let i = 0; i < this.kotz.length; i++) {
-      if (winds.includes(this.kotz[i][0].character)) {
-        const index = winds.findIndex(wind => wind === this.kotz[i][0].character)
-        if (index !== -1) { winds.splice(index, 1) }
-      }
-    }
-    for (let i = 0; i < this.minkos.length; i++) {
-      if (winds.includes(this.minkos[i][0].character)) {
-        const index = winds.findIndex(wind => wind === this.minkos[i][0].character)
+    const kotzTiles = this.kotzFlatten()
+    for (let i = 0; i < kotzTiles.length; i++) {
+      if (winds.includes(kotzTiles[i].character)) {
+        const index = winds.findIndex(wind => wind === kotzTiles[i].character)
         if (index !== -1) { winds.splice(index, 1) }
       }
     }
@@ -509,15 +490,10 @@ export class Winning {
   judgeDaisushi(): void {
     if (this.kotz.length + this.minkos.length < 4) { return }
     const winds: string[] = ["east", "south", "west", "north"]
-    for (let i = 0; i < this.kotz.length; i++) {
-      if (winds.includes(this.kotz[i][0].character)) {
-        const index = winds.findIndex(wind => wind === this.kotz[i][0].character)
-        if (index !== -1) { winds.splice(index, 1) }
-      }
-    }
-    for (let i = 0; i < this.minkos.length; i++) {
-      if (winds.includes(this.minkos[i][0].character)) {
-        const index = winds.findIndex(wind => wind === this.minkos[i][0].character)
+    const kotzTiles = this.kotzFlatten()
+    for (let i = 0; i < kotzTiles.length; i++) {
+      if (winds.includes(kotzTiles[i].character)) {
+        const index = winds.findIndex(wind => wind === kotzTiles[i].character)
         if (index !== -1) { winds.splice(index, 1) }
       }
     }
@@ -525,23 +501,24 @@ export class Winning {
   }
 
   judgeSuanko(): void {
-    if (this.kotz.length !== 4) { return }
+    if (this.kotz.length + this.ankans.length !== 4) { return }
     let ankoCount = 0
     for (let i = 0; i < this.kotz.length; i++) {
       if (!this.kotz[i][0].isEqual(this.draw)) { ankoCount++ }
     }
+    for (let i = 0; i < this.ankans.length; i++) {
+      if (!this.ankans[i][0].isEqual(this.draw)) { ankoCount++ }
+    }
     if (ankoCount === 4) { this.hands.push({ name: "四暗刻単騎", han: 200 }) }
-    if (this.type === "draw" && this.kotz.length === 4) { this.hands.push({ name: "四暗刻", han: 100 }) }
+    if (this.type === "draw" && (this.kotz.length + this.ankans.length) === 4) { this.hands.push({ name: "四暗刻", han: 100 }) }
   }
 
   judgeChinroto(): void {
     if (this.kotz.length + this.minkos.length !== 4) { return }
     let isChinroto = true 
-    for (let i = 0; i < this.kotz.length; i++) {
-      if (!this.kotz[i][0].is19()) { isChinroto = false }
-    }
-    for (let i = 0; i < this.minkos.length; i++) {
-      if (!this.minkos[i][0].is19()) { isChinroto = false }
+    const kotzTiles = this.kotzFlatten()
+    for (let i = 0; i < kotzTiles.length; i++) {
+      if (!kotzTiles[i].is19()) { isChinroto = false }
     }
     if (isChinroto) { this.hands.push({ name: "清老頭", han: 100 }) }
   }
