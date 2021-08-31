@@ -216,6 +216,27 @@ io.sockets.on('connection', function(socket: Socket) {
     game.player1.name === playerID ? game.player1 = player : game.player2 = player
   })
 
+  socket.on('Ankan', function(playerID: string, tiles: string) {
+    const player = game.player1.name === playerID ? game.player1 : game.player2
+    const tileObj = (JSON.parse(tiles) as Tile[])[0]
+    const target = new Tile(tileObj.kind, tileObj.number, tileObj.character)
+    // 手牌から暗槓削除
+    for (let i = 0; i < 4; i++) {
+      const index = player.tiles.findIndex(tile => tile.isEqual(target))
+      player.tiles.splice(index, 1)
+    }
+
+    player.ankans.push([target, target, target, target]) // 暗槓追加
+
+    io.sockets.emit('Ankan', {
+      id: playerID,
+      tiles: JSON.stringify(player.tiles),
+      ankans: JSON.stringify(player.ankans.map(ankan => ankan[0])),
+    })
+
+    game.player1.name === playerID ? game.player1 = player : game.player2 = player
+  })
+
   socket.on('Win', function(playerID: string, type: string) {
     const winner = game.player1.name === playerID ? game.player1 : game.player2
     const loser = game.player1.name !== playerID ? game.player1 : game.player2
