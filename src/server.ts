@@ -193,6 +193,29 @@ io.sockets.on('connection', function(socket: Socket) {
     game.player1.name !== playerID ? game.player1 = opponent : game.player2 = opponent 
   })
 
+  socket.on('Kakan', function(playerID: string, tiles: string) {
+    const player = game.player1.name === playerID ? game.player1 : game.player2
+    const tileObj = (JSON.parse(tiles) as Tile[])[0]
+    const target = new Tile(tileObj.kind, tileObj.number, tileObj.character)
+    // 手牌から加槓牌削除
+    const index = player.tiles.findIndex(tile => tile.isEqual(target))
+    player.tiles.splice(index, 1)
+
+    // 手牌から明刻削除
+    const minkoIdx = player.minkos.findIndex(minko => minko[0].isEqual(target))
+    player.minkos.splice(minkoIdx, 1)
+
+    player.minkans.push([target, target, target, target]) // 明槓追加
+    io.sockets.emit('Kakan', {
+      id: playerID,
+      tiles: JSON.stringify(player.tiles),
+      minkos: JSON.stringify(player.minkos.map(minko => minko[0])),
+      minkans: JSON.stringify(player.minkans.map(minkan => minkan[0])),
+    })
+
+    game.player1.name === playerID ? game.player1 = player : game.player2 = player
+  })
+
   socket.on('Win', function(playerID: string, type: string) {
     const winner = game.player1.name === playerID ? game.player1 : game.player2
     const loser = game.player1.name !== playerID ? game.player1 : game.player2
