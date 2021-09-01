@@ -57,5 +57,8 @@
     "testMatch": [
       "**/tests/**/*.test.ts"
     ]
+  },
+  "engines": {
+    "node": "14.x"
   }
 }
