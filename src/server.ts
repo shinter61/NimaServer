@@ -12,6 +12,12 @@ const io = new Server(server);
 
 const connections: Socket[] = [];
 const game = new Game();
+const matchingUserIDs: string[] = [];
+
+interface StringKeyObject {
+  [key: string]: Game
+}
+const rooms: StringKeyObject = {};
 
 server.listen(process.env.PORT || 3000);
 console.log('Server is running...');
@@ -35,6 +41,11 @@ io.sockets.on('connection', function(socket: Socket) {
     console.log("player1 ", game.player1.name)
     console.log("player2 ", game.player2.name)
   });
+
+  socket.on('StartMatching', function(userID: string) {
+    console.log('Start matching!!!')
+    matchingUserIDs.push(userID);
+  })
 
   socket.on('AddPlayer', function(data: string) {
     if (game.player1.name == "") {
@@ -287,3 +298,27 @@ io.sockets.on('connection', function(socket: Socket) {
   })
 })
 
+setInterval(() => {
+  console.log('hello')
+  for (let i = 0; i < matchingUserIDs.length; i++) {
+    if (i === matchingUserIDs.length-1 && i%2 === 1) { return }
+
+    const roomID = new Date().getTime().toString();
+    const userID1 = matchingUserIDs[i];
+    const userID2 = matchingUserIDs[i+1];
+
+    const socket1 = connections.find(socket => socket.handshake.auth.name === userID1)
+    const socket2 = connections.find(socket => socket.handshake.auth.name === userID2)
+    if (socket1 === undefined || socket2 === undefined) { return }
+    void socket1.join(roomID); void socket2.join(roomID);
+
+    const game = new Game;
+    game.player1.name = userID1;
+    game.player2.name = userID2;
+    rooms[roomID] = game;
+    io.to(roomID).emit('InformPlayersNames', { player1: game.player1.name, player2: game.player2.name })
+
+    matchingUserIDs.splice(0, 2);
+    i -= 2;
+  }
+}, 10000)
