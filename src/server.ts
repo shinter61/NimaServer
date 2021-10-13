@@ -11,7 +11,6 @@ const server = createServer(app);
 const io = new Server(server);
 
 const connections: Socket[] = [];
-const game = new Game();
 const matchingUserIDs: string[] = [];
 
 interface StringKeyObject {
@@ -28,37 +27,18 @@ io.sockets.on('connection', function(socket: Socket) {
 
   // Disconnect
   socket.on('disconnect', function() {
-    const playerID: string = socket.handshake.auth.name as string
-    if (game.player1.name == playerID) {
-      game.player1 = new Player()
-    } else if (game.player2.name == playerID) {
-      game.player2 = new Player()
-    }
-    io.sockets.emit('InformPlayersNames', { player1: game.player1.name, player2: game.player2.name })
-
     connections.splice(connections.indexOf(socket), 1);
     console.log('Disconnect: %s sockets are connected', connections.length);
-    console.log("player1 ", game.player1.name)
-    console.log("player2 ", game.player2.name)
   });
 
   socket.on('StartMatching', function(userID: string) {
-    console.log('Start matching!!!')
     matchingUserIDs.push(userID);
   })
 
-  socket.on('AddPlayer', function(data: string) {
-    if (game.player1.name == "") {
-      game.player1.name = data
-    } else if (game.player2.name == "") {
-      game.player2.name = data
-    }
-    console.log("player1 ", game.player1.name)
-    console.log("player2 ", game.player2.name)
-    io.sockets.emit('InformPlayersNames', { player1: game.player1.name, player2: game.player2.name })
-  })
+  socket.on('StartGame', function(roomID: string) {
+    const game = rooms[roomID];
+    if (game === undefined) { return }
 
-  socket.on('StartGame', function() {
     game.reload()
     game.player1.organizeTile()
     game.player2.organizeTile()
@@ -77,7 +57,7 @@ io.sockets.on('connection', function(socket: Socket) {
       })
     } else {
       const { player1, player2 } = game
-      io.sockets.emit('DistributeInitTiles', {
+      io.to(roomID).emit('DistributeInitTiles', {
         id: player1.name,
         tiles: JSON.stringify(player1.tiles),
         score: String(player1.score),
@@ -86,7 +66,7 @@ io.sockets.on('connection', function(socket: Socket) {
         isParent: (game.round === 1).toString(),
         doraTiles: JSON.stringify(game.doraTiles)
       })
-      io.sockets.emit('DistributeInitTiles', {
+      io.to(roomID).emit('DistributeInitTiles', {
         id: player2.name,
         tiles: JSON.stringify(player2.tiles),
         score: String(player2.score),
@@ -98,7 +78,10 @@ io.sockets.on('connection', function(socket: Socket) {
     }
   })
 
-  socket.on('Discard', function(playerID: string, tiles: string, isRiichi: boolean) {
+  socket.on('Discard', function(roomID: string, playerID: string, tiles: string, isRiichi: boolean) {
+    const game = rooms[roomID];
+    if (game === undefined) { return }
+
     const tileObj = (JSON.parse(tiles) as Tile[])[0]
     const discardTile = new Tile(tileObj.kind, tileObj.number, tileObj.character)
     const player = game.player1.name === playerID ? game.player1 : game.player2
@@ -114,17 +97,20 @@ io.sockets.on('connection', function(socket: Socket) {
     // 聴牌時の待ち牌を知らせる
     const waitTiles: Tile[] = player.waitTiles()
 
-    io.sockets.emit('InformDiscards', {
+    io.to(roomID).emit('InformDiscards', {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
       discards: JSON.stringify(player.discards),
       waits: JSON.stringify(waitTiles),
       riichiTurn: String(player.riichiTurn)
     })
-    game.player1.name === playerID ? game.player1 = player : game.player2 = player
+    game.player1.name === playerID ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
   })
 
-  socket.on('Draw', function(playerID: string, isRinshan: boolean) {
+  socket.on('Draw', function(roomID: string, playerID: string, isRinshan: boolean) {
+    const game = rooms[roomID];
+    if (game === undefined) { return }
+
     const tile = game.draw()
     if (tile === undefined) { return }
     const player = game.player1.name === playerID ? game.player1 : game.player2
@@ -147,7 +133,7 @@ io.sockets.on('connection', function(socket: Socket) {
       waitsCandidate.push({ tile: player.tiles[i], waitTiles: waitTiles })
     }
 
-    io.sockets.emit('Draw', {
+    io.to(roomID).emit('Draw', {
       id: playerID,
       tiles: JSON.stringify(player.tiles), 
       stockCount: String(game.stock.length),
@@ -155,10 +141,13 @@ io.sockets.on('connection', function(socket: Socket) {
       isWin: (winnings.length !== 0).toString(),
       doraTiles: JSON.stringify(game.doraTiles)
     })
-    game.player1.name === playerID ? game.player1 = player : game.player2 = player
+    game.player1.name === playerID ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
   })
 
-  socket.on('Pon', function(playerID: string) {
+  socket.on('Pon', function(roomID: string, playerID: string) {
+    const game = rooms[roomID];
+    if (game === undefined) { return }
+
     const player = game.player1.name === playerID ? game.player1 : game.player2
     const opponent = game.player1.name !== playerID ? game.player1 : game.player2
 
@@ -170,18 +159,21 @@ io.sockets.on('connection', function(socket: Socket) {
     }
     opponent.discards.pop() // 相手の捨て牌からポンされた牌を削除
     player.minkos.push([target, target, target]) // 明刻追加
-    io.sockets.emit('Pon', {
+    io.to(roomID).emit('Pon', {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
       minkos: JSON.stringify(player.minkos.map(minko => minko[0])),
       discards: JSON.stringify(opponent.discards)
     })
 
-    game.player1.name === playerID ? game.player1 = player : game.player2 = player
-    game.player1.name !== playerID ? game.player1 = opponent : game.player2 = opponent 
+    game.player1.name === playerID ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
+    game.player1.name !== playerID ? rooms[roomID].player1 = opponent : rooms[roomID].player2 = opponent 
   })
 
-  socket.on('Daiminkan', function(playerID: string) {
+  socket.on('Daiminkan', function(roomID: string, playerID: string) {
+    const game = rooms[roomID];
+    if (game === undefined) { return }
+
     const player = game.player1.name === playerID ? game.player1 : game.player2
     const opponent = game.player1.name !== playerID ? game.player1 : game.player2
 
@@ -193,18 +185,21 @@ io.sockets.on('connection', function(socket: Socket) {
     }
     opponent.discards.pop() // 相手の捨て牌からカンされた牌を削除
     player.minkans.push([target, target, target, target]) // 明槓追加
-    io.sockets.emit('Daiminkan', {
+    io.to(roomID).emit('Daiminkan', {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
       minkans: JSON.stringify(player.minkans.map(minkan => minkan[0])),
       discards: JSON.stringify(opponent.discards)
     })
 
-    game.player1.name === playerID ? game.player1 = player : game.player2 = player
-    game.player1.name !== playerID ? game.player1 = opponent : game.player2 = opponent 
+    game.player1.name === playerID ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
+    game.player1.name !== playerID ? rooms[roomID].player1 = opponent : rooms[roomID].player2 = opponent 
   })
 
-  socket.on('Kakan', function(playerID: string, tiles: string) {
+  socket.on('Kakan', function(roomID: string, playerID: string, tiles: string) {
+    const game = rooms[roomID];
+    if (game === undefined) { return }
+
     const player = game.player1.name === playerID ? game.player1 : game.player2
     const tileObj = (JSON.parse(tiles) as Tile[])[0]
     const target = new Tile(tileObj.kind, tileObj.number, tileObj.character)
@@ -217,17 +212,20 @@ io.sockets.on('connection', function(socket: Socket) {
     player.minkos.splice(minkoIdx, 1)
 
     player.minkans.push([target, target, target, target]) // 明槓追加
-    io.sockets.emit('Kakan', {
+    io.to(roomID).emit('Kakan', {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
       minkos: JSON.stringify(player.minkos.map(minko => minko[0])),
       minkans: JSON.stringify(player.minkans.map(minkan => minkan[0])),
     })
 
-    game.player1.name === playerID ? game.player1 = player : game.player2 = player
+    game.player1.name === playerID ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
   })
 
-  socket.on('Ankan', function(playerID: string, tiles: string) {
+  socket.on('Ankan', function(roomID: string, playerID: string, tiles: string) {
+    const game = rooms[roomID];
+    if (game === undefined) { return }
+
     const player = game.player1.name === playerID ? game.player1 : game.player2
     const tileObj = (JSON.parse(tiles) as Tile[])[0]
     const target = new Tile(tileObj.kind, tileObj.number, tileObj.character)
@@ -239,16 +237,19 @@ io.sockets.on('connection', function(socket: Socket) {
 
     player.ankans.push([target, target, target, target]) // 暗槓追加
 
-    io.sockets.emit('Ankan', {
+    io.to(roomID).emit('Ankan', {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
       ankans: JSON.stringify(player.ankans.map(ankan => ankan[0])),
     })
 
-    game.player1.name === playerID ? game.player1 = player : game.player2 = player
+    game.player1.name === playerID ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
   })
 
-  socket.on('Win', function(playerID: string, type: string) {
+  socket.on('Win', function(roomID: string, playerID: string, type: string) {
+    const game = rooms[roomID];
+    if (game === undefined) { return }
+
     const winner = game.player1.name === playerID ? game.player1 : game.player2
     const loser = game.player1.name !== playerID ? game.player1 : game.player2
 
@@ -287,19 +288,20 @@ io.sockets.on('connection', function(socket: Socket) {
 
     console.log("score", score)
 
-    io.sockets.emit('Win', {
+    io.to(roomID).emit('Win', {
       id: playerID,
       hands: JSON.stringify(maxWinning.hands.map(hand => hand.name)), 
+      revDoras: JSON.stringify(game.revDoras()),
       score: String(score?.score),
       scoreName: score?.name,
     })
-    game.player1.name === playerID ? game.player1 = winner : game.player2 = winner 
-    game.player1.name !== playerID ? game.player1 = loser : game.player2 = loser 
+    game.player1.name === playerID ? rooms[roomID].player1 = winner : rooms[roomID].player2 = winner 
+    game.player1.name !== playerID ? rooms[roomID].player1 = loser : rooms[roomID].player2 = loser 
   })
 })
 
 setInterval(() => {
-  console.log('hello')
+  console.log('matchingUserIDs', matchingUserIDs)
   for (let i = 0; i < matchingUserIDs.length; i++) {
     if (i === matchingUserIDs.length-1 && i%2 === 1) { return }
 
@@ -316,9 +318,9 @@ setInterval(() => {
     game.player1.name = userID1;
     game.player2.name = userID2;
     rooms[roomID] = game;
-    io.to(roomID).emit('InformPlayersNames', { player1: game.player1.name, player2: game.player2.name })
+    io.to(roomID).emit('InformPlayersNames', { player1: game.player1.name, player2: game.player2.name, roomID })
 
     matchingUserIDs.splice(0, 2);
     i -= 2;
   }
-}, 10000)
+}, 1000)
