@@ -39,43 +39,49 @@ io.sockets.on('connection', function(socket: Socket) {
     const game = rooms[roomID];
     if (game === undefined) { return }
 
-    game.reload()
-    game.player1.organizeTile()
-    game.player2.organizeTile()
-    const tile = game.draw()
-    if (tile !== undefined) { game.player1.tiles.push(tile) }
-    game.player1.turn += 1
+    rooms[roomID].reload()
+    rooms[roomID].player1.organizeTile()
+    rooms[roomID].player2.organizeTile()
+    const tile = rooms[roomID].draw()
+    if (tile !== undefined) { rooms[roomID].player1.tiles.push(tile) }
+    rooms[roomID].player1.turn += 1
 
-    if (game.isEnd) {
-      const winner: Player = game.player1.score >= game.player2.score ? game.player1 : game.player2
-      const loser: Player = game.player1.score < game.player2.score ? game.player1 : game.player2
-      io.sockets.emit('EndGame', {
-        winnerID: winner.name,
-        winnerScore: String(winner.score),
-        loserID: loser.name,
-        loserScore: String(loser.score)
-      })
-    } else {
-      const { player1, player2 } = game
-      io.to(roomID).emit('DistributeInitTiles', {
-        id: player1.name,
-        tiles: JSON.stringify(player1.tiles),
-        score: String(player1.score),
-        round: String(game.round),
-        roundWind: game.roundWind,
-        isParent: (game.round === 1).toString(),
-        doraTiles: JSON.stringify(game.doraTiles)
-      })
-      io.to(roomID).emit('DistributeInitTiles', {
-        id: player2.name,
-        tiles: JSON.stringify(player2.tiles),
-        score: String(player2.score),
-        round: String(game.round),
-        roundWind: game.roundWind,
-        isParent: (game.round === 2).toString(),
-        doraTiles: JSON.stringify(game.doraTiles)
-      })
-    }
+    const { player1, player2 } = game
+    io.to(roomID).emit('DistributeInitTiles', {
+      id: player1.name,
+      tiles: JSON.stringify(player1.tiles),
+      score: String(player1.score),
+      round: String(game.round),
+      roundWind: game.roundWind,
+      isParent: (game.round === 1).toString(),
+      doraTiles: JSON.stringify(game.doraTiles),
+      stockCount: String(game.stock.length - 14)
+    })
+    io.to(roomID).emit('DistributeInitTiles', {
+      id: player2.name,
+      tiles: JSON.stringify(player2.tiles),
+      score: String(player2.score),
+      round: String(game.round),
+      roundWind: game.roundWind,
+      isParent: (game.round === 2).toString(),
+      doraTiles: JSON.stringify(game.doraTiles),
+      stockCount: String(game.stock.length - 14)
+    })
+  })
+
+  socket.on('EndGame', function(roomID: string) {
+    const game = rooms[roomID];
+    if (game === undefined) { return }
+
+    const winner: Player = game.player1.score >= game.player2.score ? game.player1 : game.player2
+    const loser: Player = game.player1.score < game.player2.score ? game.player1 : game.player2
+
+    io.to(roomID).emit('EndGame', {
+      winnerID: winner.name,
+      winnerScore: String(winner.score),
+      loserID: loser.name,
+      loserScore: String(loser.score)
+    })
   })
 
   socket.on('Discard', function(roomID: string, playerID: string, tiles: string, isRiichi: boolean) {
@@ -136,7 +142,7 @@ io.sockets.on('connection', function(socket: Socket) {
     io.to(roomID).emit('Draw', {
       id: playerID,
       tiles: JSON.stringify(player.tiles), 
-      stockCount: String(game.stock.length),
+      stockCount: String(game.stock.length - 14),
       waitsCandidate: JSON.stringify(waitsCandidate),
       isWin: (winnings.length !== 0).toString(),
       doraTiles: JSON.stringify(game.doraTiles)
@@ -246,6 +252,51 @@ io.sockets.on('connection', function(socket: Socket) {
     game.player1.name === playerID ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
   })
 
+  socket.on('ExhaustiveDraw', function(roomID: string) {
+    const game = rooms[roomID]
+    if (game === undefined) { return }
+
+    const player1WaitTiles = game.player1.waitTiles()
+    const player2WaitTiles = game.player2.waitTiles()
+    const isPlayer1Tenpai = player1WaitTiles.length !== 0
+    const isPlayer2Tenpai = player2WaitTiles.length !== 0
+
+    if ((isPlayer1Tenpai && isPlayer2Tenpai) || (!isPlayer1Tenpai && !isPlayer2Tenpai)) {
+      // 本場増やす
+    } else if (isPlayer1Tenpai) {
+      rooms[roomID].player1.score += 1500
+      rooms[roomID].player2.score -= 1500
+    } else if (isPlayer2Tenpai) {
+      rooms[roomID].player2.score += 1500
+      rooms[roomID].player1.score -= 1500
+    }
+
+    // 終局判定
+    game.judgeEndGame("")
+
+    console.log('isPlayer1Tenpai', isPlayer1Tenpai)
+    console.log('isPlayer2Tenpai', isPlayer2Tenpai)
+    
+    // 局数進める
+    if (!isPlayer2Tenpai && game.round === 2) {
+      rooms[roomID].round = 1
+      rooms[roomID].roundWind = "south"
+    } else if (!isPlayer1Tenpai && game.round === 1) {
+      rooms[roomID].round = 2
+    }
+
+    io.to(roomID).emit('ExhaustiveDraw', {
+      id1: rooms[roomID].player1.name,
+      score1: String(rooms[roomID].player1.score),
+      tiles1: JSON.stringify(game.player1.tiles),
+      waitTiles1: JSON.stringify(player1WaitTiles),
+      id2: rooms[roomID].player2.name,
+      score2: String(rooms[roomID].player2.score),
+      tiles2: JSON.stringify(game.player2.tiles),
+      waitTiles2: JSON.stringify(player2WaitTiles),
+    })
+  })
+
   socket.on('Win', function(roomID: string, playerID: string, type: string) {
     const game = rooms[roomID];
     if (game === undefined) { return }
@@ -283,10 +334,12 @@ io.sockets.on('connection', function(socket: Socket) {
       loser.score -= score.score
     }
 
+    // 終局判定
+    game.judgeEndGame(winner.name)
+    console.log('isEnd', game.isEnd)
+
     // 局の場、局数を更新
     game.proceedRound(winner.name)
-
-    console.log("score", score)
 
     io.to(roomID).emit('Win', {
       id: playerID,
@@ -294,6 +347,7 @@ io.sockets.on('connection', function(socket: Socket) {
       revDoras: JSON.stringify(game.revDoras()),
       score: String(score?.score),
       scoreName: score?.name,
+      isGameEnd: game.isEnd
     })
     game.player1.name === playerID ? rooms[roomID].player1 = winner : rooms[roomID].player2 = winner 
     game.player1.name !== playerID ? rooms[roomID].player1 = loser : rooms[roomID].player2 = loser 

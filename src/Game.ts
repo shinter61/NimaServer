@@ -65,18 +65,6 @@ export class Game {
   draw(): Tile | undefined { return this.stock.shift() }
 
   proceedRound(winnerID: string): void {
-    // 終局
-    if (this.roundWind === "south" && this.round === 2) {
-      if (this.player1.name === winnerID) {
-        this.isEnd = true
-        return
-      }
-      if (this.player2.name === winnerID && this.player2.score > this.player1.score) {
-        this.isEnd = true
-        return
-      }
-    }
-
     if (this.player1.name === winnerID) {
       if (this.round === 2) {
         this.roundWind = "south"
@@ -86,6 +74,26 @@ export class Game {
       if (this.round === 1) {
         this.round = 2
       }
+    }
+  }
+
+  judgeEndGame(winnerID: string): void {
+    // 南2局
+    if (this.roundWind === "south" && this.round === 2) {
+      if (this.player1.name === winnerID) {
+        this.isEnd = true
+      }
+      if (this.player2.name === winnerID && this.player2.score > this.player1.score) {
+        this.isEnd = true
+      }
+      if (this.player2.waitTiles().length === 0) {
+        this.isEnd = true
+      }
+    }
+
+    // 飛び終了
+    if (this.player1.score < 0 || this.player2.score < 0) {
+      this.isEnd = true
     }
   }
 
