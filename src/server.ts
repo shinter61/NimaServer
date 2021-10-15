@@ -28,7 +28,37 @@ io.sockets.on('connection', function(socket: Socket) {
   // Disconnect
   socket.on('disconnect', function() {
     connections.splice(connections.indexOf(socket), 1);
+    const playerID = socket.handshake.auth.name as string
+    let targetRoomID = ""
+    for (const roomID in rooms) {
+      const game = rooms[roomID]
+      if (game.player1.name === playerID || game.player2.name === playerID) {
+        targetRoomID = roomID
+        break
+      }
+    }
+
     console.log('Disconnect: %s sockets are connected', connections.length);
+
+    if (targetRoomID === "") { return }
+    const game = rooms[targetRoomID]
+
+    if (game.isEnd) {
+      delete rooms[targetRoomID]
+    } else {
+      const winner = game.player1.name === playerID ? game.player2 : game.player1
+      const loser = game.player1.name === playerID ? game.player1 : game.player2
+
+      delete rooms[targetRoomID]
+
+      io.to(targetRoomID).emit('EndGame', {
+        winnerID: winner.name,
+        winnerScore: String(winner.score),
+        loserID: loser.name,
+        loserScore: String(loser.score),
+        isDisconnected: "true"
+      })
+    }
   });
 
   socket.on('StartMatching', function(userID: string) {
@@ -80,7 +110,8 @@ io.sockets.on('connection', function(socket: Socket) {
       winnerID: winner.name,
       winnerScore: String(winner.score),
       loserID: loser.name,
-      loserScore: String(loser.score)
+      loserScore: String(loser.score),
+      isDisconnected: "false"
     })
   })
 
