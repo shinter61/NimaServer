@@ -5,6 +5,9 @@ export type Score = {
   name: string
 }
 
+export const honbaScore = 300
+export const kyotakuScore = 1000
+
 export const childRonScores: Score[] = [
   { han: "1飜", fu: "30符", score: 1000, name: "" },
   { han: "1飜", fu: "40符", score: 1300, name: "" },

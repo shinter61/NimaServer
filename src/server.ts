@@ -5,6 +5,7 @@ import { Game } from "./Game"
 import { Player } from "./Player"
 import { Tile } from "./Tile"
 import { Winning } from "./Winning"
+import { honbaScore, kyotakuScore } from "./scores"
 
 const app: express.Express = express();
 const server = createServer(app);
@@ -83,6 +84,8 @@ io.sockets.on('connection', function(socket: Socket) {
       score: String(player1.score),
       round: String(game.round),
       roundWind: game.roundWind,
+      honba: String(game.honba),
+      kyotaku: String(game.kyotaku),
       isParent: (game.round === 1).toString(),
       doraTiles: JSON.stringify(game.doraTiles),
       stockCount: String(game.stock.length - 14)
@@ -93,6 +96,8 @@ io.sockets.on('connection', function(socket: Socket) {
       score: String(player2.score),
       round: String(game.round),
       roundWind: game.roundWind,
+      honba: String(game.honba),
+      kyotaku: String(game.kyotaku),
       isParent: (game.round === 2).toString(),
       doraTiles: JSON.stringify(game.doraTiles),
       stockCount: String(game.stock.length - 14)
@@ -129,6 +134,8 @@ io.sockets.on('connection', function(socket: Socket) {
     // 立直関連
     if (player.riichiTurn === -1 && isRiichi) {
       player.riichiTurn = player.turn
+      player.score -= 1000
+      game.kyotaku += 1
     }
 
     // 聴牌時の待ち牌を知らせる
@@ -139,7 +146,9 @@ io.sockets.on('connection', function(socket: Socket) {
       tiles: JSON.stringify(player.tiles),
       discards: JSON.stringify(player.discards),
       waits: JSON.stringify(waitTiles),
-      riichiTurn: String(player.riichiTurn)
+      riichiTurn: String(player.riichiTurn),
+      kyotaku: String(game.kyotaku),
+      score: String(player.score)
     })
     game.player1.name === playerID ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
   })
@@ -304,9 +313,6 @@ io.sockets.on('connection', function(socket: Socket) {
 
     // 終局判定
     game.judgeEndGame("")
-
-    console.log('isPlayer1Tenpai', isPlayer1Tenpai)
-    console.log('isPlayer2Tenpai', isPlayer2Tenpai)
     
     // 局数進める
     if (!isPlayer2Tenpai && game.round === 2) {
@@ -315,6 +321,9 @@ io.sockets.on('connection', function(socket: Socket) {
     } else if (!isPlayer1Tenpai && game.round === 1) {
       rooms[roomID].round = 2
     }
+
+    // 本場を積む
+    game.proceedHonba("")
 
     io.to(roomID).emit('ExhaustiveDraw', {
       id1: rooms[roomID].player1.name,
@@ -362,13 +371,18 @@ io.sockets.on('connection', function(socket: Socket) {
 
     const score = maxWinning.calcScore()
     if (score !== undefined) {
-      winner.score += score.score
-      loser.score -= score.score
+      winner.score += score.score + game.honba * honbaScore + game.kyotaku * kyotakuScore
+      loser.score -= score.score + game.honba * honbaScore
     }
 
     // 終局判定
     game.judgeEndGame(winner.name)
-    console.log('isEnd', game.isEnd)
+
+    // 本場を積む
+    game.proceedHonba("")
+
+    // 供託リセット
+    game.kyotaku = 0
 
     // 局の場、局数を更新
     game.proceedRound(winner.name)

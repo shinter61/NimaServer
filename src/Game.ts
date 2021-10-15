@@ -7,6 +7,8 @@ export class Game {
   stock: Tile[]
   round: number
   roundWind: string
+  honba: number
+  kyotaku: number
   isEnd: boolean
   doraTiles: Tile[]
 
@@ -16,6 +18,8 @@ export class Game {
     this.stock = []
     this.round = 1
     this.roundWind = "east"
+    this.honba = 0
+    this.kyotaku = 0
     this.isEnd = false
     this.doraTiles = []
   }
@@ -74,6 +78,20 @@ export class Game {
       if (this.round === 1) {
         this.round = 2
       }
+    }
+  }
+  
+  proceedHonba(winnerID: string): void {
+    // 親連荘 || 親聴牌なら本場を積む
+    if (
+      (this.player1.name === winnerID && this.round === 1) ||
+      (this.player2.name === winnerID && this.round === 2) ||
+      (winnerID === "" && this.player1.waitTiles().length !== 0 && this.round === 1) ||
+      (winnerID === "" && this.player2.waitTiles().length !== 0 && this.round === 2)
+    ) {
+      this.honba += 1
+    } else {
+      this.honba = 0
     }
   }
 
