@@ -389,6 +389,7 @@ io.sockets.on('connection', function(socket: Socket) {
 
     io.to(roomID).emit('Win', {
       id: playerID,
+      tiles: JSON.stringify(winner.tiles),
       hands: JSON.stringify(maxWinning.hands.map(hand => hand.name)), 
       revDoras: JSON.stringify(game.revDoras()),
       score: String(score?.score),
