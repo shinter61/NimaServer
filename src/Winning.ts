@@ -181,6 +181,7 @@ export class Winning {
     this.judgeChinroto()
     this.judgeSukantsu()
     this.judgeTsuiso()
+    this.judgeRhuiso()
     this.judgeKokushi()
     this.judgeChuren()
 
@@ -530,6 +531,16 @@ export class Winning {
   judgeTsuiso(): void {
     const flattenTiles = this.flatten()
     if (flattenTiles.every(tile => tile.kind === "")) { this.hands.push({ name: "字一色", han: 100 }) }
+  }
+
+  judgeRhuiso(): void {
+    const flattenTiles = this.flatten()
+    if (flattenTiles.every(tile =>
+      tile.isEqual(new Tile("sou", 2, "")) || tile.isEqual(new Tile("sou", 3, "")) || tile.isEqual(new Tile("sou", 4, "")) ||
+      tile.isEqual(new Tile("sou", 6, "")) || tile.isEqual(new Tile("sou", 8, "")) || tile.isEqual(new Tile("", 0, "green"))
+    )) {
+      this.hands.push({ name: "緑一色", han: 100 })
+    }
   }
 
   judgeKokushi(): void {

@@ -563,6 +563,35 @@ describe("四槓子のテスト", () => {
   })
 })
 
+describe("字一色のテスト", () => {
+  test("字一色が判定できる", () => {
+    const testWin = new Winning([
+      [new Tile("", 0, "red"), new Tile("", 0, "red"), new Tile("", 0, "red")],
+      [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")],
+    ], [
+      [new Tile("", 0, "east"), new Tile("", 0, "east"), new Tile("", 0, "east")],
+      [new Tile("", 0, "west"), new Tile("", 0, "west"), new Tile("", 0, "west")],
+    ], [], [], [], [new Tile("", 0, "north"), new Tile("", 0, "north")], [], [], new Tile("", 0, "east"), "draw", -1, 6)
+    testWin.judgeTsuiso()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["字一色"])
+  })
+})
+
+describe("緑一色のテスト", () => {
+  test("緑一色が判定できる", () => {
+    const testWin = new Winning([
+      [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")]
+    ], [
+      [new Tile("sou", 6, ""), new Tile("sou", 6, ""), new Tile("sou", 6, "")]
+    ], [
+      [new Tile("sou", 2, ""), new Tile("sou", 3, ""), new Tile("sou", 4, "")],
+      [new Tile("sou", 2, ""), new Tile("sou", 3, ""), new Tile("sou", 4, "")],
+    ], [], [], [new Tile("sou", 8, ""), new Tile("sou", 8, "")], [], [], new Tile("sou", 8, ""), "draw", -1, 6)
+    testWin.judgeRhuiso()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["緑一色"])
+  })
+})
+
 describe("国士無双のテスト", () => {
   test("国士無双が判定できる", () => {
     const testWin = new Winning([], [], [], [], [], [], [], [
