@@ -41,7 +41,7 @@ export class Game {
     }
     for (let i = 0; i < numbers.length; i++) {
       for (let j = 0; j < kinds.length; j++) {
-        if (numbers[i] >= 2 && numbers[i] <= 8 && kinds[j] != "pin") { continue }
+        if (numbers[i] >= 2 && numbers[i] <= 8 && kinds[j] !== "sou") { continue }
         for (let k = 0; k < 4; k++) {
           const tile = new Tile(kinds[j], numbers[i], "")
           this.stock.push(tile)

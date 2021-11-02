@@ -341,9 +341,9 @@ export class Winning {
   judgeIttsu(): void {
     const testArr = [false, false, false]
     for (let i = 0; i < this.shuntz.length; i++) {
-      if (this.shuntz[i][0].isEqual(new Tile("pin", 1, ""))) { testArr[0] = true }
-      if (this.shuntz[i][0].isEqual(new Tile("pin", 4, ""))) { testArr[1] = true }
-      if (this.shuntz[i][0].isEqual(new Tile("pin", 7, ""))) { testArr[2] = true }
+      if (this.shuntz[i][0].isEqual(new Tile("sou", 1, ""))) { testArr[0] = true }
+      if (this.shuntz[i][0].isEqual(new Tile("sou", 4, ""))) { testArr[1] = true }
+      if (this.shuntz[i][0].isEqual(new Tile("sou", 7, ""))) { testArr[2] = true }
     }
     if (testArr.every(el => el)) { this.hands.push({ name: "一気通貫", han: this.isMenzen() ? 2 : 1 }) }
   }
@@ -452,7 +452,7 @@ export class Winning {
     const kindArr = flattenTiles.map(tile => tile.kind)
     const uniqKindArr = Array.from(new Set(kindArr))
 
-    if (uniqKindArr.length === 1 && uniqKindArr[0] === "pin") {
+    if (uniqKindArr.length === 1 && uniqKindArr[0] === "sou") {
       this.hands.push({ name: "清一色", han: this.isMenzen() ? 6 : 5 })
     }
   }
@@ -551,19 +551,19 @@ export class Winning {
     if (!this.isMenzen()) { return }
     const flattenTiles = this.flatten()
     const churenTiles = [
-      new Tile("pin", 1, ""),
-      new Tile("pin", 1, ""),
-      new Tile("pin", 1, ""),
-      new Tile("pin", 2, ""),
-      new Tile("pin", 3, ""),
-      new Tile("pin", 4, ""),
-      new Tile("pin", 5, ""),
-      new Tile("pin", 6, ""),
-      new Tile("pin", 7, ""),
-      new Tile("pin", 8, ""),
-      new Tile("pin", 9, ""),
-      new Tile("pin", 9, ""),
-      new Tile("pin", 9, "")
+      new Tile("sou", 1, ""),
+      new Tile("sou", 1, ""),
+      new Tile("sou", 1, ""),
+      new Tile("sou", 2, ""),
+      new Tile("sou", 3, ""),
+      new Tile("sou", 4, ""),
+      new Tile("sou", 5, ""),
+      new Tile("sou", 6, ""),
+      new Tile("sou", 7, ""),
+      new Tile("sou", 8, ""),
+      new Tile("sou", 9, ""),
+      new Tile("sou", 9, ""),
+      new Tile("sou", 9, "")
     ]
 
     for (let i = 0; i < churenTiles.length; i++) {
@@ -571,7 +571,7 @@ export class Winning {
       if (index !== -1) { flattenTiles.splice(index, 1) }
     }
     
-    if (flattenTiles.length === 1 && flattenTiles[0].kind === "pin") {
+    if (flattenTiles.length === 1 && flattenTiles[0].kind === "sou") {
       if (flattenTiles[0].isEqual(this.draw)) { this.hands.push({ name: "純正九蓮宝燈", han: 200 }) }
       else { this.hands.push({ name: "九蓮宝燈", han: 100 }) }
     }

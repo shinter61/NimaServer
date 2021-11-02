@@ -73,14 +73,14 @@ export class Player {
       return 0;
     })
 
-    this.tiles = ([] as Tile[]).concat(pinzuTiles, souzuTiles, manzuTiles, eastTiles, southTiles, westTiles, northTiles,
+    this.tiles = ([] as Tile[]).concat(souzuTiles, pinzuTiles, manzuTiles, eastTiles, southTiles, westTiles, northTiles,
       whiteTiles, greenTiles, redTiles)
   }
 
   extractShuntz(firstIdx: number, secondIdx?: number): Tile[] {
     let mentz: Tile[] = []
     if (firstIdx >= this.tiles.length || firstIdx <= -1) { return mentz }
-    if (!this.tiles[firstIdx].isPinzu()) { return mentz }
+    if (!this.tiles[firstIdx].isSouzu()) { return mentz }
 
     if (secondIdx === undefined) {
       const currentTile: Tile = this.tiles[firstIdx].copy()
@@ -110,7 +110,7 @@ export class Player {
   judgeHands(winTile: Tile, type: string): Winning[] {
     const myTilesCopy: Tile[] = this.tiles.slice()
     const ankoTiles: Tile[] = []
-    const pinzuAnkoTiles: Tile[] = []
+    const souzuAnkoTiles: Tile[] = []
     let kotzTiles: Tile[][] = []
     let shuntzTiles: Tile[][] = []
     let dupCount = 0
@@ -145,10 +145,10 @@ export class Player {
       }
     }
 
-    // 筒子の暗刻を取り出す、それ以外の牌の暗刻は面子としてしか使えないため
+    // 索子の暗刻を取り出す、それ以外の牌の暗刻は面子としてしか使えないため
     for (let i = 0; i < ankoTiles.length; i++) {
-      if (ankoTiles[i].kind === "pin") {
-        pinzuAnkoTiles.push(ankoTiles[i])
+      if (ankoTiles[i].kind === "sou") {
+        souzuAnkoTiles.push(ankoTiles[i])
       } else {
         const index = this.tiles.findIndex(tile => tile.isEqual(ankoTiles[i]))
         const mentz: Tile[] = this.tiles.splice(index, 3)
@@ -161,10 +161,10 @@ export class Player {
     // 複数の刻子に対し「雀頭＋１牌とする(2,1)」の扱いをすることはない
     // bit全探索 3進数ver.
     const patterns: number[][] = []
-    for (let bit = 0; bit < 3 ** pinzuAnkoTiles.length; bit++) {
+    for (let bit = 0; bit < 3 ** souzuAnkoTiles.length; bit++) {
       let tmp = bit
       const row = []
-      for (let i = 0; i < pinzuAnkoTiles.length; i++) {
+      for (let i = 0; i < souzuAnkoTiles.length; i++) {
         row[i] = tmp % 3;
         tmp = Math.floor(tmp/3)
       }
@@ -181,12 +181,12 @@ export class Player {
       for (let j = 0; j < patterns[i].length; j++) {
         if (patterns[i][j] === 0) {
           // 「刻子として抜き出す（3）」
-          const index = this.tiles.findIndex(tile => tile.isEqual(pinzuAnkoTiles[j]))
+          const index = this.tiles.findIndex(tile => tile.isEqual(souzuAnkoTiles[j]))
           const mentz: Tile[] = this.tiles.splice(index, 3)
           kotzTiles.push(mentz)
         } else if (patterns[i][j] === 1) {
           // 「雀頭＋１牌とする(2,1)」
-          const index = this.tiles.findIndex(tile => tile.isEqual(pinzuAnkoTiles[j]))
+          const index = this.tiles.findIndex(tile => tile.isEqual(souzuAnkoTiles[j]))
           jantou = this.tiles.splice(index, 2)
         } else if (patterns[i][j] === 2) {
           // 「何もしない(1,1,1)」

@@ -13,8 +13,8 @@ export class Tile {
     return this.kind === tile.kind && this.number === tile.number && this.character === tile.character
   }
 
-  isPinzu(): boolean {
-    return this.kind === "pin"
+  isSouzu(): boolean {
+    return this.kind === "sou"
   }
 
   isYaochu(): boolean {
@@ -35,12 +35,12 @@ export class Tile {
 
   next(): Tile | undefined {
     const nextTile = this.copy()
-    if (nextTile.kind === "pin") {
+    if (nextTile.kind === "sou") {
       nextTile.number += 1
       if (nextTile.number === 10) { nextTile.number = 1 }
       return nextTile
     }
-    if (nextTile.kind === "sou" || nextTile.kind === "man") {
+    if (nextTile.kind === "pin" || nextTile.kind === "man") {
       nextTile.number === 1 ? nextTile.number = 9 : nextTile.number = 1
       return nextTile
     }
@@ -64,17 +64,17 @@ export class Tile {
 }
 
 export const allTiles: Tile[] = [
-  new Tile("pin", 1, ""),
-  new Tile("pin", 2, ""),
-  new Tile("pin", 3, ""),
-  new Tile("pin", 4, ""),
-  new Tile("pin", 5, ""),
-  new Tile("pin", 6, ""),
-  new Tile("pin", 7, ""),
-  new Tile("pin", 8, ""),
-  new Tile("pin", 9, ""),
   new Tile("sou", 1, ""),
+  new Tile("sou", 2, ""),
+  new Tile("sou", 3, ""),
+  new Tile("sou", 4, ""),
+  new Tile("sou", 5, ""),
+  new Tile("sou", 6, ""),
+  new Tile("sou", 7, ""),
+  new Tile("sou", 8, ""),
   new Tile("sou", 9, ""),
+  new Tile("pin", 1, ""),
+  new Tile("pin", 9, ""),
   new Tile("man", 1, ""),
   new Tile("man", 9, ""),
   new Tile("", 0, "east"),
