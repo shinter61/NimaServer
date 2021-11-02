@@ -41,6 +41,8 @@ io.sockets.on('connection', function(socket: Socket) {
 
     console.log('Disconnect: %s sockets are connected', connections.length);
 
+    matchingUserIDs.splice(matchingUserIDs.indexOf(playerID), 1);
+
     if (targetRoomID === "") { return }
     const game = rooms[targetRoomID]
 
