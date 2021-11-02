@@ -394,6 +394,7 @@ io.sockets.on('connection', function(socket: Socket) {
       revDoras: JSON.stringify(game.revDoras()),
       score: String(score?.score),
       scoreName: score?.name,
+      winType: type,
       isGameEnd: game.isEnd.toString()
     })
     game.player1.name === playerID ? rooms[roomID].player1 = winner : rooms[roomID].player2 = winner 
