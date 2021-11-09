@@ -28,6 +28,8 @@ export class Player {
     this.discards = []
     this.tiles = []
     this.minkos = []
+    this.ankans = []
+    this.minkans = []
     this.turn = 0
     this.riichiTurn = -1
   }
@@ -294,16 +296,28 @@ export class Player {
     }
   }
 
-  waitTiles(): Tile[] {
-    const waits: Tile[] = []
+  waitTiles(): Tile[][] {
+    const drawWaits: Tile[] = []
+    const ronWaits: Tile[] = []
     for (let i = 0; i < allTiles.length; i++) {
       const tilesCopy: Tile[] = []
-      for (let i = 0; i < this.tiles.length; i++) { tilesCopy.push(this.tiles[i].copy()) }
-      this.tiles.push(allTiles[i])
-      const winnings: Winning[]  = this.judgeHands(allTiles[i], "draw")
-      if (winnings.length !== 0) { waits.push(allTiles[i]) }
+      for (let j = 0; j < this.tiles.length; j++) { tilesCopy.push(this.tiles[j].copy()) }
+      const winnings: Winning[]  = this.judgeHands(allTiles[i], "ron")
+
+      let isYakuExists = false
+      for (let j = 0; j < winnings.length; j++) {
+        winnings[j].judgeHands()
+        if (winnings[j].hands.length > 0) {
+          winnings[j].print()
+          isYakuExists = true
+        }
+      }
+
+      if (winnings.length !== 0) { drawWaits.push(allTiles[i]) }
+      if (isYakuExists) { ronWaits.push(allTiles[i]) }
+
       this.tiles = tilesCopy
     }
-    return waits 
+    return [drawWaits, ronWaits]
   }
 }

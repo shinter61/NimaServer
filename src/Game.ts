@@ -86,8 +86,8 @@ export class Game {
     if (
       (this.player1.name === winnerID && this.round === 1) ||
       (this.player2.name === winnerID && this.round === 2) ||
-      (winnerID === "" && this.player1.waitTiles().length !== 0 && this.round === 1) ||
-      (winnerID === "" && this.player2.waitTiles().length !== 0 && this.round === 2)
+      (winnerID === "" && this.player1.waitTiles()[0].length !== 0 && this.round === 1) ||
+      (winnerID === "" && this.player2.waitTiles()[0].length !== 0 && this.round === 2)
     ) {
       this.honba += 1
     } else {
@@ -104,7 +104,7 @@ export class Game {
       if (this.player2.name === winnerID && this.player2.score > this.player1.score) {
         this.isEnd = true
       }
-      if (this.player2.waitTiles().length === 0) {
+      if (this.player2.waitTiles()[0].length === 0) {
         this.isEnd = true
       }
     }

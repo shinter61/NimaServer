@@ -11,7 +11,7 @@ describe("3面待ちテスト", () => {
       new Tile("sou", 7, ""), new Tile("sou", 8, ""), new Tile("sou", 9, ""),
       new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 1, ""), new Tile("sou", 4, ""), new Tile("sou", 7, "")])
   })
 
@@ -24,7 +24,7 @@ describe("3面待ちテスト", () => {
       new Tile("sou", 7, ""), new Tile("sou", 8, ""), new Tile("sou", 9, ""),
       new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 1, ""), new Tile("sou", 4, ""), new Tile("man", 1, "")])
   })
 
@@ -37,7 +37,7 @@ describe("3面待ちテスト", () => {
       new Tile("sou", 7, ""), new Tile("sou", 8, ""), new Tile("sou", 9, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 2, ""), new Tile("sou", 3, ""), new Tile("sou", 5, "")])
   })
 
@@ -50,7 +50,7 @@ describe("3面待ちテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 1, ""), new Tile("sou", 4, ""), new Tile("sou", 7, "")])
   })
 
@@ -63,7 +63,7 @@ describe("3面待ちテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 2, ""), new Tile("sou", 5, ""), new Tile("sou", 8, "")])
   })
 
@@ -75,7 +75,7 @@ describe("3面待ちテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 4, ""), new Tile("sou", 5, ""), new Tile("sou", 8, "")])
   })
 
@@ -87,7 +87,7 @@ describe("3面待ちテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 4, ""), new Tile("sou", 5, ""), new Tile("sou", 7, "")])
   })
 
@@ -99,7 +99,7 @@ describe("3面待ちテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 3, ""), new Tile("sou", 4, ""), new Tile("sou", 5, "")])
   })
 
@@ -111,7 +111,7 @@ describe("3面待ちテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 2, ""), new Tile("sou", 3, ""), new Tile("sou", 4, "")])
   })
 
@@ -123,7 +123,7 @@ describe("3面待ちテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 2, ""), new Tile("sou", 3, ""), new Tile("sou", 5, "")])
   })
 
@@ -135,7 +135,7 @@ describe("3面待ちテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 2, ""), new Tile("sou", 5, ""), new Tile("pin", 1, "")])
   })
 
@@ -147,7 +147,7 @@ describe("3面待ちテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 2, ""), new Tile("sou", 5, ""), new Tile("pin", 1, "")])
   })
 
@@ -159,7 +159,7 @@ describe("3面待ちテスト", () => {
       new Tile("sou", 6, ""), new Tile("sou", 7, ""), new Tile("sou", 8, ""), new Tile("sou", 9, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 5, ""), new Tile("sou", 6, ""), new Tile("sou", 9, "")])
   })
 })
@@ -173,7 +173,7 @@ describe("4面待ちのテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 2, ""), new Tile("sou", 3, ""), new Tile("sou", 5, ""), new Tile("sou", 8, "")])
   })
 
@@ -185,7 +185,7 @@ describe("4面待ちのテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 2, ""), new Tile("sou", 4, ""), new Tile("sou", 5, ""), new Tile("sou", 7, "")])
   })
 
@@ -197,7 +197,7 @@ describe("4面待ちのテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 2, ""), new Tile("sou", 3, ""), new Tile("sou", 4, ""), new Tile("sou", 5, "")])
   })
 
@@ -209,7 +209,7 @@ describe("4面待ちのテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 1, ""), new Tile("sou", 2, ""), new Tile("sou", 4, ""), new Tile("sou", 5, "")])
   })
 
@@ -221,7 +221,7 @@ describe("4面待ちのテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 3, ""), new Tile("sou", 4, ""), new Tile("sou", 5, ""), new Tile("sou", 6, "")])
   })
 
@@ -233,7 +233,7 @@ describe("4面待ちのテスト", () => {
       new Tile("sou", 7, ""), new Tile("sou", 8, ""), new Tile("sou", 9, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([new Tile("sou", 2, ""), new Tile("sou", 3, ""), new Tile("sou", 6, ""), new Tile("sou", 9, "")])
   })
 })
@@ -247,7 +247,7 @@ describe("5面待ち以上のテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([
       new Tile("sou", 2, ""), new Tile("sou", 4, ""), new Tile("sou", 5, ""),
       new Tile("sou", 7, ""), new Tile("sou", 8, "")])
@@ -261,7 +261,7 @@ describe("5面待ち以上のテスト", () => {
       new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([
       new Tile("sou", 2, ""), new Tile("sou", 3, ""), new Tile("sou", 4, ""),
       new Tile("sou", 5, ""), new Tile("sou", 6, "")])
@@ -275,7 +275,7 @@ describe("5面待ち以上のテスト", () => {
       new Tile("sou", 5, ""), new Tile("sou", 6, ""), new Tile("sou", 7, ""), new Tile("sou", 8, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([
       new Tile("sou", 2, ""), new Tile("sou", 3, ""), new Tile("sou", 5, ""),
       new Tile("sou", 6, ""), new Tile("sou", 8, ""), new Tile("sou", 9, "")])
@@ -289,7 +289,7 @@ describe("5面待ち以上のテスト", () => {
       new Tile("sou", 7, ""), new Tile("sou", 8, ""), new Tile("sou", 8, ""), new Tile("sou", 8, ""),
       new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([
       new Tile("sou", 1, ""), new Tile("sou", 3, ""), new Tile("sou", 4, ""),
       new Tile("sou", 6, ""), new Tile("sou", 7, ""), new Tile("sou", 9, "")])
@@ -303,7 +303,7 @@ describe("5面待ち以上のテスト", () => {
       new Tile("sou", 5, ""), new Tile("sou", 6, ""), new Tile("sou", 7, ""), new Tile("sou", 7, ""),
       new Tile("sou", 7, ""), new Tile("sou", 7, ""), new Tile("sou", 8, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([
       new Tile("sou", 1, ""), new Tile("sou", 2, ""), new Tile("sou", 4, ""),
       new Tile("sou", 5, ""), new Tile("sou", 6, ""), new Tile("sou", 8, ""), new Tile("sou", 9, "")])
@@ -317,7 +317,7 @@ describe("5面待ち以上のテスト", () => {
       new Tile("sou", 4, ""), new Tile("sou", 5, ""), new Tile("sou", 6, ""), new Tile("sou", 7, ""),
       new Tile("sou", 8, ""), new Tile("sou", 8, ""), new Tile("sou", 8, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     // 3pは5枚目を使用することになるので待ちに含まれないが、5枚目なら弾く処理は面倒なので実装しない
     expect(waits).toEqual([
       new Tile("sou", 1, ""), new Tile("sou", 2, ""), new Tile("sou", 3, ""),
@@ -333,7 +333,7 @@ describe("5面待ち以上のテスト", () => {
       new Tile("sou", 5, ""), new Tile("sou", 6, ""), new Tile("sou", 7, ""), new Tile("sou", 8, ""),
       new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")
     ]
-    const waits: Tile[] = testPlayer.waitTiles()
+    const waits: Tile[] = testPlayer.waitTiles()[0]
     expect(waits).toEqual([
       new Tile("sou", 1, ""), new Tile("sou", 2, ""), new Tile("sou", 3, ""),
       new Tile("sou", 4, ""), new Tile("sou", 5, ""), new Tile("sou", 6, ""),
@@ -352,7 +352,7 @@ test("七対子の待ち牌が計算できる", () => {
     new Tile("sou", 5, ""), new Tile("sou", 5, ""),
     new Tile("sou", 6, ""), new Tile("sou", 6, ""),
   ]
-  const waits: Tile[] = testPlayer.waitTiles()
+  const waits: Tile[] = testPlayer.waitTiles()[0]
   expect(waits).toEqual([new Tile("sou", 1, "")])
 })
 
@@ -364,7 +364,7 @@ test("国士無双の待ち牌が計算できる", () => {
     new Tile("", 0, "east"), new Tile("", 0, "south"), new Tile("", 0, "west"),
     new Tile("", 0, "west"), new Tile("", 0, "north"), new Tile("", 0, "white"), new Tile("", 0, "green")
   ]
-  const waits: Tile[] = testPlayer.waitTiles()
+  const waits: Tile[] = testPlayer.waitTiles()[0]
   expect(waits).toEqual([new Tile("", 0, "red")])
 })
 
@@ -376,7 +376,7 @@ test("国士無双十三面の待ち牌が計算できる", () => {
     new Tile("", 0, "east"), new Tile("", 0, "south"), new Tile("", 0, "west"), new Tile("", 0, "north"),
     new Tile("", 0, "white"), new Tile("", 0, "green"), new Tile("", 0, "red")
   ]
-  const waits: Tile[] = testPlayer.waitTiles()
+  const waits: Tile[] = testPlayer.waitTiles()[0]
   expect(waits).toEqual([
     new Tile("sou", 1, ""), new Tile("sou", 9, ""), new Tile("pin", 1, ""),
     new Tile("pin", 9, ""), new Tile("man", 1, ""), new Tile("man", 9, ""),

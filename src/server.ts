@@ -149,13 +149,14 @@ io.sockets.on('connection', function(socket: Socket) {
     }
 
     // 聴牌時の待ち牌を知らせる
-    const waitTiles: Tile[] = player.waitTiles()
+    const waitTiles: Tile[][] = player.waitTiles()
 
     io.to(roomID).emit('InformDiscards', {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
       discards: JSON.stringify(player.discards),
-      waits: JSON.stringify(waitTiles),
+      drawWaits: JSON.stringify(waitTiles[0]),
+      ronWaits: JSON.stringify(waitTiles[1]),
       riichiTurn: String(player.riichiTurn),
       kyotaku: String(game.kyotaku),
       score: String(player.score)
@@ -177,6 +178,11 @@ io.sockets.on('connection', function(socket: Socket) {
     if (isRinshan) { game.addDora() }
 
     const winnings: Winning[]  = player.judgeHands(tile, "draw") // ツモってるか調べる
+    let isWin = false
+    for (let i = 0; i < winnings.length; i++) {
+      winnings[i].judgeHands()
+      if (winnings[i].hands.length > 0) { isWin = true }
+    }
 
     // 待ち牌候補を調べる
     const waitsCandidate = []
@@ -184,9 +190,9 @@ io.sockets.on('connection', function(socket: Socket) {
       const tilesCopy: Tile[] = []
       for (let j = 0; j < player.tiles.length; j++) { tilesCopy.push(player.tiles[j].copy()) }
       player.tiles.splice(i, 1)
-      const waitTiles: Tile[] = player.waitTiles()
+      const waitTiles: Tile[][] = player.waitTiles()
       player.tiles = tilesCopy
-      waitsCandidate.push({ tile: player.tiles[i], waitTiles: waitTiles })
+      waitsCandidate.push({ tile: player.tiles[i], waitTiles: waitTiles[0] })
     }
 
     io.to(roomID).emit('Draw', {
@@ -194,7 +200,7 @@ io.sockets.on('connection', function(socket: Socket) {
       tiles: JSON.stringify(player.tiles), 
       stockCount: String(game.stock.length - 14),
       waitsCandidate: JSON.stringify(waitsCandidate),
-      isWin: (winnings.length !== 0).toString(),
+      isWin: isWin.toString(),
       doraTiles: JSON.stringify(game.doraTiles)
     })
     game.player1.name === playerID ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
@@ -306,8 +312,8 @@ io.sockets.on('connection', function(socket: Socket) {
     const game = rooms[roomID]
     if (game === undefined) { return }
 
-    const player1WaitTiles = game.player1.waitTiles()
-    const player2WaitTiles = game.player2.waitTiles()
+    const player1WaitTiles = game.player1.waitTiles()[0]
+    const player2WaitTiles = game.player2.waitTiles()[0]
     const isPlayer1Tenpai = player1WaitTiles.length !== 0
     const isPlayer2Tenpai = player2WaitTiles.length !== 0
 
@@ -368,7 +374,9 @@ io.sockets.on('connection', function(socket: Socket) {
         winnings[i].isParent = true
       }
 
-      const tmpHan = winnings[i].judgeHands()
+      winnings[i].judgeHands()
+      winnings[i].addDoras()
+      const tmpHan = winnings[i].calcHan()
       if (tmpHan > maxHan) {
         maxWinning = winnings[i]
         maxHan = tmpHan

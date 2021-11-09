@@ -46,6 +46,28 @@ export class Winning {
     this.revDoras = []
   }
 
+  print(): void {
+    console.log('--- print winning ---')
+    for (let i = 0; i < this.kotz.length; i++) {
+      console.log('kotz', this.kotz[i][0])
+    }
+    for (let i = 0; i < this.minkos.length; i++) {
+      console.log('minkos', this.minkos[i][0])
+    }
+    for (let i = 0; i < this.shuntz.length; i++) {
+      console.log('shuntz', this.shuntz[i])
+    }
+    for (let i = 0; i < this.ankans.length; i++) {
+      console.log('ankans', this.ankans[i])
+    }
+    for (let i = 0; i < this.minkans.length; i++) {
+      console.log('minkans', this.minkans[i])
+    }
+    for (let i = 0; i < this.jantou.length; i++) {
+      console.log('jantou', this.jantou[i])
+    }
+  }
+
   flatten(): Tile[] {
     if (this.chiitoi.length !== 0) {
       return this.chiitoi.flat()
@@ -135,7 +157,7 @@ export class Winning {
     }
   }
 
-  judgeHands(): number {
+  judgeHands(): void {
     // 1飜役
     this.judgeRiichi()
     this.judgeIppatsu()
@@ -150,8 +172,6 @@ export class Winning {
     this.judgeChankan()
     this.judgeHaitei()
     this.judgeHoutei()
-    this.judgeDora()
-    this.judgeRevDora()
 
     // 2飜役
     this.judgeDoubleRiichi()
@@ -184,7 +204,14 @@ export class Winning {
     this.judgeRhuiso()
     this.judgeKokushi()
     this.judgeChuren()
+  }
 
+  addDoras(): void {
+    this.judgeDora()
+    this.judgeRevDora()
+  } 
+
+  calcHan(): number {
     return this.hands.map(hand => hand.han).reduce((sum, el) => sum + el, 0)
   }
 
