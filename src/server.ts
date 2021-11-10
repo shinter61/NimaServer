@@ -171,6 +171,10 @@ io.sockets.on('connection', function(socket: Socket) {
     const tile = game.draw()
     if (tile === undefined) { return }
     const player = game.player1.name === playerID ? game.player1 : game.player2
+
+    const drawWaitTiles: Tile[] = player.waitTiles()[0]
+    const drawWaitTilesStr = drawWaitTiles.map(tile => tile.name()).join()
+
     player.tiles.push(tile)
 
     player.turn += 1 // 巡目を増やす
@@ -195,12 +199,59 @@ io.sockets.on('connection', function(socket: Socket) {
       waitsCandidate.push({ tile: player.tiles[i], waitTiles: waitTiles[0] })
     }
 
+    // 暗槓できる牌を調べる
+    const tilesCopy: Tile[] = []
+    for (let j = 0; j < player.tiles.length; j++) { tilesCopy.push(player.tiles[j].copy()) }
+    player.organizeTile()
+    const canAnkanTiles: Tile[] = []
+    let count = 1
+    for (let i = 1; i < player.tiles.length; i++) {
+      if (player.tiles[i].isEqual(player.tiles[i-1])) {
+        count += 1
+        if (count === 4) { canAnkanTiles.push(player.tiles[i]) }
+      } else {
+        count = 1
+      }
+    }
+    
+    // 立直中の暗槓で、待ちが変わらないか確認する
+    if (player.riichiTurn !== -1) {
+      for (let i = 0; i < canAnkanTiles.length; i++) {
+        const tilesCopy2: Tile[] = []
+        for (let j = 0; j < player.tiles.length; j++) { tilesCopy2.push(player.tiles[j].copy()) }
+        const ankansCopy: Tile[][] = []
+        for (let j = 0; j < player.ankans.length; j++) { ankansCopy.push(player.ankans[j]); }
+
+        const target: Tile = canAnkanTiles[i]
+        // 手牌から暗槓削除
+        for (let j = 0; j < 4; j++) {
+          const index = player.tiles.findIndex(tile => tile.isEqual(target))
+          player.tiles.splice(index, 1)
+        }
+
+        player.ankans.push([target, target, target, target]) // 暗槓追加
+        const waitTilesStr = player.waitTiles()[0].map(tile => tile.name()).join()
+
+        console.log('drawWaitTilesStr', drawWaitTilesStr)
+        console.log('waitTilesStr', waitTilesStr)
+        if (drawWaitTilesStr !== waitTilesStr) {
+          canAnkanTiles.splice(i, 1)
+          i--
+        }
+
+        player.tiles = tilesCopy2
+        player.ankans = ankansCopy
+      }
+    }
+    player.tiles = tilesCopy
+
     io.to(roomID).emit('Draw', {
       id: playerID,
       tiles: JSON.stringify(player.tiles), 
       stockCount: String(game.stock.length - 14),
       waitsCandidate: JSON.stringify(waitsCandidate),
       isWin: isWin.toString(),
+      canAnkanTiles: JSON.stringify(canAnkanTiles),
       doraTiles: JSON.stringify(game.doraTiles)
     })
     game.player1.name === playerID ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
