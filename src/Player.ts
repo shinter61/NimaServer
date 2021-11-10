@@ -126,7 +126,7 @@ export class Player {
     // 七対子判定
     const chiitoi = this.judgeChiitoi(winTile, type)
     if (chiitoi !== undefined) {
-      this.tiles = myTilesCopy
+      this.tiles = myTilesCopy.slice()
       winnings.push(chiitoi)
     }
 
