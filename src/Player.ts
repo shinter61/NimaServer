@@ -308,7 +308,7 @@ export class Player {
       for (let j = 0; j < winnings.length; j++) {
         winnings[j].judgeHands()
         if (winnings[j].hands.length > 0) {
-          winnings[j].print()
+          // winnings[j].print()
           isYakuExists = true
         }
       }

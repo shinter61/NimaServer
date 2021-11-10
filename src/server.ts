@@ -75,16 +75,6 @@ io.sockets.on('connection', function(socket: Socket) {
     rooms[roomID].reload()
     rooms[roomID].player1.organizeTile()
     rooms[roomID].player2.organizeTile()
-    const tile = rooms[roomID].draw()
-    if (tile !== undefined) {
-      if (rooms[roomID].round === 1) {
-        rooms[roomID].player1.tiles.push(tile)
-        rooms[roomID].player1.turn += 1
-      } else if (rooms[roomID].round === 2) {
-        rooms[roomID].player2.tiles.push(tile)
-        rooms[roomID].player2.turn += 1
-      }
-    }
     
     game = rooms[roomID]
     const { player1, player2 } = game

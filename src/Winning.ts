@@ -489,11 +489,11 @@ export class Winning {
   }
 
   judgeTenho(): void {
-    // if (false) { this.hands.push({ name: "天和", han: 100 }) }
+    if (this.isParent && this.winTurn === 1) { this.hands.push({ name: "天和", han: 100 }) }
   }
 
   judgeChiho(): void {
-    // if (false) { this.hands.push({ name: "地和", han: 100 }) }
+    if (!this.isParent && this.winTurn === 1) { this.hands.push({ name: "地和", han: 100 }) }
   }
 
   judgeDaisangen(): void {

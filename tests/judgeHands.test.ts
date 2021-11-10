@@ -493,6 +493,34 @@ describe("清一色のテスト", () => {
   })
 })
 
+describe("天和のテスト", () => {
+  test("天和が判定できる", () => {
+    const testWin = new Winning([], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", -1, 1)
+    testWin.isParent = true
+    testWin.judgeTenho()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["天和"])
+  })
+})
+
+describe("地和のテスト", () => {
+  test("地和が判定できる", () => {
+    const testWin = new Winning([], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", -1, 1)
+    testWin.isParent = false 
+    testWin.judgeChiho()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["地和"])
+  })
+})
+
 describe("大三元のテスト", () => {
   test("大三元が判定できる", () => {
     const testWin = new Winning([
