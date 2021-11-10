@@ -220,7 +220,10 @@ export class Winning {
   }
 
   judgeIppatsu(): void {
-    // if (false) { this.hands.push({ name: "一発", han: 1 }) }
+    if (
+      (this.type === "draw" && this.winTurn - this.riichiTurn === 1) ||
+      (this.type === "ron" && this.winTurn - this.riichiTurn === 0)
+    ) { this.hands.push({ name: "一発", han: 1 }) }
   }
 
   judgeTsumo(): void {

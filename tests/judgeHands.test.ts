@@ -14,6 +14,30 @@ describe("立直のテスト", () => {
   })
 })
 
+describe("一発のテスト", () => {
+  test("自摸で一発が判定できる", () => {
+    const testWin = new Winning([], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", 9, 10)
+    testWin.judgeIppatsu()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["一発"])
+  })
+
+  test("放銃で一発が判定できる", () => {
+    const testWin = new Winning([], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "ron", 9, 9)
+    testWin.judgeIppatsu()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["一発"])
+  })
+})
+
 describe("門前清自摸和のテスト", () => {
   test("門前清自摸和が判定できる", () => {
     const testWin = new Winning([], [], [
