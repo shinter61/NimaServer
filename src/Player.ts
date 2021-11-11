@@ -1,5 +1,6 @@
 import { Tile, allTiles } from "./Tile"
 import { Winning } from "./Winning"
+import { Game } from "./Game"
 
 export class Player {
   name: string
@@ -296,7 +297,7 @@ export class Player {
     }
   }
 
-  waitTiles(): Tile[][] {
+  waitTiles(game: Game): Tile[][] {
     const drawWaits: Tile[] = []
     const ronWaits: Tile[] = []
     for (let i = 0; i < allTiles.length; i++) {
@@ -306,6 +307,9 @@ export class Player {
 
       let isYakuExists = false
       for (let j = 0; j < winnings.length; j++) {
+        // 前処理
+        winnings[j].addGameInfo(game, this.name)
+
         winnings[j].judgeHands()
         if (winnings[j].hands.length > 0) {
           // winnings[j].print()

@@ -1,5 +1,6 @@
 import { Score, childDrawScores, childRonScores, parentDrawScores, parentRonScores } from "./scores"
 import { Tile } from "./Tile"
+import { Game } from "./Game"
 
 type Hand = {
   name: string
@@ -22,6 +23,7 @@ export class Winning {
   winTurn: number
   roundWind: string
   isParent: boolean
+  isLastTile: boolean
   doras: Tile[]
   revDoras: Tile[]
 
@@ -42,6 +44,7 @@ export class Winning {
     this.hands = []
     this.roundWind = ""
     this.isParent = false
+    this.isLastTile = false
     this.doras = []
     this.revDoras = []
   }
@@ -65,6 +68,19 @@ export class Winning {
     }
     for (let i = 0; i < this.jantou.length; i++) {
       console.log('jantou', this.jantou[i])
+    }
+  }
+
+  addGameInfo(game: Game, playerID: string): void {
+    this.roundWind = game.roundWind
+    this.doras = game.doraTiles
+    this.isLastTile = (game.stock.length === 14)
+
+    const winner = game.player1.name === playerID ? game.player1 : game.player2
+
+    if (winner.riichiTurn > 0) { this.revDoras = game.revDoras() }
+    if ((winner.name === game.player1.name && game.round === 1) || (winner.name === game.player2.name && game.round === 2)) {
+      this.isParent = true
     }
   }
 
@@ -302,11 +318,11 @@ export class Winning {
   }
 
   judgeHaitei(): void {
-    // if (false) { this.hands.push({ name: "海底撈月", han: 1 }) }
+    if (this.isLastTile && this.type === "draw") { this.hands.push({ name: "海底撈月", han: 1 }) }
   }
 
   judgeHoutei(): void {
-    // if (false) { this.hands.push({ name: "河底撈魚", han: 1 }) }
+    if (this.isLastTile && this.type === "ron") { this.hands.push({ name: "河底撈魚", han: 1 }) }
   }
 
   judgeDora(): void {
@@ -489,11 +505,11 @@ export class Winning {
   }
 
   judgeTenho(): void {
-    if (this.isParent && this.winTurn === 1) { this.hands.push({ name: "天和", han: 100 }) }
+    if (this.isParent && this.winTurn === 1 && this.type === "draw") { this.hands.push({ name: "天和", han: 100 }) }
   }
 
   judgeChiho(): void {
-    if (!this.isParent && this.winTurn === 1) { this.hands.push({ name: "地和", han: 100 }) }
+    if (!this.isParent && this.winTurn === 1 && this.type === "draw") { this.hands.push({ name: "地和", han: 100 }) }
   }
 
   judgeDaisangen(): void {

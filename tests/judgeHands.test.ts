@@ -160,6 +160,34 @@ describe("自風牌のテスト", () => {
   })
 })
 
+describe("海底撈月のテスト", () => {
+  test("海底撈月が判定できる", () => {
+    const testWin = new Winning([], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", -1, 19)
+    testWin.isLastTile = true
+    testWin.judgeHaitei()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["海底撈月"])
+  })
+})
+
+describe("河底撈魚のテスト", () => {
+  test("河底撈魚が判定できる", () => {
+    const testWin = new Winning([], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "ron", -1, 19)
+    testWin.isLastTile = true
+    testWin.judgeHoutei()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["河底撈魚"])
+  })
+})
+
 describe("ドラのテスト", () => {
   test("ドラが判定できる", () => {
     const testWin = new Winning([

@@ -139,14 +139,18 @@ io.sockets.on('connection', function(socket: Socket) {
     }
 
     // 聴牌時の待ち牌を知らせる
-    const waitTiles: Tile[][] = player.waitTiles()
+    const drawWaits: Tile[] = player.waitTiles(game)[0]
+    const tile = game.draw() // 河底撈魚を役有りで判定させるために一度ツモらせる
+    if (tile === undefined) { return }
+    const ronWaits: Tile[] = player.waitTiles(game)[1]
+    game.stock.unshift(tile) // 元に戻す
 
     io.to(roomID).emit('InformDiscards', {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
       discards: JSON.stringify(player.discards),
-      drawWaits: JSON.stringify(waitTiles[0]),
-      ronWaits: JSON.stringify(waitTiles[1]),
+      drawWaits: JSON.stringify(drawWaits),
+      ronWaits: JSON.stringify(ronWaits),
       riichiTurn: String(player.riichiTurn),
       kyotaku: String(game.kyotaku),
       score: String(player.score)
@@ -162,7 +166,7 @@ io.sockets.on('connection', function(socket: Socket) {
     if (tile === undefined) { return }
     const player = game.player1.name === playerID ? game.player1 : game.player2
 
-    const drawWaitTiles: Tile[] = player.waitTiles()[0]
+    const drawWaitTiles: Tile[] = player.waitTiles(game)[0]
     const drawWaitTilesStr = drawWaitTiles.map(tile => tile.name()).join()
 
     player.tiles.push(tile)
@@ -174,6 +178,9 @@ io.sockets.on('connection', function(socket: Socket) {
     const winnings: Winning[]  = player.judgeHands(tile, "draw") // ツモってるか調べる
     let isWin = false
     for (let i = 0; i < winnings.length; i++) {
+      // 前処理
+      winnings[i].addGameInfo(game, player.name)
+
       winnings[i].judgeHands()
       if (winnings[i].hands.length > 0) { isWin = true }
     }
@@ -184,7 +191,7 @@ io.sockets.on('connection', function(socket: Socket) {
       const tilesCopy: Tile[] = []
       for (let j = 0; j < player.tiles.length; j++) { tilesCopy.push(player.tiles[j].copy()) }
       player.tiles.splice(i, 1)
-      const waitTiles: Tile[][] = player.waitTiles()
+      const waitTiles: Tile[][] = player.waitTiles(game)
       player.tiles = tilesCopy
       waitsCandidate.push({ tile: player.tiles[i], waitTiles: waitTiles[0] })
     }
@@ -220,7 +227,7 @@ io.sockets.on('connection', function(socket: Socket) {
         }
 
         player.ankans.push([target, target, target, target]) // 暗槓追加
-        const waitTilesStr = player.waitTiles()[0].map(tile => tile.name()).join()
+        const waitTilesStr = player.waitTiles(game)[0].map(tile => tile.name()).join()
 
         console.log('drawWaitTilesStr', drawWaitTilesStr)
         console.log('waitTilesStr', waitTilesStr)
@@ -353,8 +360,8 @@ io.sockets.on('connection', function(socket: Socket) {
     const game = rooms[roomID]
     if (game === undefined) { return }
 
-    const player1WaitTiles = game.player1.waitTiles()[0]
-    const player2WaitTiles = game.player2.waitTiles()[0]
+    const player1WaitTiles = game.player1.waitTiles(game)[0]
+    const player2WaitTiles = game.player2.waitTiles(game)[0]
     const isPlayer1Tenpai = player1WaitTiles.length !== 0
     const isPlayer2Tenpai = player2WaitTiles.length !== 0
 
@@ -408,12 +415,7 @@ io.sockets.on('connection', function(socket: Socket) {
     const winnings: Winning[]  = winner.judgeHands(winTile, type)
     for (let i = 0; i < winnings.length; i++) {
       // 前処理
-      winnings[i].roundWind = game.roundWind
-      winnings[i].doras = game.doraTiles
-      if (winner.riichiTurn > 0) { winnings[i].revDoras = game.revDoras() }
-      if ((winner.name === game.player1.name && game.round === 1) || (winner.name === game.player2.name && game.round === 2)) {
-        winnings[i].isParent = true
-      }
+      winnings[i].addGameInfo(game, winner.name)
 
       winnings[i].judgeHands()
       winnings[i].addDoras()
