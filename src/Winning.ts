@@ -184,7 +184,7 @@ export class Winning {
     this.judgeYakuhai()
     this.judgeBakaze()
     this.judgeJikaze()
-    this.judgeRinsyan()
+    this.judgeRinshan()
     this.judgeChankan()
     this.judgeHaitei()
     this.judgeHoutei()
@@ -309,8 +309,8 @@ export class Winning {
     }
   }
 
-  judgeRinsyan(): void {
-    // if (false) { this.hands.push({ name: "嶺上開花", han: 1 }) }
+  judgeRinshan(): void {
+    if (this.draw.isRinshan && this.type === "draw") { this.hands.push({ name: "嶺上開花", han: 1 }) }
   }
 
   judgeChankan(): void {

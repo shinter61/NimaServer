@@ -2,11 +2,13 @@ export class Tile {
   kind: string
   number: number
   character: string
+  isRinshan: boolean
 
   constructor(kind: string, number: number, character: string) {
     this.kind = kind
     this.number = number
     this.character = character
+    this.isRinshan = false
   }
 
   isEqual(tile: Tile): boolean {
@@ -30,7 +32,9 @@ export class Tile {
   }
 
   copy(): Tile {
-    return new Tile(this.kind, this.number, this.character)
+    const tile = new Tile(this.kind, this.number, this.character)
+    tile.isRinshan = this.isRinshan
+    return tile
   }
 
   next(): Tile | undefined {

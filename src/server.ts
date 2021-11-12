@@ -169,11 +169,14 @@ io.sockets.on('connection', function(socket: Socket) {
     const drawWaitTiles: Tile[] = player.waitTiles(game)[0]
     const drawWaitTilesStr = drawWaitTiles.map(tile => tile.name()).join()
 
+    if (isRinshan) {
+      tile.isRinshan = true
+      game.addDora()
+    }
+
     player.tiles.push(tile)
 
     player.turn += 1 // 巡目を増やす
-
-    if (isRinshan) { game.addDora() }
 
     const winnings: Winning[]  = player.judgeHands(tile, "draw") // ツモってるか調べる
     let isWin = false

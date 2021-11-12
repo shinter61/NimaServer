@@ -160,6 +160,23 @@ describe("自風牌のテスト", () => {
   })
 })
 
+describe("嶺上開花のテスト", () => {
+  test("嶺上開花が判定できる", () => {
+    const drawTile = new Tile("sou", 1, "")
+    drawTile.isRinshan = true
+    const testWin = new Winning([
+      [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")]
+    ], [
+      [new Tile("", 0, "south"), new Tile("", 0, "south"), new Tile("", 0, "south")]
+    ], [
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+    ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], drawTile, "draw", -1, 6)
+    testWin.judgeRinshan()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["嶺上開花"])
+  })
+})
+
 describe("海底撈月のテスト", () => {
   test("海底撈月が判定できる", () => {
     const testWin = new Winning([], [], [
