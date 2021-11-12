@@ -24,6 +24,7 @@ export class Winning {
   roundWind: string
   isParent: boolean
   isLastTile: boolean
+  isIppatsuAlived: boolean
   doras: Tile[]
   revDoras: Tile[]
 
@@ -45,6 +46,7 @@ export class Winning {
     this.roundWind = ""
     this.isParent = false
     this.isLastTile = false
+    this.isIppatsuAlived = false
     this.doras = []
     this.revDoras = []
   }
@@ -77,6 +79,8 @@ export class Winning {
     this.isLastTile = (game.stock.length === 14)
 
     const winner = game.player1.name === playerID ? game.player1 : game.player2
+
+    this.isIppatsuAlived = winner.isIppatsuAlived
 
     if (winner.riichiTurn > 0) { this.revDoras = game.revDoras() }
     if ((winner.name === game.player1.name && game.round === 1) || (winner.name === game.player2.name && game.round === 2)) {
@@ -236,6 +240,7 @@ export class Winning {
   }
 
   judgeIppatsu(): void {
+    if (!this.isIppatsuAlived) { return } // 一発消しされていた場合
     if (
       (this.type === "draw" && this.winTurn - this.riichiTurn === 1) ||
       (this.type === "ron" && this.winTurn - this.riichiTurn === 0)

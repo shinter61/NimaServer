@@ -12,6 +12,7 @@ export class Player {
   turn: number
   riichiTurn: number
   score: number
+  isIppatsuAlived: boolean
 
   constructor() {
     this.name = ""
@@ -23,6 +24,7 @@ export class Player {
     this.turn = 0
     this.riichiTurn = -1
     this.score = 35000
+    this.isIppatsuAlived = true
   }
 
   reset(): void {
@@ -33,6 +35,7 @@ export class Player {
     this.minkans = []
     this.turn = 0
     this.riichiTurn = -1
+    this.isIppatsuAlived = true
   }
 
   organizeTile(): void {

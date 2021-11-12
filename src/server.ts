@@ -272,6 +272,10 @@ io.sockets.on('connection', function(socket: Socket) {
     }
     opponent.discards.pop() // 相手の捨て牌からポンされた牌を削除
     player.minkos.push([target, target, target]) // 明刻追加
+
+    // 一発消しの処理
+    if (opponent.riichiTurn === opponent.turn) { opponent.isIppatsuAlived = false }
+
     io.to(roomID).emit('Pon', {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
@@ -298,6 +302,10 @@ io.sockets.on('connection', function(socket: Socket) {
     }
     opponent.discards.pop() // 相手の捨て牌からカンされた牌を削除
     player.minkans.push([target, target, target, target]) // 明槓追加
+
+    // 一発消しの処理
+    if (opponent.riichiTurn === opponent.turn) { opponent.isIppatsuAlived = false }
+
     io.to(roomID).emit('Daiminkan', {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
@@ -314,6 +322,8 @@ io.sockets.on('connection', function(socket: Socket) {
     if (game === undefined) { return }
 
     const player = game.player1.name === playerID ? game.player1 : game.player2
+    const opponent = game.player1.name !== playerID ? game.player1 : game.player2
+
     const tileObj = (JSON.parse(tiles) as Tile[])[0]
     const target = new Tile(tileObj.kind, tileObj.number, tileObj.character)
     // 手牌から加槓牌削除
@@ -325,6 +335,10 @@ io.sockets.on('connection', function(socket: Socket) {
     player.minkos.splice(minkoIdx, 1)
 
     player.minkans.push([target, target, target, target]) // 明槓追加
+
+    // 一発消しの処理
+    if (opponent.riichiTurn === opponent.turn) { opponent.isIppatsuAlived = false }
+
     io.to(roomID).emit('Kakan', {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
@@ -333,6 +347,7 @@ io.sockets.on('connection', function(socket: Socket) {
     })
 
     game.player1.name === playerID ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
+    game.player1.name !== playerID ? rooms[roomID].player1 = opponent : rooms[roomID].player2 = opponent 
   })
 
   socket.on('Ankan', function(roomID: string, playerID: string, tiles: string) {
@@ -340,6 +355,8 @@ io.sockets.on('connection', function(socket: Socket) {
     if (game === undefined) { return }
 
     const player = game.player1.name === playerID ? game.player1 : game.player2
+    const opponent = game.player1.name !== playerID ? game.player1 : game.player2
+
     const tileObj = (JSON.parse(tiles) as Tile[])[0]
     const target = new Tile(tileObj.kind, tileObj.number, tileObj.character)
     // 手牌から暗槓削除
@@ -350,6 +367,9 @@ io.sockets.on('connection', function(socket: Socket) {
 
     player.ankans.push([target, target, target, target]) // 暗槓追加
 
+    // 一発消しの処理
+    if (opponent.riichiTurn === opponent.turn) { opponent.isIppatsuAlived = false }
+
     io.to(roomID).emit('Ankan', {
       id: playerID,
       tiles: JSON.stringify(player.tiles),
@@ -357,6 +377,7 @@ io.sockets.on('connection', function(socket: Socket) {
     })
 
     game.player1.name === playerID ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
+    game.player1.name !== playerID ? rooms[roomID].player1 = opponent : rooms[roomID].player2 = opponent 
   })
 
   socket.on('ExhaustiveDraw', function(roomID: string) {
@@ -411,6 +432,8 @@ io.sockets.on('connection', function(socket: Socket) {
 
     const winner = game.player1.name === playerID ? game.player1 : game.player2
     const loser = game.player1.name !== playerID ? game.player1 : game.player2
+
+    console.log('isIppatsuAlived', winner.isIppatsuAlived)
 
     let maxWinning: Winning = new Winning([], [], [], [], [], [], [], [], new Tile("", 0, ""), "", -1, -1)
     let maxHan = 0
