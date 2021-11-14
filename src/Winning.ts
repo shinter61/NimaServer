@@ -46,7 +46,7 @@ export class Winning {
     this.roundWind = ""
     this.isParent = false
     this.isLastTile = false
-    this.isIppatsuAlived = false
+    this.isIppatsuAlived = true 
     this.doras = []
     this.revDoras = []
   }
