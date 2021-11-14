@@ -136,7 +136,9 @@ export class Winning {
     }
 
     let jantouFu = 0
-    if (["white", "green", "red"].includes(this.jantou[0].character)) { jantouFu = 2 }
+    const yakuhaiArr = ["white", "green", "red", this.roundWind]
+    this.isParent ? yakuhaiArr.push("east") : yakuhaiArr.push("south")
+    if (yakuhaiArr.includes(this.jantou[0].character)) { jantouFu = 2 }
 
     let waitWayFu = 0
     for (let i = 0; i < this.shuntz.length; i++) {

@@ -11,6 +11,7 @@ test("七対子の符が計算できる", () => {
     [new Tile("pin", 5, ""), new Tile("pin", 5, "")],
     [new Tile("pin", 6, ""), new Tile("pin", 6, "")],
   ], [], new Tile("sou", 1, ""), "draw", -1, 6)
+  testWin.roundWind = "east"
   const fu = testWin.calcFu()
   expect(fu).toBe(25)
 })
@@ -22,6 +23,7 @@ test("門前ツモの平和の符が計算できる", () => {
     [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
     [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
   ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", -1, 6)
+  testWin.roundWind = "east"
   testWin.judgeHands()
   const fu = testWin.calcFu()
   expect(fu).toBe(20)
@@ -34,6 +36,7 @@ test("門前ロンの符が計算できる", () => {
     [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
     [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
   ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "ron", -1, 6)
+  testWin.roundWind = "east"
   const fu = testWin.calcFu()
   expect(fu).toBe(30)
 })
@@ -47,6 +50,7 @@ test("暗刻,明刻ありの符が計算できる", () => {
     [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
     [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
   ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 2, ""), "ron", -1, 6)
+  testWin.roundWind = "east"
   const fu = testWin.calcFu()
   expect(fu).toBe(40)
 })
@@ -59,6 +63,7 @@ test("暗槓の符が計算できる", () => {
   ], [
     [new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, ""), new Tile("man", 1, "")]
   ], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 3, ""), "ron", -1, 6)
+  testWin.roundWind = "east"
   const fu = testWin.calcFu()
   expect(fu).toBe(70)
 })
@@ -81,7 +86,34 @@ test("雀頭が役牌の符が計算できる", () => {
     [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
     [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
     [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
-  ], [], [], [new Tile("", 0, "white"), new Tile("", 0, "white")], [], [], new Tile("pin", 1, ""), "ron", -1, 6)
+  ], [], [], [new Tile("", 0, "east"), new Tile("", 0, "east")], [], [], new Tile("pin", 1, ""), "ron", -1, 6)
+  testWin.roundWind = "east"
+  const fu = testWin.calcFu()
+  expect(fu).toBe(40)
+})
+
+test("雀頭が場風牌の符が計算できる", () => {
+  const testWin = new Winning([], [], [
+    [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+    [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+    [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+    [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+  ], [], [], [new Tile("", 0, "east"), new Tile("", 0, "east")], [], [], new Tile("pin", 1, ""), "ron", -1, 6)
+  testWin.isParent = false
+  testWin.roundWind = "east"
+  const fu = testWin.calcFu()
+  expect(fu).toBe(40)
+})
+
+test("雀頭が自風牌の符が計算できる", () => {
+  const testWin = new Winning([], [], [
+    [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+    [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+    [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+    [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+  ], [], [], [new Tile("", 0, "south"), new Tile("", 0, "south")], [], [], new Tile("pin", 1, ""), "ron", -1, 6)
+  testWin.isParent = false
+  testWin.roundWind = "east"
   const fu = testWin.calcFu()
   expect(fu).toBe(40)
 })
@@ -93,6 +125,7 @@ test("辺張待ちの符が計算できる", () => {
     [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
     [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
   ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 3, ""), "ron", -1, 6)
+  testWin.roundWind = "east"
   const fu = testWin.calcFu()
   expect(fu).toBe(40)
 })
@@ -104,6 +137,7 @@ test("嵌張待ちの符が計算できる", () => {
     [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
     [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
   ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 8, ""), "ron", -1, 6)
+  testWin.roundWind = "east"
   const fu = testWin.calcFu()
   expect(fu).toBe(40)
 })
@@ -115,6 +149,7 @@ test("単騎待ちの符が計算できる", () => {
     [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
     [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
   ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "ron", -1, 6)
+  testWin.roundWind = "east"
   const fu = testWin.calcFu()
   expect(fu).toBe(40)
 })
