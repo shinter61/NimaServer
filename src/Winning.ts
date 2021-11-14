@@ -260,7 +260,9 @@ export class Winning {
     for (let i = 0; i < this.shuntz.length; i++) {
       if (this.shuntz[i][0].isEqual(this.draw) || this.shuntz[i][2].isEqual(this.draw)) { isRyanmen = true }
     }
-    if (this.shuntz.length === 4 && !["white", "green", "red"].includes(this.jantou[0].character) && isRyanmen) {
+    const yakuhaiArr = ["white", "green", "red", this.roundWind]
+    this.isParent ? yakuhaiArr.push("east") : yakuhaiArr.push("south")
+    if (this.shuntz.length === 4 && !yakuhaiArr.includes(this.jantou[0].character) && isRyanmen) {
       this.hands.push({ name: "平和", han: 1 })
     }
   }

@@ -59,6 +59,8 @@ describe("平和のテスト", () => {
       [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
     ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", -1, 6)
+    testWin.roundWind = "east"
+    testWin.isParent = true
     testWin.judgePinfu()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["平和"])
   })
@@ -71,6 +73,47 @@ describe("平和のテスト", () => {
       [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
       [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
     ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", -1, 6)
+    testWin.roundWind = "east"
+    testWin.isParent = true
+    testWin.judgePinfu()
+    expect(testWin.hands.map(hand => hand.name)).toEqual([])
+  })
+
+  test("役牌が雀頭だと平和がつかない", () => {
+    const testWin = new Winning([], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [], [], [new Tile("", 0, "white"), new Tile("", 0, "white")], [], [], new Tile("pin", 1, ""), "draw", -1, 6)
+    testWin.roundWind = "east"
+    testWin.isParent = true
+    testWin.judgePinfu()
+    expect(testWin.hands.map(hand => hand.name)).toEqual([])
+  })
+
+  test("自風牌が雀頭だと平和がつかない", () => {
+    const testWin = new Winning([], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [], [], [new Tile("", 0, "east"), new Tile("", 0, "east")], [], [], new Tile("pin", 1, ""), "draw", -1, 6)
+    testWin.roundWind = "south"
+    testWin.isParent = true 
+    testWin.judgePinfu()
+    expect(testWin.hands.map(hand => hand.name)).toEqual([])
+  })
+
+  test("場風牌が雀頭だと平和がつかない", () => {
+    const testWin = new Winning([], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 2, ""), new Tile("pin", 3, ""), new Tile("pin", 4, "")],
+      [new Tile("pin", 6, ""), new Tile("pin", 7, ""), new Tile("pin", 8, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [], [], [new Tile("", 0, "south"), new Tile("", 0, "south")], [], [], new Tile("pin", 1, ""), "draw", -1, 6)
+    testWin.roundWind = "south"
+    testWin.isParent = true 
     testWin.judgePinfu()
     expect(testWin.hands.map(hand => hand.name)).toEqual([])
   })
