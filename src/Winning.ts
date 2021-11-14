@@ -391,7 +391,11 @@ export class Winning {
     for (let i = 0; i < flattenTiles.length; i++) {
       if (!flattenTiles[i].isYaochu()) { isHonroto = false }
     }
-    if (isHonroto) { this.hands.push({ name: "混老頭", han: 2 }) }
+    if (isHonroto) {
+      const idx = this.hands.findIndex(hand => hand.name === "混全帯么九")
+      if (idx !== -1) { this.hands.splice(idx, 1) }
+      this.hands.push({ name: "混老頭", han: 2 })
+    }
   }
 
   judgeIttsu(): void {
@@ -484,7 +488,11 @@ export class Winning {
 
     if (shuntzCopy[0][0].isEqual(shuntzCopy[1][0])) { ipekoCount++ }
 
-    if (ipekoCount == 2) { this.hands.push({ name: "二盃口", han: 3 }) }
+    if (ipekoCount === 2) {
+      const idx = this.hands.findIndex(hand => hand.name === "一盃口")
+      if (idx !== -1) { this.hands.splice(idx, 1) }
+      this.hands.push({ name: "二盃口", han: 3 })
+    }
   }
 
   judgeJunchan(): void {
@@ -500,7 +508,11 @@ export class Winning {
     }
     if (!this.jantou[0].is19()) { isJunchan = false }
 
-    if (isJunchan) { this.hands.push({ name: "純全帯么九", han: this.isMenzen() ? 3 : 2 }) }
+    if (isJunchan) {
+      const idx = this.hands.findIndex(hand => hand.name === "混全帯么九")
+      if (idx !== -1) { this.hands.splice(idx, 1) }
+      this.hands.push({ name: "純全帯么九", han: this.isMenzen() ? 3 : 2 })
+    }
   }
 
   judgeChinitsu(): void {

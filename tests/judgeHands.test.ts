@@ -346,6 +346,19 @@ describe("混老頭のテスト", () => {
     testWin.judgeHonroto()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["混老頭"])
   })
+
+  test("混全帯么九と複合しない", () => {
+    const testWin = new Winning([
+      [new Tile("", 0, "white"), new Tile("", 0, "white"), new Tile("", 0, "white")],
+      [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
+      [new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")],
+    ], [
+      [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")]
+    ], [], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1, 6)
+    testWin.judgeChanta()
+    testWin.judgeHonroto()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["混老頭"])
+  })
 })
 
 describe("一気通貫のテスト", () => {
@@ -522,6 +535,18 @@ describe("二盃口のテスト", () => {
     testWin.judgeRyanpeko()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["二盃口"])
   })
+
+  test("一盃口と複合しない", () => {
+    const testWin = new Winning([], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [], [], [new Tile("", 0, "green"), new Tile("", 0, "green")], [], [], new Tile("pin", 1, ""), "draw", -1, 6)
+    testWin.judgeIpeko()
+    testWin.judgeRyanpeko()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["二盃口"])
+  })
 })
 
 describe("純全帯么九のテスト", () => {
@@ -550,6 +575,20 @@ describe("純全帯么九のテスト", () => {
     testWin.judgeJunchan()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["純全帯么九"])
     expect(testWin.hands.map(hand => hand.han)).toEqual([2])
+  })
+
+  test("混全帯么九と複合しない", () => {
+    const testWin = new Winning([
+      [new Tile("man", 9, ""), new Tile("man", 9, ""), new Tile("man", 9, "")],
+      [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")]
+    ], [], [
+      [new Tile("pin", 1, ""), new Tile("pin", 2, ""), new Tile("pin", 3, "")],
+      [new Tile("pin", 7, ""), new Tile("pin", 8, ""), new Tile("pin", 9, "")],
+    ], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1, 6)
+    testWin.judgeChanta()
+    testWin.judgeJunchan()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["純全帯么九"])
+    expect(testWin.hands.map(hand => hand.han)).toEqual([3])
   })
 })
 
