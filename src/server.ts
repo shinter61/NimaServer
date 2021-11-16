@@ -128,7 +128,9 @@ io.sockets.on('connection', function(socket: Socket) {
     const discardTile = new Tile(tileObj.kind, tileObj.number, tileObj.character)
     const player = game.player1.name === playerID ? game.player1 : game.player2
     player.discards.push(discardTile)
-    player.tiles.splice(player.tiles.findIndex(el => el.isEqual(discardTile)), 1)
+    const targetIdx = player.tiles.findIndex(el => el.isEqual(discardTile))
+    const isTedashi = targetIdx !== (player.tiles.length - 1)
+    player.tiles.splice(targetIdx, 1)
     player.organizeTile()
 
     // 立直関連
@@ -153,7 +155,8 @@ io.sockets.on('connection', function(socket: Socket) {
       ronWaits: JSON.stringify(ronWaits),
       riichiTurn: String(player.riichiTurn),
       kyotaku: String(game.kyotaku),
-      score: String(player.score)
+      score: String(player.score),
+      isTedashi: isTedashi.toString()
     })
     game.player1.name === playerID ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
   })
@@ -232,8 +235,6 @@ io.sockets.on('connection', function(socket: Socket) {
         player.ankans.push([target, target, target, target]) // 暗槓追加
         const waitTilesStr = player.waitTiles(game)[0].map(tile => tile.name()).join()
 
-        console.log('drawWaitTilesStr', drawWaitTilesStr)
-        console.log('waitTilesStr', waitTilesStr)
         if (drawWaitTilesStr !== waitTilesStr) {
           canAnkanTiles.splice(i, 1)
           i--
@@ -384,8 +385,8 @@ io.sockets.on('connection', function(socket: Socket) {
     const game = rooms[roomID]
     if (game === undefined) { return }
 
-    const player1WaitTiles = game.player1.waitTiles(game)[0]
-    const player2WaitTiles = game.player2.waitTiles(game)[0]
+    const player1WaitTiles = rooms[roomID].player1.waitTiles(game)[0]
+    const player2WaitTiles = rooms[roomID].player2.waitTiles(game)[0]
     const isPlayer1Tenpai = player1WaitTiles.length !== 0
     const isPlayer2Tenpai = player2WaitTiles.length !== 0
 
@@ -400,7 +401,7 @@ io.sockets.on('connection', function(socket: Socket) {
     }
 
     // 終局判定
-    game.judgeEndGame("")
+    rooms[roomID].judgeEndGame("")
     
     // 局数進める
     if (!isPlayer2Tenpai && game.round === 2) {
@@ -411,18 +412,18 @@ io.sockets.on('connection', function(socket: Socket) {
     }
 
     // 本場を積む
-    game.proceedHonba("")
+    rooms[roomID].proceedHonba("")
 
     io.to(roomID).emit('ExhaustiveDraw', {
       id1: rooms[roomID].player1.name,
       score1: String(rooms[roomID].player1.score),
-      tiles1: JSON.stringify(game.player1.tiles),
+      tiles1: JSON.stringify(rooms[roomID].player1.tiles),
       waitTiles1: JSON.stringify(player1WaitTiles),
       id2: rooms[roomID].player2.name,
       score2: String(rooms[roomID].player2.score),
-      tiles2: JSON.stringify(game.player2.tiles),
+      tiles2: JSON.stringify(rooms[roomID].player2.tiles),
       waitTiles2: JSON.stringify(player2WaitTiles),
-      isGameEnd: game.isEnd.toString()
+      isGameEnd: rooms[roomID].isEnd.toString()
     })
   })
 
