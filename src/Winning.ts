@@ -253,7 +253,6 @@ export class Winning {
     if (this.isMenzen() && this.type === "draw") { this.hands.push({ name: "門前清自摸和", han: 1 }) }
   }
 
-  // 要改善：門前の条件 & 雀頭が風牌でないこと
   judgePinfu(): void {
     if (!this.isMenzen()) { return }
     let isRyanmen = false
@@ -578,7 +577,7 @@ export class Winning {
       if (!this.ankans[i][0].isEqual(this.draw)) { ankoCount++ }
     }
     if (ankoCount === 4) { this.hands.push({ name: "四暗刻単騎", han: 200 }) }
-    if (this.type === "draw" && (this.kotz.length + this.ankans.length) === 4) { this.hands.push({ name: "四暗刻", han: 100 }) }
+    else if (this.type === "draw" && (this.kotz.length + this.ankans.length) === 4) { this.hands.push({ name: "四暗刻", han: 100 }) }
   }
 
   judgeChinroto(): void {

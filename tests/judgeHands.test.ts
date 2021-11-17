@@ -662,7 +662,7 @@ describe("大三元のテスト", () => {
   })
 })
 
-describe("小四喜のテスト", () => {
+describe("四喜和のテスト", () => {
   test("小四喜が判定できる", () => {
     const testWin = new Winning([
       [new Tile("", 0, "east"), new Tile("", 0, "east"), new Tile("", 0, "east")],
@@ -674,9 +674,7 @@ describe("小四喜のテスト", () => {
     testWin.judgeShosushi()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["小四喜"])
   })
-})
 
-describe("大四喜のテスト", () => {
   test("大四喜が判定できる", () => {
     const testWin = new Winning([
       [new Tile("", 0, "east"), new Tile("", 0, "east"), new Tile("", 0, "east")],
@@ -685,6 +683,19 @@ describe("大四喜のテスト", () => {
       [new Tile("", 0, "south"), new Tile("", 0, "south"), new Tile("", 0, "south")],
       [new Tile("", 0, "west"), new Tile("", 0, "west"), new Tile("", 0, "west")],
     ], [], [], [], [new Tile("pin", 5, ""), new Tile("pin", 5, "")], [], [], new Tile("", 0, "west"), "draw", -1, 6)
+    testWin.judgeDaisushi()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["大四喜"])
+  })
+  
+  test("小四喜と大四喜が複合しない", () => {
+    const testWin = new Winning([
+      [new Tile("", 0, "east"), new Tile("", 0, "east"), new Tile("", 0, "east")],
+      [new Tile("", 0, "north"), new Tile("", 0, "north"), new Tile("", 0, "north")],
+    ], [
+      [new Tile("", 0, "south"), new Tile("", 0, "south"), new Tile("", 0, "south")],
+      [new Tile("", 0, "west"), new Tile("", 0, "west"), new Tile("", 0, "west")],
+    ], [], [], [], [new Tile("pin", 5, ""), new Tile("pin", 5, "")], [], [], new Tile("", 0, "west"), "draw", -1, 6)
+    testWin.judgeShosushi()
     testWin.judgeDaisushi()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["大四喜"])
   })
@@ -709,6 +720,17 @@ describe("四暗刻のテスト", () => {
       [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")],
       [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
     ], [], [], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "ron", -1, 6)
+    testWin.judgeSuanko()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["四暗刻単騎"])
+  })
+
+  test("四暗刻と四暗刻単騎が複合しない", () => {
+    const testWin = new Winning([
+      [new Tile("", 0, "white"), new Tile("", 0, "white"), new Tile("", 0, "white")],
+      [new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")],
+      [new Tile("", 0, "green"), new Tile("", 0, "green"), new Tile("", 0, "green")],
+      [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
+    ], [], [], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("sou", 1, ""), "draw", -1, 6)
     testWin.judgeSuanko()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["四暗刻単騎"])
   })
