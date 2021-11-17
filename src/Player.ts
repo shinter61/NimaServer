@@ -327,4 +327,8 @@ export class Player {
     }
     return [drawWaits, ronWaits]
   }
+
+  canAnkanTiles(drawTile: Tile): Tile[] {
+    return [drawTile]
+  }
 }
