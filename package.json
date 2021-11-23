@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "node dist/server.js",
     "dev:watch": "ts-node-dev src/server.ts",
     "prepare": "husky install",
     "test": "jest"
@@ -39,7 +39,7 @@
     "ts-node-dev": "^1.1.8"
   },
   "lint-staged": {
-    "*.{js, ts}": "eslint --cache --fix"
+    "*.{ts}": "eslint --cache --fix"
   },
   "jest": {
     "moduleFileExtensions": [
