@@ -1,20 +1,22 @@
 import { createServer } from "http"
 import { Server, Socket } from "socket.io"
 import express from "express"
-import { Client } from "pg"
 import { Game } from "./Game"
 import { Player } from "./Player"
 import { Tile } from "./Tile"
 import { Winning } from "./Winning"
 import { honbaScore, kyotakuScore } from "./scores"
+import { userRouter } from "./routes/users"
 
 const app: express.Express = express();
+
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+app.use('/users', userRouter)
+
 const server = createServer(app);
 const io = new Server(server);
-
-const devDBUri = `postgres://${process.env.POSTGRES_USER ?? ""}:${process.env.POSTGRES_PASSWORD ?? ""}@docker.for.mac.localhost:5432/${process.env.POSTGRES_DB ?? ""}`
-const dbClient = new Client({ connectionString: process.env.DATABASE_URL || devDBUri })
-void dbClient.connect()
 
 const connections: Socket[] = [];
 const matchingUserIDs: string[] = [];
