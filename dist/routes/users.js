@@ -11,7 +11,10 @@ const devDBUri = `postgres://${(_a = process.env.POSTGRES_USER) !== null && _a !
 const router = express_1.default.Router();
 exports.userRouter = router;
 router.post('/sign_up', function (req, res) {
-    const dbClient = new pg_1.Client({ connectionString: process.env.DATABASE_URL || devDBUri });
+    const dbClient = new pg_1.Client({
+        connectionString: process.env.DATABASE_URL || devDBUri,
+        ssl: { rejectUnauthorized: false }
+    });
     void dbClient.connect();
     const query = 'INSERT INTO users(name, password, rating) VALUES($1, $2, $3) RETURNING *';
     const httpBody = req.body;
@@ -33,7 +36,10 @@ router.post('/sign_up', function (req, res) {
         .finally(() => void dbClient.end());
 });
 router.post('/sign_in', function (req, res) {
-    const dbClient = new pg_1.Client({ connectionString: process.env.DATABASE_URL || devDBUri });
+    const dbClient = new pg_1.Client({
+        connectionString: process.env.DATABASE_URL || devDBUri,
+        ssl: { rejectUnauthorized: false }
+    });
     void dbClient.connect();
     const query = 'SELECT * FROM users WHERE id = $1 AND password = $2';
     const params = [req.body.id, req.body.password];
