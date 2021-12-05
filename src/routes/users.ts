@@ -12,7 +12,10 @@ type User = {
 }
 
 router.post('/sign_up', function(req, res) {
-  const dbClient = new Client({ connectionString: process.env.DATABASE_URL || devDBUri })
+  const dbClient = new Client({
+    connectionString: process.env.DATABASE_URL || devDBUri,
+    ssl: { rejectUnauthorized: false }
+  })
   void dbClient.connect()
   const query = 'INSERT INTO users(name, password, rating) VALUES($1, $2, $3) RETURNING *'
 
@@ -37,7 +40,10 @@ router.post('/sign_up', function(req, res) {
 })
 
 router.post('/sign_in', function(req: { body: { id: number, password: string } }, res) {
-  const dbClient = new Client({ connectionString: process.env.DATABASE_URL || devDBUri })
+  const dbClient = new Client({
+    connectionString: process.env.DATABASE_URL || devDBUri,
+    ssl: { rejectUnauthorized: false }
+  })
   void dbClient.connect()
   const query = 'SELECT * FROM users WHERE id = $1 AND password = $2'
   const params = [req.body.id, req.body.password]
