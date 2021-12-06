@@ -3,6 +3,7 @@ import { Winning } from "./Winning"
 import { Game } from "./Game"
 
 export class Player {
+  id: number
   name: string
   discards: Tile[]
   tiles: Tile[]
@@ -15,6 +16,7 @@ export class Player {
   isIppatsuAlived: boolean
 
   constructor() {
+    this.id = -1
     this.name = ""
     this.discards = []
     this.tiles = []
