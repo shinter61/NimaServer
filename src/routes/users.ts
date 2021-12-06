@@ -67,4 +67,10 @@ router.post('/sign_in', function(req: { body: { id: number, password: string } }
     .finally(() => void dbClient.end())
 })
 
+function calcRate(myRate: number, yourRate: number): number {
+  const win_ratio = 1 / (10 ** ((myRate - yourRate)/400) + 1)
+  return Math.round(16 * win_ratio)
+}
+
+export { calcRate }
 export { router as userRouter }
