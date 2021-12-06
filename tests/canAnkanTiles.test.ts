@@ -4,6 +4,7 @@ import { Player } from "../src/Player"
 describe("暗槓ができるバターンのテスト", () => {
   test("パターン1", () => {
     const testPlayer = new Player()
+    testPlayer.riichiTurn = 6
     testPlayer.tiles = [
       new Tile("sou", 1, ""), new Tile("sou", 1, ""), new Tile("sou", 1, ""),
       new Tile("sou", 2, ""), new Tile("sou", 3, ""), new Tile("sou", 4, ""),
@@ -18,6 +19,7 @@ describe("暗槓ができるバターンのテスト", () => {
 describe("待ち牌が変わって暗槓ができないバターンのテスト", () => {
   test("パターン1", () => {
     const testPlayer = new Player()
+    testPlayer.riichiTurn = 6
     testPlayer.tiles = [
       new Tile("sou", 1, ""), new Tile("sou", 1, ""), new Tile("sou", 1, ""),
       new Tile("sou", 2, ""), new Tile("sou", 3, ""), new Tile("sou", 4, ""),
@@ -32,6 +34,7 @@ describe("待ち牌が変わって暗槓ができないバターンのテスト"
 describe("面子構成が変わって暗槓ができないバターンのテスト", () => {
   test("パターン1", () => {
     const testPlayer = new Player()
+    testPlayer.riichiTurn = 6
     testPlayer.tiles = [
       new Tile("sou", 1, ""), new Tile("sou", 1, ""), new Tile("sou", 1, ""),
       new Tile("sou", 2, ""), new Tile("sou", 3, ""),
@@ -44,6 +47,7 @@ describe("面子構成が変わって暗槓ができないバターンのテス�
 
   test("パターン2", () => {
     const testPlayer = new Player()
+    testPlayer.riichiTurn = 6
     testPlayer.tiles = [
       new Tile("sou", 1, ""), new Tile("sou", 2, ""), new Tile("sou", 3, ""),
       new Tile("sou", 4, ""), new Tile("sou", 4, ""), new Tile("sou", 4, ""), new Tile("sou", 4, ""),
@@ -57,6 +61,7 @@ describe("面子構成が変わって暗槓ができないバターンのテス�
 describe("待ちの形が変わって暗槓ができないバターンのテスト", () => {
   test("パターン1", () => {
     const testPlayer = new Player()
+    testPlayer.riichiTurn = 6
     testPlayer.tiles = [
       new Tile("sou", 1, ""), new Tile("sou", 2, ""), new Tile("sou", 3, ""),
       new Tile("sou", 6, ""), new Tile("sou", 6, ""), new Tile("sou", 6, ""), new Tile("sou", 7, ""),
