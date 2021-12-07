@@ -321,6 +321,7 @@ export class Winning {
     if (this.draw.isRinshan && this.type === "draw") { this.hands.push({ name: "嶺上開花", han: 1 }) }
   }
 
+  // 二麻の場合は振り聴のため成立することがない
   judgeChankan(): void {
     // if (false) { this.hands.push({ name: "槍槓", han: 1 }) }
   }
