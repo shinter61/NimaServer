@@ -409,7 +409,7 @@ io.sockets.on('connection', function(socket: Socket) {
     }
 
     // 終局判定
-    rooms[roomID].judgeEndGame("")
+    rooms[roomID].judgeEndGame(-1)
     
     // 局数進める
     if (!isPlayer2Tenpai && game.round === 2) {
@@ -470,7 +470,7 @@ io.sockets.on('connection', function(socket: Socket) {
     }
 
     // 終局判定
-    game.judgeEndGame(winner.name)
+    game.judgeEndGame(winner.id)
 
     // 本場を積む
     game.proceedHonba(winner.id)

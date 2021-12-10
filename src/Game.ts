@@ -94,13 +94,13 @@ export class Game {
     }
   }
 
-  judgeEndGame(winnerID: string): void {
+  judgeEndGame(winnerID: number): void {
     // 南2局
     if (this.roundWind === "south" && this.round === 2) {
-      if (this.player1.name === winnerID) {
+      if (this.player1.id === winnerID) {
         this.isEnd = true
       }
-      if (this.player2.name === winnerID && this.player2.score > this.player1.score) {
+      if (this.player2.id === winnerID && this.player2.score > this.player1.score) {
         this.isEnd = true
       }
       if (this.player2.waitTiles(this)[0].length === 0) {
