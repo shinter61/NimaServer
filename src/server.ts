@@ -63,9 +63,9 @@ io.sockets.on('connection', function(socket: Socket) {
       delete rooms[targetRoomID]
 
       io.to(targetRoomID).emit('EndGame', {
-        winnerID: winner.name,
+        winnerID: String(winner.id),
         winnerScore: String(winner.score),
-        loserID: loser.name,
+        loserID: String(loser.id),
         loserScore: String(loser.score),
         isDisconnected: "true"
       })
@@ -120,9 +120,9 @@ io.sockets.on('connection', function(socket: Socket) {
     const loser: Player = game.player1.score < game.player2.score ? game.player1 : game.player2
 
     io.to(roomID).emit('EndGame', {
-      winnerID: winner.name,
+      winnerID: String(winner.id),
       winnerScore: String(winner.score),
-      loserID: loser.name,
+      loserID: String(loser.id),
       loserScore: String(loser.score),
       isDisconnected: "false"
     })

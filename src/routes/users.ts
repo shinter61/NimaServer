@@ -93,8 +93,14 @@ router.put('/rating', async function(req: { body: {
   await dbClient
     .query(userSelectQuery, userSelectParams)
     .then(data => {
-      winner = data.rows[0] as User
-      loser = data.rows[1] as User
+      const users = data.rows as User[]
+      if (users[0].id === req.body.winnerID) {
+        winner = data.rows[0] as User
+        loser = data.rows[1] as User
+      } else {
+        winner = data.rows[1] as User
+        loser = data.rows[0]  as User
+      }
     })
     .catch(err => {
       console.error(err)
@@ -113,8 +119,14 @@ router.put('/rating', async function(req: { body: {
   await dbClient
     .query(userSelectQuery, userSelectParams)
     .then(data => {
-      const winner = data.rows[0] as User
-      const loser = data.rows[1] as User
+      const users = data.rows as User[]
+      if (users[0].id === req.body.winnerID) {
+        winner = data.rows[0] as User
+        loser = data.rows[1] as User
+      } else {
+        winner = data.rows[1] as User
+        loser = data.rows[0] as User
+      }
       res.send({
         winnerID: winner.id,
         winnerRating: winner.rating,
