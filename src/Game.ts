@@ -68,13 +68,13 @@ export class Game {
 
   draw(): Tile | undefined { return this.stock.shift() }
 
-  proceedRound(winnerID: string): void {
-    if (this.player1.name === winnerID) {
+  proceedRound(winnerID: number): void {
+    if (this.player1.id === winnerID) {
       if (this.round === 2) {
         this.roundWind = "south"
         this.round = 1
       }
-    } else if (this.player2.name === winnerID) {
+    } else if (this.player2.id === winnerID) {
       if (this.round === 1) {
         this.round = 2
       }

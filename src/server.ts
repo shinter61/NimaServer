@@ -479,7 +479,7 @@ io.sockets.on('connection', function(socket: Socket) {
     game.kyotaku = 0
 
     // 局の場、局数を更新
-    game.proceedRound(winner.name)
+    game.proceedRound(winner.id)
 
     io.to(roomID).emit('Win', {
       id: String(winner.id),

@@ -55,13 +55,13 @@ class Game {
     }
     draw() { return this.stock.shift(); }
     proceedRound(winnerID) {
-        if (this.player1.name === winnerID) {
+        if (this.player1.id === winnerID) {
             if (this.round === 2) {
                 this.roundWind = "south";
                 this.round = 1;
             }
         }
-        else if (this.player2.name === winnerID) {
+        else if (this.player2.id === winnerID) {
             if (this.round === 1) {
                 this.round = 2;
             }
