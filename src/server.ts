@@ -420,7 +420,7 @@ io.sockets.on('connection', function(socket: Socket) {
     }
 
     // 本場を積む
-    rooms[roomID].proceedHonba("")
+    rooms[roomID].proceedHonba(-1)
 
     io.to(roomID).emit('ExhaustiveDraw', {
       id1: String(rooms[roomID].player1.id),
@@ -473,7 +473,7 @@ io.sockets.on('connection', function(socket: Socket) {
     game.judgeEndGame(winner.name)
 
     // 本場を積む
-    game.proceedHonba("")
+    game.proceedHonba(winner.id)
 
     // 供託リセット
     game.kyotaku = 0

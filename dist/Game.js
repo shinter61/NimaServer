@@ -68,11 +68,10 @@ class Game {
         }
     }
     proceedHonba(winnerID) {
-        // 親連荘 || 親聴牌なら本場を積む
-        if ((this.player1.name === winnerID && this.round === 1) ||
-            (this.player2.name === winnerID && this.round === 2) ||
-            (winnerID === "" && this.player1.waitTiles(this)[0].length !== 0 && this.round === 1) ||
-            (winnerID === "" && this.player2.waitTiles(this)[0].length !== 0 && this.round === 2)) {
+        // 親連荘 || 流局なら本場を積む
+        if ((this.player1.id === winnerID && this.round === 1) ||
+            (this.player2.id === winnerID && this.round === 2) ||
+            (winnerID === -1)) {
             this.honba += 1;
         }
         else {
