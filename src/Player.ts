@@ -12,6 +12,7 @@ export class Player {
   minkans: Tile[][]
   turn: number
   riichiTurn: number
+  bendTurn: number
   score: number
   isIppatsuAlived: boolean
 
@@ -25,6 +26,7 @@ export class Player {
     this.minkans = []
     this.turn = 0
     this.riichiTurn = -1
+    this.bendTurn = 0 // 自分の捨て牌の中で立直した牌の場所
     this.score = 35000
     this.isIppatsuAlived = true
   }
@@ -37,6 +39,7 @@ export class Player {
     this.minkans = []
     this.turn = 0
     this.riichiTurn = -1
+    this.bendTurn = 0
     this.isIppatsuAlived = true
   }
 

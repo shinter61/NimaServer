@@ -148,7 +148,7 @@ io.sockets.on('connection', function (socket) {
             discards: JSON.stringify(player.discards),
             drawWaits: JSON.stringify(drawWaits),
             ronWaits: JSON.stringify(ronWaits),
-            riichiTurn: String(player.riichiTurn),
+            riichiTurn: String(player.riichiTurn === -1 ? -1 : player.bendTurn),
             kyotaku: String(game.kyotaku),
             score: String(player.score),
             isTedashi: isTedashi.toString()
@@ -173,6 +173,9 @@ io.sockets.on('connection', function (socket) {
         }
         player.tiles.push(tile);
         player.turn += 1; // 巡目を増やす
+        if (player.riichiTurn === -1) {
+            player.bendTurn += 1;
+        }
         const winnings = player.judgeHands(tile, "draw"); // ツモってるか調べる
         let isWin = false;
         for (let i = 0; i < winnings.length; i++) {
@@ -272,6 +275,7 @@ io.sockets.on('connection', function (socket) {
         if (opponent.riichiTurn === opponent.turn) {
             opponent.isIppatsuAlived = false;
         }
+        opponent.bendTurn -= 1;
         io.to(roomID).emit('Pon', {
             id: String(player.id),
             tiles: JSON.stringify(player.tiles),
@@ -300,6 +304,7 @@ io.sockets.on('connection', function (socket) {
         if (opponent.riichiTurn === opponent.turn) {
             opponent.isIppatsuAlived = false;
         }
+        opponent.bendTurn -= 1;
         io.to(roomID).emit('Daiminkan', {
             id: String(player.id),
             tiles: JSON.stringify(player.tiles),
@@ -329,6 +334,7 @@ io.sockets.on('connection', function (socket) {
         if (opponent.riichiTurn === opponent.turn) {
             opponent.isIppatsuAlived = false;
         }
+        player.bendTurn -= 1;
         io.to(roomID).emit('Kakan', {
             id: String(player.id),
             tiles: JSON.stringify(player.tiles),
@@ -357,6 +363,7 @@ io.sockets.on('connection', function (socket) {
         if (opponent.riichiTurn === opponent.turn) {
             opponent.isIppatsuAlived = false;
         }
+        player.bendTurn -= 1;
         io.to(roomID).emit('Ankan', {
             id: String(player.id),
             tiles: JSON.stringify(player.tiles),
