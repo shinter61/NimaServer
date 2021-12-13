@@ -90,10 +90,13 @@ router.put('/rating', async function(req: { body: {
   let winner: User = {} as User
   let loser: User = {} as User
 
+  console.log("user select params", userSelectParams)
+
   await dbClient
     .query(userSelectQuery, userSelectParams)
     .then(data => {
       const users = data.rows as User[]
+      console.log("data rows", data.rows)
       if (users[0].id === req.body.winnerID) {
         winner = data.rows[0] as User
         loser = data.rows[1] as User
