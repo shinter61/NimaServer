@@ -490,10 +490,13 @@ io.sockets.on('connection', function(socket: Socket) {
     // 局の場、局数を更新
     game.proceedRound(winner.id)
 
+    // ロンで和了した時は和了牌を追加する
+    if (type !== "draw") { winner.tiles.push(winTile) }
+
     io.to(roomID).emit('Win', {
       id: String(winner.id),
       tiles: JSON.stringify(winner.tiles),
-      hands: JSON.stringify(maxWinning.hands.map(hand => hand.name)), 
+      hands: JSON.stringify(maxWinning.hands), 
       revDoras: JSON.stringify(game.revDoras()),
       score: String(score?.score),
       scoreName: score?.name,

@@ -456,10 +456,14 @@ io.sockets.on('connection', function (socket) {
         game.kyotaku = 0;
         // 局の場、局数を更新
         game.proceedRound(winner.id);
+        // ロンで和了した時は和了牌を追加する
+        if (type !== "draw") {
+            winner.tiles.push(winTile);
+        }
         io.to(roomID).emit('Win', {
             id: String(winner.id),
             tiles: JSON.stringify(winner.tiles),
-            hands: JSON.stringify(maxWinning.hands.map(hand => hand.name)),
+            hands: JSON.stringify(maxWinning.hands),
             revDoras: JSON.stringify(game.revDoras()),
             score: String(score === null || score === void 0 ? void 0 : score.score),
             scoreName: score === null || score === void 0 ? void 0 : score.name,
