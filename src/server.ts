@@ -286,7 +286,8 @@ io.sockets.on('connection', function(socket: Socket) {
     // 一発消しの処理
     if (opponent.riichiTurn === opponent.turn) { opponent.isIppatsuAlived = false }
 
-    opponent.bendTurn -= 1
+    if (opponent.riichiTurn === -1) { opponent.bendTurn -= 1 }
+    console.log("bend turn", opponent.bendTurn)
 
     io.to(roomID).emit('Pon', {
       id: String(player.id),
@@ -318,7 +319,7 @@ io.sockets.on('connection', function(socket: Socket) {
     // 一発消しの処理
     if (opponent.riichiTurn === opponent.turn) { opponent.isIppatsuAlived = false }
 
-    opponent.bendTurn -= 1
+    if (opponent.riichiTurn === -1) { opponent.bendTurn -= 1 }
 
     io.to(roomID).emit('Daiminkan', {
       id: String(player.id),
@@ -353,7 +354,7 @@ io.sockets.on('connection', function(socket: Socket) {
     // 一発消しの処理
     if (opponent.riichiTurn === opponent.turn) { opponent.isIppatsuAlived = false }
 
-    player.bendTurn -= 1
+    if (player.riichiTurn === -1) { player.bendTurn -= 1 }
 
     io.to(roomID).emit('Kakan', {
       id: String(player.id),
@@ -386,7 +387,7 @@ io.sockets.on('connection', function(socket: Socket) {
     // 一発消しの処理
     if (opponent.riichiTurn === opponent.turn) { opponent.isIppatsuAlived = false }
 
-    player.bendTurn -= 1
+    if (player.riichiTurn === -1) { player.bendTurn -= 1 }
 
     io.to(roomID).emit('Ankan', {
       id: String(player.id),
