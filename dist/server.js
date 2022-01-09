@@ -163,6 +163,9 @@ io.sockets.on('connection', function (socket) {
     socket.on('InformPon', function (roomID, playerID) {
         io.to(roomID).emit('InformPon', { id: String(playerID) });
     });
+    socket.on('InformAnkan', function (roomID, playerID) {
+        io.to(roomID).emit('InformAnkan', { id: String(playerID) });
+    });
     socket.on('Draw', function (roomID, playerID, isRinshan) {
         const game = rooms[roomID];
         if (game === undefined) {
