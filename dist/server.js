@@ -160,6 +160,9 @@ io.sockets.on('connection', function (socket) {
         const discardTile = new Tile_1.Tile(tileObj.kind, tileObj.number, tileObj.character);
         io.to(roomID).emit('InformRiichi', { id: String(playerID), discardTile: JSON.stringify([discardTile]) });
     });
+    socket.on('InformPon', function (roomID, playerID) {
+        io.to(roomID).emit('InformPon', { id: String(playerID) });
+    });
     socket.on('Draw', function (roomID, playerID, isRinshan) {
         const game = rooms[roomID];
         if (game === undefined) {

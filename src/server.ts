@@ -175,6 +175,10 @@ io.sockets.on('connection', function(socket: Socket) {
     io.to(roomID).emit('InformRiichi', { id: String(playerID), discardTile: JSON.stringify([discardTile]) })
   })
 
+  socket.on('InformPon', function(roomID: string, playerID: string) {
+    io.to(roomID).emit('InformPon', { id: String(playerID) })
+  })
+
   socket.on('Draw', function(roomID: string, playerID: string, isRinshan: boolean) {
     const game = rooms[roomID];
     if (game === undefined) { return }
