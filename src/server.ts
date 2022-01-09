@@ -169,6 +169,26 @@ io.sockets.on('connection', function(socket: Socket) {
     game.player1.id === Number(playerID) ? rooms[roomID].player1 = player : rooms[roomID].player2 = player
   })
 
+  socket.on('InformRiichi', function(roomID: string, playerID: string) {
+    io.to(roomID).emit('InformRiichi', { id: String(playerID) })
+  })
+
+  socket.on('InformPon', function(roomID: string, playerID: string) {
+    io.to(roomID).emit('InformPon', { id: String(playerID) })
+  })
+
+  socket.on('InformAnkan', function(roomID: string, playerID: string) {
+    io.to(roomID).emit('InformAnkan', { id: String(playerID) })
+  })
+
+  socket.on('InformKakan', function(roomID: string, playerID: string) {
+    io.to(roomID).emit('InformKakan', { id: String(playerID) })
+  })
+
+  socket.on('InformDaiminkan', function(roomID: string, playerID: string) {
+    io.to(roomID).emit('InformDaiminkan', { id: String(playerID) })
+  })
+
   socket.on('Draw', function(roomID: string, playerID: string, isRinshan: boolean) {
     const game = rooms[roomID];
     if (game === undefined) { return }
