@@ -72,6 +72,10 @@ io.sockets.on('connection', function(socket: Socket) {
     }
   });
 
+  socket.on('CurrentConnectionsCount', function() {
+    io.emit('CurrentConnectionsCount', { connectionsCount: String(connections.length) })
+  })
+
   socket.on('StartMatching', function(userID: string, userName: string) {
     matchingUserIDs.push({ id: Number(userID), name: String(userName) });
   })

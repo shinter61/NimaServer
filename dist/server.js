@@ -62,6 +62,9 @@ io.sockets.on('connection', function (socket) {
             });
         }
     });
+    socket.on('CurrentConnectionsCount', function () {
+        io.emit('CurrentConnectionsCount', { connectionsCount: String(connections.length) });
+    });
     socket.on('StartMatching', function (userID, userName) {
         matchingUserIDs.push({ id: Number(userID), name: String(userName) });
     });
