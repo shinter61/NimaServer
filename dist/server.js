@@ -155,6 +155,11 @@ io.sockets.on('connection', function (socket) {
         });
         game.player1.id === Number(playerID) ? rooms[roomID].player1 = player : rooms[roomID].player2 = player;
     });
+    socket.on('InformRiichi', function (roomID, playerID, tiles) {
+        const tileObj = JSON.parse(tiles)[0];
+        const discardTile = new Tile_1.Tile(tileObj.kind, tileObj.number, tileObj.character);
+        io.to(roomID).emit('InformRiichi', { id: String(playerID), discardTile: JSON.stringify([discardTile]) });
+    });
     socket.on('Draw', function (roomID, playerID, isRinshan) {
         const game = rooms[roomID];
         if (game === undefined) {
