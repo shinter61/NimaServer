@@ -144,5 +144,34 @@ router.put('/rating', async function(req: { body: {
     .finally(() => void dbClient.end())
 })
 
+router.get('/ranking', async function(_req, res) {
+  const dbClient = new Client({
+    connectionString: process.env.DATABASE_URL || devDBUri,
+    ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
+  })
+  void dbClient.connect()
+  const query = 'SELECT * FROM users ORDER BY rating DESC LIMIT 50'
+
+  await dbClient
+    .query(query)
+    .then(data => {
+      const rawUsers = data.rows as User[]
+      const users = []
+      for (let i = 0; i < rawUsers.length; i++) {
+        users.push({
+          id:     rawUsers[i].id,
+          name:   rawUsers[i].name,
+          rating: rawUsers[i].rating
+        })
+      }
+      res.send({ users })
+    })
+    .catch(err => {
+      console.error(err)
+      res.status(400).send()
+    })
+    .finally(() => void dbClient.end())
+})
+
 export { calcRate }
 export { router as userRouter }
