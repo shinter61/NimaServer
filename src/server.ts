@@ -19,7 +19,7 @@ const server = createServer(app);
 const io = new Server(server);
 
 const connections: Socket[] = [];
-const matchingUserIDs: { id: number, name: string }[] = [];
+const matchingUserIDs: { id: number, name: string, rating: number }[] = [];
 
 interface StringKeyObject {
   [key: string]: Game
@@ -76,8 +76,8 @@ io.sockets.on('connection', function(socket: Socket) {
     io.emit('CurrentConnectionsCount', { connectionsCount: String(connections.length) })
   })
 
-  socket.on('StartMatching', function(userID: string, userName: string) {
-    matchingUserIDs.push({ id: Number(userID), name: String(userName) });
+  socket.on('StartMatching', function(userID: string, userName: string, rating: string) {
+    matchingUserIDs.push({ id: Number(userID), name: String(userName), rating: Number(rating) });
   })
 
   socket.on('StartGame', function(roomID: string) {
@@ -557,8 +557,10 @@ setInterval(() => {
     io.to(roomID).emit('InformPlayersNames', {
       player1ID: String(game.player1.id),
       player1Name: game.player1.name,
+      player1Rating: String(user1.rating),
       player2ID: String(game.player2.id),
       player2Name: game.player2.name,
+      player2Rating: String(user2.rating),
       roomID
     })
 
