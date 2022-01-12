@@ -65,8 +65,8 @@ io.sockets.on('connection', function (socket) {
     socket.on('CurrentConnectionsCount', function () {
         io.emit('CurrentConnectionsCount', { connectionsCount: String(connections.length) });
     });
-    socket.on('StartMatching', function (userID, userName) {
-        matchingUserIDs.push({ id: Number(userID), name: String(userName) });
+    socket.on('StartMatching', function (userID, userName, rating) {
+        matchingUserIDs.push({ id: Number(userID), name: String(userName), rating: Number(rating) });
     });
     socket.on('StartGame', function (roomID) {
         let game = rooms[roomID];
@@ -526,8 +526,10 @@ setInterval(() => {
         io.to(roomID).emit('InformPlayersNames', {
             player1ID: String(game.player1.id),
             player1Name: game.player1.name,
+            player1Rating: String(user1.rating),
             player2ID: String(game.player2.id),
             player2Name: game.player2.name,
+            player2Rating: String(user2.rating),
             roomID
         });
         matchingUserIDs.splice(0, 2);
