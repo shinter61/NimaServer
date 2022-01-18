@@ -90,6 +90,9 @@ class Game {
             if (this.player2.waitTiles(this)[0].length === 0) {
                 this.isEnd = true;
             }
+            if (this.player2.waitTiles(this)[0].length !== 0 && this.player2.score > this.player1.score) {
+                this.isEnd = true;
+            }
         }
         // 飛び終了
         if (this.player1.score < 0 || this.player2.score < 0) {
