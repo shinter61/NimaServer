@@ -503,9 +503,9 @@ io.sockets.on('connection', function (socket) {
 });
 setInterval(() => {
     console.log('matchingUserIDs', matchingUserIDs);
-    for (let i = 0; i < matchingUserIDs.length; i++) {
-        if (i === matchingUserIDs.length - 1 || i % 2 === 1) {
-            return;
+    for (let i = 0;; i++) {
+        if (i === matchingUserIDs.length - 1 || matchingUserIDs.length === 0) {
+            break;
         }
         const roomID = new Date().getTime().toString();
         const user1 = matchingUserIDs[i];
