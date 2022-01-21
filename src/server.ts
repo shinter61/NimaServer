@@ -80,6 +80,12 @@ io.sockets.on('connection', function(socket: Socket) {
     matchingUserIDs.push({ id: Number(userID), name: String(userName), rating: Number(rating) });
   })
 
+  socket.on('StopMatching', function(userID: string) {
+    const playerID = Number(userID)
+    const matchingIdx = matchingUserIDs.findIndex(el => el.id === Number(playerID))
+    if (matchingIdx >= 0) { matchingUserIDs.splice(matchingIdx, 1); }
+  })
+
   socket.on('StartGame', function(roomID: string) {
     let game = rooms[roomID];
     if (game === undefined) { return }

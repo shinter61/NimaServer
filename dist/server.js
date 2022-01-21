@@ -68,6 +68,13 @@ io.sockets.on('connection', function (socket) {
     socket.on('StartMatching', function (userID, userName, rating) {
         matchingUserIDs.push({ id: Number(userID), name: String(userName), rating: Number(rating) });
     });
+    socket.on('StopMatching', function (userID) {
+        const playerID = Number(userID);
+        const matchingIdx = matchingUserIDs.findIndex(el => el.id === Number(playerID));
+        if (matchingIdx >= 0) {
+            matchingUserIDs.splice(matchingIdx, 1);
+        }
+    });
     socket.on('StartGame', function (roomID) {
         let game = rooms[roomID];
         if (game === undefined) {
