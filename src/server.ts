@@ -537,6 +537,23 @@ io.sockets.on('connection', function(socket: Socket) {
     game.player1.id === Number(playerID) ? rooms[roomID].player1 = winner : rooms[roomID].player2 = winner 
     game.player1.id !== Number(playerID) ? rooms[roomID].player1 = loser : rooms[roomID].player2 = loser 
   })
+
+  socket.on("Surrender", function(roomID: string, playerID: string) {
+    const game = rooms[roomID]
+
+    const winner = game.player1.id === Number(playerID) ? game.player2 : game.player1
+    const loser = game.player1.id === Number(playerID) ? game.player1 : game.player2
+
+    delete rooms[roomID]
+
+    io.to(roomID).emit('EndGame', {
+      winnerID: String(winner.id),
+      winnerScore: String(winner.score),
+      loserID: String(loser.id),
+      loserScore: String(loser.score),
+      isSurrender: "true"
+    })
+  })
 })
 
 setInterval(() => {
