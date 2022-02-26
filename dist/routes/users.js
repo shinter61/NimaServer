@@ -98,6 +98,7 @@ router.put('/rating', async function (req, res) {
         res.status(400).send();
     });
     const diffRate = calcRate(winner.rating, loser.rating);
+    // 自動でupdated_atも更新される
     const rateUpdateQuery = 'UPDATE users SET rating = $1 WHERE id = $2';
     const winnerRateUpdateParams = [winner.rating + diffRate, winner.id];
     const loserRateUpdateParams = [loser.rating - diffRate, loser.id];
