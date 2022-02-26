@@ -687,7 +687,7 @@ class Winning {
         }
     }
     judgeChinroto() {
-        if (this.kotz.length + this.minkos.length !== 4) {
+        if (this.kotz.length + this.minkos.length + this.ankans.length + this.minkans.length !== 4) {
             return;
         }
         let isChinroto = true;

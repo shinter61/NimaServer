@@ -582,7 +582,7 @@ export class Winning {
   }
 
   judgeChinroto(): void {
-    if (this.kotz.length + this.minkos.length !== 4) { return }
+    if (this.kotz.length + this.minkos.length + this.ankans.length + this.minkans.length !== 4) { return }
     let isChinroto = true 
     const kotzTiles = this.kotzFlatten()
     for (let i = 0; i < kotzTiles.length; i++) {
