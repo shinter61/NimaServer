@@ -737,7 +737,7 @@ describe("四暗刻のテスト", () => {
 })
 
 describe("清老頭のテスト", () => {
-  test("清老頭が判定できる", () => {
+  test("暗刻と明刻で清老頭が判定できる", () => {
     const testWin = new Winning([
       [new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, "")],
       [new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")],
@@ -745,6 +745,19 @@ describe("清老頭のテスト", () => {
       [new Tile("man", 9, ""), new Tile("man", 9, ""), new Tile("man", 9, "")],
       [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
     ], [], [], [], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", -1, 6)
+    testWin.judgeChinroto()
+    expect(testWin.hands.map(hand => hand.name)).toEqual(["清老頭"])
+  })
+  test("槓子含みで清老頭が判定できる", () => {
+    const testWin = new Winning([
+      [new Tile("pin", 1, ""), new Tile("pin", 1, ""), new Tile("pin", 1, "")],
+    ], [
+      [new Tile("man", 9, ""), new Tile("man", 9, ""), new Tile("man", 9, "")],
+    ], [], [
+      [new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, ""), new Tile("pin", 9, "")],
+    ], [
+      [new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, ""), new Tile("sou", 9, "")],
+    ], [new Tile("sou", 1, ""), new Tile("sou", 1, "")], [], [], new Tile("pin", 1, ""), "draw", -1, 6)
     testWin.judgeChinroto()
     expect(testWin.hands.map(hand => hand.name)).toEqual(["清老頭"])
   })
